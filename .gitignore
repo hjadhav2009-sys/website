@@ -1,0 +1,10 @@
+node_modules/
+vendor/
+.env
+.DS_Store
+*.log
+scratch_radiant/node_modules/
+scratch_radiant/dist/
+scratch_radiant/.next/
+scratch_radiant/.cache/
+radiant.zip

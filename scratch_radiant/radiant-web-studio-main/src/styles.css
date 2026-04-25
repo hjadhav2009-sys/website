@@ -1,0 +1,214 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * THEMENGIFT Brand Design System.
+ * Tokens are exposed both as Tailwind utilities (via @theme inline) and
+ * as raw CSS vars for hand-written styles (gradients, shadows, etc).
+ */
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+  --radius-4xl: calc(var(--radius) + 16px);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-ring-offset-background: var(--background);
+
+  /* Brand palette as Tailwind colors */
+  --color-brand: var(--brand);
+  --color-brand-dark: var(--brand-dark);
+  --color-brand-light: var(--brand-light);
+  --color-brand-pale: var(--brand-pale);
+  --color-offwhite: var(--offwhite);
+  --color-ink: var(--ink);
+  --color-sale: var(--sale);
+  --color-star: var(--star);
+  --color-success: var(--success);
+
+  --font-display: 'Plus Jakarta Sans', sans-serif;
+  --font-sans: 'DM Sans', -apple-system, sans-serif;
+}
+
+:root {
+  --radius: 0.625rem;
+
+  /* shadcn semantic — mapped to brand */
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.21 0.03 264);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.21 0.03 264);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.21 0.03 264);
+  --primary: oklch(0.45 0.16 263);            /* #1B4F9E */
+  --primary-foreground: oklch(1 0 0);
+  --secondary: oklch(0.96 0.02 260);
+  --secondary-foreground: oklch(0.21 0.03 264);
+  --muted: oklch(0.97 0.01 260);
+  --muted-foreground: oklch(0.45 0.03 257);
+  --accent: oklch(0.96 0.04 260);              /* pale blue accent */
+  --accent-foreground: oklch(0.27 0.13 263);
+  --destructive: oklch(0.62 0.22 27);
+  --destructive-foreground: oklch(1 0 0);
+  --border: oklch(0.92 0.01 256);
+  --input: oklch(0.92 0.01 256);
+  --ring: oklch(0.45 0.16 263);
+
+  /* THEMENGIFT brand tokens */
+  --brand: oklch(0.45 0.16 263);                /* #1B4F9E primary blue */
+  --brand-dark: oklch(0.27 0.14 263);           /* #0A2463 */
+  --brand-light: oklch(0.62 0.13 256);          /* #4A90D9 */
+  --brand-pale: oklch(0.97 0.025 256);          /* #EEF4FF */
+  --offwhite: oklch(0.985 0.01 256);            /* #F8FAFF */
+  --ink: oklch(0.21 0.03 264);                  /* #1A202C */
+  --sale: oklch(0.62 0.22 27);                  /* #E53E3E */
+  --star: oklch(0.78 0.16 78);                  /* #F59E0B */
+  --success: oklch(0.46 0.13 145);              /* #166534 */
+
+  /* Gradients */
+  --grad-hero: linear-gradient(135deg, #0A2463 0%, #1B4F9E 100%);
+  --grad-feature: linear-gradient(135deg, #EEF4FF 0%, #DBEAFE 100%);
+  --grad-btn-hover: linear-gradient(135deg, #1B4F9E 0%, #0A2463 100%);
+  --grad-bar: linear-gradient(90deg, #1B4F9E 0%, #4A90D9 100%);
+
+  /* Shadows */
+  --shadow-sm: 0 2px 8px rgba(27, 79, 158, 0.08);
+  --shadow-md: 0 8px 24px rgba(27, 79, 158, 0.12);
+  --shadow-lg: 0 16px 48px rgba(27, 79, 158, 0.16);
+}
+
+@layer base {
+  * { border-color: var(--color-border); }
+
+  html, body {
+    font-family: var(--font-sans);
+    color: var(--color-ink);
+    background: var(--color-background);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    color: var(--color-ink);
+  }
+
+  h1 { font-size: clamp(32px, 5.5vw, 64px); font-weight: 800; letter-spacing: -0.02em; }
+  h2 { font-size: clamp(24px, 3.6vw, 40px); }
+  h3 { font-size: clamp(18px, 2.4vw, 24px); }
+  h4 { font-size: clamp(16px, 2vw, 18px); font-weight: 600; }
+
+  body { font-size: 15px; line-height: 1.7; }
+}
+
+/* ───────── Brand Utilities ───────── */
+@layer components {
+  .container-tmg {
+    width: 100%;
+    max-width: 1240px;
+    margin-inline: auto;
+    padding-inline: clamp(16px, 4vw, 32px);
+  }
+
+  .label-eyebrow {
+    font-family: var(--font-sans);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-brand);
+  }
+
+  .price-tag {
+    font-family: var(--font-display);
+    font-weight: 700;
+    color: var(--color-brand);
+  }
+
+  .grad-hero { background: var(--grad-hero); }
+  .grad-feature { background: var(--grad-feature); }
+  .grad-bar { background: var(--grad-bar); }
+
+  .shadow-brand-sm { box-shadow: var(--shadow-sm); }
+  .shadow-brand-md { box-shadow: var(--shadow-md); }
+  .shadow-brand-lg { box-shadow: var(--shadow-lg); }
+
+  /* Animated gradient announcement bar */
+  .ann-fade > span {
+    animation: annFade 16s linear infinite;
+    opacity: 0;
+  }
+  .ann-fade > span:nth-child(1) { animation-delay: 0s; }
+  .ann-fade > span:nth-child(2) { animation-delay: 4s; }
+  .ann-fade > span:nth-child(3) { animation-delay: 8s; }
+  .ann-fade > span:nth-child(4) { animation-delay: 12s; }
+
+  @keyframes annFade {
+    0%, 22%, 100% { opacity: 0; transform: translateY(8px); }
+    3%, 19% { opacity: 1; transform: translateY(0); }
+  }
+
+  /* WhatsApp pulse */
+  .wa-pulse::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 9999px;
+    background: #25D366;
+    opacity: 0.6;
+    animation: waPulse 2.4s ease-out infinite;
+    z-index: -1;
+  }
+  @keyframes waPulse {
+    0% { transform: scale(1); opacity: 0.45; }
+    100% { transform: scale(1.8); opacity: 0; }
+  }
+
+  /* Reveal-on-scroll-ish fade-up via tw-animate utilities is fine, plus this base */
+  .fade-up { animation: fadeUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) both; }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Marquee for trust strip */
+  .marquee { display: flex; overflow: hidden; }
+  .marquee-track {
+    display: flex;
+    gap: 64px;
+    animation: marquee 28s linear infinite;
+    white-space: nowrap;
+  }
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+}

@@ -1,0 +1,1449 @@
+THEMENGIFT
+themengift.com
+Premium Jewellery  •  Custom Gifts  •  Smart Pet Tags  •  Made in India
+WINDSURF AI AGENT BUILD DOCUMENT
+DOCUMENT 4 OF 15
+Homepage All 19 Sections
+Full Specifications for Every Section — Layout, Content, Images & Functionality
+──────────────────────────────────────────────────
+1. HOW TO READ THIS DOCUMENT
+This document defines every section of the THEMENGIFT homepage. Each section includes:
+- Exact layout specifications
+- Content requirements (text, images, buttons)
+- CSS class names and structure
+- Plugin dependencies (if any)
+- Mobile responsiveness rules
+- Animation and interaction details
+The agent must build these sections in the exact order shown. Each section builds on the previous ones.
+──────────────────────────────────────────────────
+2. GLOBAL HOMEPAGE SETTINGS
+2.1 Page Configuration
+- Page Template: Custom PHP template (homepage.php)
+- Page Slug: home
+- Page Title: "THEMENGIFT - Premium Artificial Jewellery, Custom Gifts & Smart Pet Tags"
+- Meta Description: "Shop premium artificial jewellery, custom gifts and smart pet tags at THEMENGIFT. COD available, free shipping, secure payment."
+- No sidebar (full-width layout)
+- Disable breadcrumbs on homepage only
+2.2 CSS Classes to Define
+/* Homepage container */
+.homepage-container { max-width: 1400px; margin: 0 auto; padding: 0 20px; }
+/* Section spacing */
+.section { padding: 60px 0; }
+.section-sm { padding: 40px 0; }
+.section-lg { padding: 80px 0; }
+/* Section backgrounds */
+.bg-white { background: #FFFFFF; }
+.bg-light { background: #F8FAFC; }
+.bg-gradient { background: linear-gradient(135deg, #1B4F9E 0%, #2E7CD6 100%); }
+/* Typography */
+.section-title { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 36px; font-weight: 700; color: #1A202C; margin-bottom: 20px; text-align: center; }
+.section-subtitle { font-family: 'DM Sans', sans-serif; font-size: 18px; color: #4A5568; margin-bottom: 40px; text-align: center; }
+2.3 Image Requirements
+- All product images: 800x800px minimum, WebP format preferred
+- Hero images: 1920x800px minimum
+- Thumbnail images: 300x300px
+- All images must have alt tags
+- Lazy loading enabled for all images below fold
+──────────────────────────────────────────────────
+3. SECTION 1: HEADER NAVIGATION
+3.1 Structure
+<header class="main-header sticky-header">
+  <div class="header-top">
+    <div class="homepage-container">
+      <div class="header-content">
+        <div class="logo">
+          <a href="/">
+            <img src="/assets/logo.svg" alt="THEMENGIFT" width="180" height="40">
+          </a>
+        </div>
+        <div class="search-bar">
+          <form action="/shop/" method="get">
+            <input type="search" name="s" placeholder="Search for jewellery, gifts, tags..." class="search-input">
+            <button type="submit" class="search-btn">
+              <i class="icon-search"></i>
+            </button>
+          </form>
+        </div>
+        <div class="header-actions">
+          <a href="/my-account/" class="header-icon" title="My Account">
+            <i class="icon-user"></i>
+            <span>Account</span>
+          </a>
+          <a href="/wishlist/" class="header-icon" title="Wishlist">
+            <i class="icon-heart"></i>
+            <span class="wishlist-count">0</span>
+          </a>
+          <a href="/cart/" class="header-icon" title="Cart">
+            <i class="icon-cart"></i>
+            <span class="cart-count">0</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <nav class="main-nav">
+    <div class="homepage-container">
+      <ul class="nav-menu">
+        <li><a href="/">Home</a></li>
+        <li class="dropdown">
+          <a href="/jewellery/">Jewellery</a>
+          <ul class="dropdown-menu">
+            <li><a href="/jewellery/rings/">Rings</a></li>
+            <li><a href="/jewellery/chains/">Chains</a></li>
+            <li><a href="/jewellery/bracelets/">Bracelets</a></li>
+            <li><a href="/jewellery/earrings/">Earrings</a></li>
+          </ul>
+        </li>
+        <li><a href="/custom-gifts/">Custom Gifts</a></li>
+        <li><a href="/smart-tags/">Smart Tags</a></li>
+        <li><a href="/corporate-gifting/">Corporate</a></li>
+        <li><a href="/about-us/">About Us</a></li>
+        <li><a href="/contact-us/">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+</header>
+3.2 Features
+- Sticky header on scroll (adds .scrolled class)
+- Wishlist count updates via AJAX (YITH WooCommerce Wishlist plugin)
+- Cart count updates via AJAX (WooCommerce)
+- Search autocomplete (WooCommerce Product Search)
+- Mobile hamburger menu for screens < 768px
+3.3 Dependencies
+- WooCommerce (for cart functionality)
+- YITH WooCommerce Wishlist (for wishlist count)
+──────────────────────────────────────────────────
+4. SECTION 2: HERO SLIDER
+4.1 Structure
+<section class="hero-slider section">
+  <div class="slider-container">
+    <div class="slide active" data-slide="1">
+      <div class="slide-bg" style="background-image: url('/uploads/hero/slide1.jpg');">
+        <div class="slide-overlay"></div>
+      </div>
+      <div class="slide-content">
+        <h1 class="slide-title">Style That Defines You</h1>
+        <p class="slide-subtitle">Premium Artificial Jewellery + Custom Gifts + Smart Pet Tags</p>
+        <div class="slide-actions">
+          <a href="/shop/" class="btn btn-primary btn-large">Shop Now</a>
+          <a href="/custom-gifts/" class="btn btn-outline btn-large">Create Gifts</a>
+        </div>
+      </div>
+    </div>
+    <div class="slide" data-slide="2">
+      <div class="slide-bg" style="background-image: url('/uploads/hero/slide2.jpg');">
+        <div class="slide-overlay"></div>
+      </div>
+      <div class="slide-content">
+        <h1 class="slide-title">Smart Protection for Your Loved Ones</h1>
+        <p class="slide-subtitle">QR-enabled Smart Tags with real-time tracking</p>
+        <div class="slide-actions">
+          <a href="/smart-tags/" class="btn btn-primary btn-large">Explore Smart Tags</a>
+          <a href="/smart-tags/#how-it-works" class="btn btn-outline btn-large">How It Works</a>
+        </div>
+      </div>
+    </div>
+    <div class="slide" data-slide="3">
+      <div class="slide-bg" style="background-image: url('/uploads/hero/slide3.jpg');">
+        <div class="slide-overlay"></div>
+      </div>
+      <div class="slide-content">
+        <h1 class="slide-title">Custom Gifts That Tell Your Story</h1>
+        <p class="slide-subtitle">Personalised jewellery and gifts for every occasion</p>
+        <div class="slide-actions">
+          <a href="/custom-gifts/" class="btn btn-primary btn-large">Start Customising</a>
+          <a href="/corporate-gifting/" class="btn btn-outline btn-large">Corporate Orders</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="slider-controls">
+    <button class="slider-prev" onclick="changeSlide(-1)">&#10094;</button>
+    <button class="slider-next" onclick="changeSlide(1)">&#10095;</button>
+  </div>
+  <div class="slider-dots">
+    <span class="dot active" onclick="currentSlide(1)"></span>
+    <span class="dot" onclick="currentSlide(2)"></span>
+    <span class="dot" onclick="currentSlide(3)"></span>
+  </div>
+</section>
+4.2 Image Specifications for Canva
+- **Slide 1**: Couple wearing jewellery, elegant pose
+- Dimensions: 1920x800px
+- Style: Premium, lifestyle, warm lighting
+- Text overlay area: Right 60% of image (darker area for text readability)
+- **Slide 2**: Person scanning QR code on pet tag with phone
+- Dimensions: 1920x800px
+- Style: Modern, tech-focused, bright
+- Show phone screen with map/location
+- **Slide 3**: Custom gift being engraved/personalised
+- Dimensions: 1920x800px
+- Style: Artisan, personal, warm tones
+- Show hands working on personalisation
+4.3 Animation
+- Auto-rotate every 5 seconds
+- Fade transition between slides
+- Pause on hover
+- Text slides in from bottom with 0.5s delay
+4.4 CSS Classes
+.hero-slider { position: relative; height: 600px; overflow: hidden; }
+.slide { position: absolute; width: 100%; height: 100%; opacity: 0; transition: opacity 1s; }
+.slide.active { opacity: 1; }
+.slide-bg { position: absolute; width: 100%; height: 100%; background-size: cover; background-position: center; }
+.slide-overlay { position: absolute; width: 100%; height: 100%; background: rgba(0,0,0,0.3); }
+.slide-content { position: relative; z-index: 2; height: 100%; display: flex; align-items: center; padding-left: 60px; max-width: 1400px; margin: 0 auto; }
+.slide-title { font-size: 48px; font-weight: 700; color: white; margin-bottom: 20px; max-width: 600px; }
+.slide-subtitle { font-size: 20px; color: white; margin-bottom: 30px; max-width: 500px; }
+.slide-actions { display: flex; gap: 20px; }
+──────────────────────────────────────────────────
+5. SECTION 3: CATEGORY ICONS ROW
+5.1 Structure
+<section class="category-icons section-sm bg-light">
+  <div class="homepage-container">
+    <div class="icons-grid">
+      <div class="icon-item">
+        <div class="icon-circle">
+          <img src="/assets/icons/rings.svg" alt="Rings" width="60" height="60">
+        </div>
+        <h3>Rings</h3>
+        <p>Elegant designs</p>
+      </div>
+      <div class="icon-item">
+        <div class="icon-circle">
+          <img src="/assets/icons/chains.svg" alt="Chains" width="60" height="60">
+        </div>
+        <h3>Chains</h3>
+        <p>Modern styles</p>
+      </div>
+      <div class="icon-item">
+        <div class="icon-circle">
+          <img src="/assets/icons/bracelets.svg" alt="Bracelets" width="60" height="60">
+        </div>
+        <h3>Bracelets</h3>
+        <p>Trendy collections</p>
+      </div>
+      <div class="icon-item">
+        <div class="icon-circle">
+          <img src="/assets/icons/gifts.svg" alt="Gifts" width="60" height="60">
+        </div>
+        <h3>Custom Gifts</h3>
+        <p>Personalised</p>
+      </div>
+      <div class="icon-item">
+        <div class="icon-circle">
+          <img src="/assets/icons/pet-tags.svg" alt="Pet Tags" width="60" height="60">
+        </div>
+        <h3>Smart Tags</h3>
+        <p>QR protection</p>
+      </div>
+    </div>
+  </div>
+</section>
+5.2 Features
+- Each icon links to respective category page
+- Hover effect: Scale + shadow
+- Icons should be SVG for crisp display
+- Mobile: Stack vertically on screens < 768px
+5.3 CSS Classes
+.icons-grid { display: flex; justify-content: space-between; gap: 30px; }
+.icon-item { text-align: center; flex: 1; cursor: pointer; transition: transform 0.3s; }
+.icon-item:hover { transform: translateY(-5px); }
+.icon-circle { width: 100px; height: 100px; margin: 0 auto 15px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(0,0,0,0.1); transition: all 0.3s; }
+.icon-item:hover .icon-circle { box-shadow: 0 8px 25px rgba(27,79,158,0.2); }
+.icon-item h3 { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 18px; font-weight: 600; color: #1A202C; margin-bottom: 5px; }
+.icon-item p { font-size: 14px; color: #4A5568; }
+──────────────────────────────────────────────────
+6. SECTION 4: SHOP BY CATEGORY GRID
+6.1 Structure
+<section class="shop-category section">
+  <div class="homepage-container">
+    <h2 class="section-title">Shop by Category</h2>
+    <p class="section-subtitle">Curated collections for every style</p>
+    <div class="category-grid">
+      <div class="category-card">
+        <div class="category-image">
+          <img src="/uploads/categories/men.jpg" alt="Men's Jewellery" width="400" height="300">
+          <div class="category-overlay">
+            <h3>Men's Collection</h3>
+            <p>Bold & Masculine Designs</p>
+            <a href="/jewellery/men/" class="btn btn-outline">Shop Now</a>
+          </div>
+        </div>
+      </div>
+      <div class="category-card">
+        <div class="category-image">
+          <img src="/uploads/categories/women.jpg" alt="Women's Jewellery" width="400" height="300">
+          <div class="category-overlay">
+            <h3>Women's Collection</h3>
+            <p>Elegant & Feminine Styles</p>
+            <a href="/jewellery/women/" class="btn btn-outline">Shop Now</a>
+          </div>
+        </div>
+      </div>
+      <div class="category-card">
+        <div class="category-image">
+          <img src="/uploads/categories/couple.jpg" alt="Couple Jewellery" width="400" height="300">
+          <div class="category-overlay">
+            <h3>Couple Collection</h3>
+            <p>Matching Sets for Two</p>
+            <a href="/jewellery/couple/" class="btn btn-outline">Shop Now</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+6.2 Features
+- Image overlay on hover with category details
+- Parallax effect on scroll
+- Mobile: Stack cards vertically
+6.3 CSS Classes
+.category-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; }
+.category-card { position: relative; overflow: hidden; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+.category-image { position: relative; height: 300px; }
+.category-image img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s; }
+.category-card:hover .category-image img { transform: scale(1.1); }
+.category-overlay { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(to top, rgba(0,0,0,0.8), transparent); padding: 30px 20px 20px; color: white; transform: translateY(100%); transition: transform 0.3s; }
+.category-card:hover .category-overlay { transform: translateY(0); }
+.category-overlay h3 { font-size: 24px; font-weight: 600; margin-bottom: 10px; }
+.category-overlay p { font-size: 16px; margin-bottom: 20px; opacity: 0.9; }
+──────────────────────────────────────────────────
+7. SECTION 5: SHOP BY EMOTION
+7.1 Structure
+<section class="shop-emotion section-sm bg-light">
+  <div class="homepage-container">
+    <h2 class="section-title">Shop by Emotion</h2>
+    <p class="section-subtitle">Find the perfect piece for every moment</p>
+    <div class="emotion-grid">
+      <div class="emotion-card">
+        <div class="emotion-icon">
+          <img src="/assets/icons/for-him.svg" alt="For Him" width="80" height="80">
+        </div>
+        <h3>For Him</h3>
+        <p>Strong, stylish pieces for the modern man</p>
+        <a href="/gifts/for-him/" class="emotion-link">Explore Collection →</a>
+      </div>
+      <div class="emotion-card">
+        <div class="emotion-icon">
+          <img src="/assets/icons/for-her.svg" alt="For Her" width="80" height="80">
+        </div>
+        <h3>For Her</h3>
+        <p>Elegant designs that celebrate femininity</p>
+        <a href="/gifts/for-her/" class="emotion-link">Explore Collection →</a>
+      </div>
+      <div class="emotion-card">
+        <div class="emotion-icon">
+          <img src="/assets/icons/for-couple.svg" alt="For Couple" width="80" height="80">
+        </div>
+        <h3>For Couples</h3>
+        <p>Matching symbols of your love story</p>
+        <a href="/gifts/for-couples/" class="emotion-link">Explore Collection →</a>
+      </div>
+      <div class="emotion-card">
+        <div class="emotion-icon">
+          <img src="/assets/icons/gift-ideas.svg" alt="Gift Ideas" width="80" height="80">
+        </div>
+        <h3>Gift Ideas</h3>
+        <p>Thoughtful presents for every occasion</p>
+        <a href="/gifts/ideas/" class="emotion-link">Explore Collection →</a>
+      </div>
+    </div>
+  </div>
+</section>
+7.2 CSS Classes
+.emotion-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 40px; }
+.emotion-card { text-align: center; padding: 30px 20px; background: white; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); transition: all 0.3s; }
+.emotion-card:hover { transform: translateY(-5px); box-shadow: 0 8px 30px rgba(27,79,158,0.15); }
+.emotion-icon { width: 100px; height: 100px; margin: 0 auto 20px; background: linear-gradient(135deg, #1B4F9E, #2E7CD6); border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+.emotion-card h3 { font-size: 20px; font-weight: 600; color: #1A202C; margin-bottom: 10px; }
+.emotion-card p { font-size: 14px; color: #4A5568; margin-bottom: 20px; line-height: 1.6; }
+.emotion-link { color: #1B4F9E; text-decoration: none; font-weight: 500; display: inline-flex; align-items: center; gap: 5px; transition: gap 0.3s; }
+.emotion-link:hover { gap: 10px; }
+──────────────────────────────────────────────────
+8. SECTION 6: FEATURED PRODUCT BANNER
+8.1 Structure
+4.2 (234 reviews)
+<section class="featured-product section">
+  <div class="homepage-container">
+    <div class="featured-banner">
+      <div class="featured-image">
+        <img src="/uploads/featured/product-hero.jpg" alt="Featured Product" width="600" height="400">
+        <div class="featured-badge">
+          <span>Bestseller</span>
+        </div>
+      </div>
+      <div class="featured-content">
+        <div class="featured-label">Featured This Week</div>
+        <h2 class="featured-title">Eternal Love Diamond Ring</h2>
+        <p class="featured-description">
+          A stunning piece that captures the essence of eternal love. Crafted with precision and designed to make every moment special. Perfect for engagements, anniversaries, or just because.
+        </p>
+        <div class="featured-price">
+          <span class="current-price">₹2,499</span>
+          <span class="original-price">₹3,999</span>
+          <span class="discount-badge">38% OFF</span>
+        </div>
+        <div class="featured-features">
+          <div class="feature-item">
+            <i class="icon-check"></i>
+            <span>18K Gold Plated</span>
+          </div>
+          <div class="feature-item">
+            <i class="icon-check"></i>
+            <span>AAA Grade CZ Stones</span>
+          </div>
+          <div class="feature-item">
+            <i class="icon-check"></i>
+            <span>1 Year Warranty</span>
+          </div>
+        </div>
+        <div class="featured-actions">
+          <a href="/product/eternal-love-diamond-ring/" class="btn btn-primary btn-large">View Details</a>
+          <button class="btn btn-outline btn-large" onclick="addToCart(12345)">Add to Cart</button>
+        </div>
+        <div class="featured-meta">
+          <span class="rating">
+            <i class="icon-star filled"></i>
+            <i class="icon-star filled"></i>
+            <i class="icon-star filled"></i>
+            <i class="icon-star filled"></i>
+            <i class="icon-star"></i>
+          </span>
+          <span class="stock-status">Only 5 left in stock!</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+8.2 Features
+- Product pulled from WooCommerce featured products
+- Dynamic pricing and stock status
+- AJAX add to cart functionality
+- Reviews from WooCommerce reviews
+8.3 CSS Classes
+.featured-banner { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
+.featured-image { position: relative; }
+.featured-image img { width: 100%; height: auto; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.15); }
+.featured-badge { position: absolute; top: 20px; left: 20px; background: #E53E3E; color: white; padding: 8px 16px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+.featured-label { color: #1B4F9E; font-size: 14px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
+.featured-title { font-size: 36px; font-weight: 700; color: #1A202C; margin-bottom: 20px; line-height: 1.2; }
+.featured-description { font-size: 16px; color: #4A5568; line-height: 1.6; margin-bottom: 30px; }
+.featured-price { display: flex; align-items: center; gap: 15px; margin-bottom: 30px; }
+.current-price { font-size: 32px; font-weight: 700; color: #1A202C; }
+.original-price { font-size: 20px; color: #718096; text-decoration: line-through; }
+.discount-badge { background: #38A169; color: white; padding: 4px 12px; border-radius: 6px; font-size: 14px; font-weight: 600; }
+──────────────────────────────────────────────────
+9. SECTION 7: VIDEO/REEL SECTION
+9.1 Structure
+<section class="video-section section-sm bg-light">
+  <div class="homepage-container">
+    <h2 class="section-title">See It In Action</h2>
+    <p class="section-subtitle">Watch how our jewellery comes to life</p>
+    <div class="video-container">
+      <div class="video-wrapper">
+        <div class="video-placeholder" id="video-placeholder">
+          <img src="/uploads/video-thumbnail.jpg" alt="Video Thumbnail" width="1200" height="675">
+          <div class="play-button" onclick="playVideo()">
+            <i class="icon-play"></i>
+          </div>
+          <div class="video-overlay"></div>
+        </div>
+        <div class="video-embed" id="video-embed" style="display: none;">
+          <!-- YouTube/Instagram embed will be loaded here -->
+        </div>
+      </div>
+      <div class="video-info">
+        <h3>Behind the Craftsmanship</h3>
+        <p>Discover the artistry and passion that goes into every piece we create. From design to delivery, we ensure perfection in every detail.</p>
+        <div class="video-stats">
+          <div class="stat">
+            <span class="stat-number">50K+</span>
+            <span class="stat-label">Happy Customers</span>
+          </div>
+          <div class="stat">
+            <span class="stat-number">1000+</span>
+            <span class="stat-label">Unique Designs</span>
+          </div>
+          <div class="stat">
+            <span class="stat-number">4.8★</span>
+            <span class="stat-label">Average Rating</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+9.2 Video Integration
+- Admin can add YouTube or Instagram video URL in WordPress Customizer
+- Video thumbnail auto-generated from video
+- Click to play with overlay
+- Responsive embed with proper aspect ratio
+9.3 JavaScript Function
+function playVideo() {
+  const videoUrl = 'YOUTUBE_OR_INSTAGRAM_URL_HERE'; // Get from WordPress options
+  const embedCode = `<iframe src="${videoUrl}" frameborder="0" allowfullscreen></iframe>`;
+  document.getElementById('video-embed').innerHTML = embedCode;
+  document.getElementById('video-embed').style.display = 'block';
+  document.getElementById('video-placeholder').style.display = 'none';
+}
+──────────────────────────────────────────────────
+10. SECTION 8: TRENDING PRODUCTS
+10.1 Structure
+<section class="trending-products section">
+  <div class="homepage-container">
+    <h2 class="section-title">Trending Now</h2>
+    <p class="section-subtitle">Our most loved pieces this season</p>
+    <div class="trending-carousel">
+      <div class="carousel-container">
+        <button class="carousel-prev" onclick="moveCarousel(-1)">
+          <i class="icon-chevron-left"></i>
+        </button>
+        <div class="carousel-track" id="trending-track">
+          <!-- Products loaded via AJAX from WooCommerce -->
+        </div>
+        <button class="carousel-next" onclick="moveCarousel(1)">
+          <i class="icon-chevron-right"></i>
+        </button>
+      </div>
+    </div>
+    <div class="trending-actions">
+      <a href="/shop/?filter=trending" class="btn btn-outline">View All Trending</a>
+    </div>
+  </div>
+</section>
+10.2 Product Card Template
+<div class="product-card">
+  <div class="product-image">
+    <img src="PRODUCT_IMAGE" alt="PRODUCT_NAME" width="300" height="300">
+    <div class="product-actions">
+      <button class="action-btn quick-view" onclick="quickView(PRODUCT_ID)">
+        <i class="icon-eye"></i>
+      </button>
+      <button class="action-btn wishlist" onclick="toggleWishlist(PRODUCT_ID)">
+        <i class="icon-heart"></i>
+      </button>
+    </div>
+  </div>
+  <div class="product-info">
+    <h3 class="product-title">PRODUCT_NAME</h3>
+    <div class="product-price">
+      <span class="current-price">₹CURRENT_PRICE</span>
+      <span class="original-price" style="display: none;">₹ORIGINAL_PRICE</span>
+    </div>
+    <div class="product-rating">
+      <div class="stars">STAR_RATING</div>
+      <span class="review-count">(REVIEW_COUNT)</span>
+    </div>
+    <button class="btn btn-primary btn-small add-to-cart" onclick="addToCart(PRODUCT_ID)">
+      Add to Cart
+    </button>
+  </div>
+</div>
+10.3 Features
+- Horizontal scroll carousel
+- Touch/swipe enabled on mobile
+- Products pulled from WooCommerce with "trending" tag
+- AJAX quick view modal
+- AJAX add to cart
+- Wishlist toggle
+──────────────────────────────────────────────────
+11. SECTION 9: FLASH SALE SECTION
+11.1 Structure
+<section class="flash-sale section" id="flash-sale-section" style="display: none;">
+  <div class="flash-sale-bg">
+    <div class="homepage-container">
+      <div class="flash-sale-header">
+        <div class="flash-icon">
+          <i class="icon-bolt"></i>
+        </div>
+        <div class="flash-titles">
+          <h2 class="flash-title">FLASH SALE</h2>
+          <p class="flash-subtitle">Limited time offer - Don't miss out!</p>
+        </div>
+        <div class="flash-timer" id="flash-timer">
+          <div class="timer-block">
+            <span class="timer-value" id="timer-hours">00</span>
+            <span class="timer-label">Hours</span>
+          </div>
+          <div class="timer-block">
+            <span class="timer-value" id="timer-minutes">00</span>
+            <span class="timer-label">Minutes</span>
+          </div>
+          <div class="timer-block">
+            <span class="timer-value" id="timer-seconds">00</span>
+            <span class="timer-label">Seconds</span>
+          </div>
+        </div>
+      </div>
+      <div class="flash-products">
+        <!-- Products loaded via AJAX when sale is active -->
+      </div>
+      <div class="flash-footer">
+        <a href="/flash-sale/" class="btn btn-primary btn-large">Shop All Sale Items</a>
+      </div>
+    </div>
+  </div>
+</section>
+11.2 Admin Control
+- WordPress Customizer option: "Enable Flash Sale"
+- Set sale start/end dates
+- Select products for sale
+- Set discount percentage
+- Section auto-shows/hides based on dates
+11.3 JavaScript Timer
+function startFlashTimer() {
+  const endDate = new Date('SALE_END_DATE').getTime();
+  const timer = setInterval(function() {
+    const now = new Date().getTime();
+    const distance = endDate - now;
+    if (distance < 0) {
+      clearInterval(timer);
+      document.getElementById('flash-sale-section').style.display = 'none';
+      return;
+    }
+    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+    document.getElementById('timer-hours').textContent = String(hours).padStart(2, '0');
+    document.getElementById('timer-minutes').textContent = String(minutes).padStart(2, '0');
+    document.getElementById('timer-seconds').textContent = String(seconds).padStart(2, '0');
+  }, 1000);
+}
+──────────────────────────────────────────────────
+12. SECTION 10: MATERIAL SELECTION
+12.1 Structure
+<section class="material-selection section-sm bg-light">
+  <div class="homepage-container">
+    <h2 class="section-title">Choose Your Style</h2>
+    <p class="section-subtitle">Premium materials for lasting elegance</p>
+    <div class="materials-grid">
+      <div class="material-card">
+        <div class="material-icon">
+          <div class="material-circle gold">
+            <img src="/assets/icons/gold.svg" alt="Gold" width="60" height="60">
+          </div>
+        </div>
+        <h3>Gold Plated</h3>
+        <p>18K gold plating over brass</p>
+        <a href="/shop/?material=gold" class="material-link">Shop Gold →</a>
+      </div>
+      <div class="material-card">
+        <div class="material-icon">
+          <div class="material-circle silver">
+            <img src="/assets/icons/silver.svg" alt="Silver" width="60" height="60">
+          </div>
+        </div>
+        <h3>Silver Plated</h3>
+        <p>925 silver plating over copper</p>
+        <a href="/shop/?material=silver" class="material-link">Shop Silver →</a>
+      </div>
+      <div class="material-card">
+        <div class="material-icon">
+          <div class="material-circle steel">
+            <img src="/assets/icons/steel.svg" alt="Steel" width="60" height="60">
+          </div>
+        </div>
+        <h3>Stainless Steel</h3>
+        <p>316L surgical steel</p>
+        <a href="/shop/?material=steel" class="material-link">Shop Steel →</a>
+      </div>
+    </div>
+  </div>
+</section>
+12.2 CSS Classes
+.materials-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; }
+.material-card { text-align: center; padding: 40px 30px; background: white; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); transition: all 0.3s; }
+.material-card:hover { transform: translateY(-10px); box-shadow: 0 12px 40px rgba(27,79,158,0.2); }
+.material-circle { width: 120px; height: 120px; margin: 0 auto 25px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+.material-circle.gold { background: linear-gradient(135deg, #FFD700, #FFA500); }
+.material-circle.silver { background: linear-gradient(135deg, #C0C0C0, #808080); }
+.material-circle.steel { background: linear-gradient(135deg, #718096, #4A5568); }
+.material-card h3 { font-size: 24px; font-weight: 600; color: #1A202C; margin-bottom: 10px; }
+.material-card p { font-size: 16px; color: #4A5568; margin-bottom: 25px; }
+.material-link { color: #1B4F9E; text-decoration: none; font-weight: 500; font-size: 16px; display: inline-flex; align-items: center; gap: 8px; transition: gap 0.3s; }
+.material-link:hover { gap: 15px; }
+──────────────────────────────────────────────────
+13. SECTIONS 11-19: COMING IN NEXT MESSAGE
+Due to length limits, I'll continue with the remaining 9 sections (Collections, Personalization, Smart Tags, More Categories, Delivery, Testimonials, Social Proof, Newsletter, Footer) in the next message.
+Each section will include:
+- Complete HTML structure
+- CSS specifications
+- Interactive features
+- Mobile responsiveness
+- Plugin dependencies
+──────────────────────────────────────────────────
+13. SECTION 11: COLLECTIONS SECTION
+13.1 Structure
+<section class="collections section">
+  <div class="homepage-container">
+    <h2 class="section-title">Featured Collections</h2>
+    <p class="section-subtitle">Curated sets for every occasion</p>
+    <div class="collections-grid">
+      <div class="collection-card">
+        <div class="collection-image">
+          <img src="/uploads/collections/latest.jpg" alt="Latest Collection" width="400" height="250">
+          <div class="collection-overlay">
+            <span class="collection-badge">New</span>
+          </div>
+        </div>
+        <div class="collection-content">
+          <h3>Latest Collection</h3>
+          <p>Our newest designs for the modern you</p>
+          <div class="collection-stats">
+            <span>25 Products</span>
+            <span>From ₹999</span>
+          </div>
+          <a href="/collections/latest/" class="btn btn-outline">Explore Collection</a>
+        </div>
+      </div>
+      <div class="collection-card">
+        <div class="collection-image">
+          <img src="/uploads/collections/couple.jpg" alt="Couple Collection" width="400" height="250">
+        </div>
+        <div class="collection-content">
+          <h3>Couple Collection</h3>
+          <p>Matching pieces that celebrate love</p>
+          <div class="collection-stats">
+            <span>18 Products</span>
+            <span>From ₹1,499</span>
+          </div>
+          <a href="/collections/couple/" class="btn btn-outline">Explore Collection</a>
+        </div>
+      </div>
+      <div class="collection-card">
+        <div class="collection-image">
+          <img src="/uploads/collections/gift.jpg" alt="Gift Collection" width="400" height="250">
+        </div>
+        <div class="collection-content">
+          <h3>Gift Collection</h3>
+          <p>Thoughtful presents for special moments</p>
+          <div class="collection-stats">
+            <span>32 Products</span>
+            <span>From ₹799</span>
+          </div>
+          <a href="/collections/gifts/" class="btn btn-outline">Explore Collection</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+13.2 CSS Classes
+.collections-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; }
+.collection-card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.1); transition: all 0.3s; }
+.collection-card:hover { transform: translateY(-5px); box-shadow: 0 8px 30px rgba(27,79,158,0.15); }
+.collection-image { position: relative; height: 250px; }
+.collection-image img { width: 100%; height: 100%; object-fit: cover; }
+.collection-overlay { position: absolute; top: 20px; right: 20px; }
+.collection-badge { background: #E53E3E; color: white; padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+.collection-content { padding: 30px; }
+.collection-content h3 { font-size: 22px; font-weight: 600; color: #1A202C; margin-bottom: 10px; }
+.collection-content p { font-size: 16px; color: #4A5568; margin-bottom: 20px; }
+.collection-stats { display: flex; gap: 20px; margin-bottom: 25px; font-size: 14px; color: #718096; }
+──────────────────────────────────────────────────
+14. SECTION 12: PERSONALIZATION SECTION
+14.1 Structure
+<section class="personalization section-sm bg-light">
+  <div class="homepage-container">
+    <div class="personalization-content">
+      <div class="personalization-text">
+        <h2 class="section-title">Make It Yours</h2>
+        <p class="section-subtitle">Personalised jewellery that tells your story</p>
+        <div class="personalization-features">
+          <div class="feature-item">
+            <div class="feature-icon">
+              <i class="icon-engrave"></i>
+            </div>
+            <div class="feature-text">
+              <h4>Custom Engraving</h4>
+              <p>Add names, dates, or special messages</p>
+            </div>
+          </div>
+          <div class="feature-item">
+            <div class="feature-icon">
+              <i class="icon-photo"></i>
+            </div>
+            <div class="feature-text">
+              <h4>Photo Gifts</h4>
+              <p>Upload photos for unique keepsakes</p>
+            </div>
+          </div>
+          <div class="feature-item">
+            <div class="feature-icon">
+              <i class="icon-gift"></i>
+            </div>
+            <div class="feature-text">
+              <h4>Gift Wrapping</h4>
+              <p>Premium packaging with personal messages</p>
+            </div>
+          </div>
+        </div>
+        <div class="personalization-actions">
+          <a href="/custom-gifts/" class="btn btn-primary btn-large">Start Customising</a>
+          <a href="/personalisation-process/" class="btn btn-outline">How It Works</a>
+        </div>
+      </div>
+      <div class="personalization-image">
+        <img src="/uploads/personalization/showcase.jpg" alt="Personalised Jewellery" width="500" height="400">
+        <div class="personalization-examples">
+          <div class="example-item">
+            <img src="/uploads/examples/engraved-ring.jpg" alt="Engraved Ring" width="80" height="80">
+          </div>
+          <div class="example-item">
+            <img src="/uploads/examples/photo-pendant.jpg" alt="Photo Pendant" width="80" height="80">
+          </div>
+          <div class="example-item">
+            <img src="/uploads/examples/custom-bracelet.jpg" alt="Custom Bracelet" width="80" height="80">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+14.2 CSS Classes
+.personalization-content { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
+.personalization-features { margin: 40px 0; }
+.feature-item { display: flex; align-items: center; gap: 20px; margin-bottom: 30px; }
+.feature-icon { width: 60px; height: 60px; background: linear-gradient(135deg, #1B4F9E, #2E7CD6); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 24px; }
+.feature-text h4 { font-size: 18px; font-weight: 600; color: #1A202C; margin-bottom: 5px; }
+.feature-text p { font-size: 14px; color: #4A5568; }
+.personalization-image { position: relative; }
+.personalization-image img { width: 100%; height: auto; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.15); }
+.personalization-examples { position: absolute; bottom: -20px; right: -20px; display: flex; gap: 10px; }
+.example-item { width: 80px; height: 80px; border-radius: 50%; overflow: hidden; border: 4px solid white; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+.example-item img { width: 100%; height: 100%; object-fit: cover; }
+──────────────────────────────────────────────────
+15. SECTION 13: SMART FEATURE SECTION
+15.1 Structure
+<section class="smart-feature section">
+  <div class="homepage-container">
+    <div class="smart-content">
+      <div class="smart-visual">
+        <div class="phone-mockup">
+          <div class="phone-screen">
+            <img src="/assets/smart-tag-scan.jpg" alt="QR Code Scan" width="300" height="600">
+          </div>
+        </div>
+        <div class="tag-mockup">
+          <img src="/assets/smart-tag-physical.jpg" alt="Smart Pet Tag" width="200" height="200">
+        </div>
+      </div>
+      <div class="smart-text">
+        <div class="smart-badge">
+          <i class="icon-shield"></i>
+          <span>Smart Protection</span>
+        </div>
+        <h2 class="section-title">Smart Pet Tags with QR Technology</h2>
+        <p class="section-subtitle">Advanced protection for your beloved pets</p>
+        <div class="smart-features">
+          <div class="smart-feature-item">
+            <div class="smart-feature-icon">
+              <i class="icon-qrcode"></i>
+            </div>
+            <div class="smart-feature-text">
+              <h4>QR Code Scanning</h4>
+              <p>Anyone can scan to see your pet's profile instantly</p>
+            </div>
+          </div>
+          <div class="smart-feature-item">
+            <div class="smart-feature-icon">
+              <i class="icon-map"></i>
+            </div>
+            <div class="smart-feature-text">
+              <h4>Location Tracking</h4>
+              <p>Get notified when your pet's tag is scanned anywhere</p>
+            </div>
+          </div>
+          <div class="smart-feature-item">
+            <div class="smart-feature-icon">
+              <i class="icon-heart"></i>
+            </div>
+            <div class="smart-feature-text">
+              <h4>Medical Information</h4>
+              <p>Store vet details, allergies, and emergency contacts</p>
+            </div>
+          </div>
+        </div>
+        <div class="smart-pricing">
+          <div class="price-card">
+            <h5>Basic</h5>
+            <span class="price">Free</span>
+            <span>With tag purchase</span>
+          </div>
+          <div class="price-card featured">
+            <h5>Standard</h5>
+            <span class="price">₹249/year</span>
+            <span>Full features</span>
+          </div>
+          <div class="price-card">
+            <h5>Corporate</h5>
+            <span class="price">₹1499/year</span>
+            <span>25 tags included</span>
+          </div>
+        </div>
+        <div class="smart-actions">
+          <a href="/smart-tags/" class="btn btn-primary btn-large">Explore Smart Tags</a>
+          <a href="/smart-tags/#demo" class="btn btn-outline">See Demo</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+15.2 CSS Classes
+.smart-content { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+.smart-visual { position: relative; }
+.phone-mockup { position: relative; width: 300px; height: 600px; margin: 0 auto; }
+.phone-screen { width: 100%; height: 100%; background: #000; border-radius: 30px; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+.tag-mockup { position: absolute; bottom: -30px; right: -50px; width: 200px; height: 200px; background: white; border-radius: 50%; padding: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); }
+.smart-badge { display: inline-flex; align-items: center; gap: 10px; background: #E6FFFA; color: #047857; padding: 8px 16px; border-radius: 20px; font-size: 14px; font-weight: 600; margin-bottom: 20px; }
+.smart-features { margin: 40px 0; }
+.smart-feature-item { display: flex; align-items: center; gap: 20px; margin-bottom: 25px; }
+.smart-feature-icon { width: 50px; height: 50px; background: #F0F9FF; color: #1B4F9E; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+.smart-pricing { display: flex; gap: 20px; margin: 40px 0; }
+.price-card { flex: 1; text-align: center; padding: 25px 15px; background: #F8FAFC; border-radius: 12px; border: 2px solid transparent; transition: all 0.3s; }
+.price-card.featured { border-color: #1B4F9E; background: white; box-shadow: 0 4px 20px rgba(27,79,158,0.1); }
+.price-card h5 { font-size: 16px; color: #4A5568; margin-bottom: 10px; }
+.price-card .price { font-size: 28px; font-weight: 700; color: #1A202C; margin-bottom: 5px; }
+.price-card span:last-child { font-size: 14px; color: #718096; }
+──────────────────────────────────────────────────
+16. SECTION 14: MORE CATEGORIES GRID
+16.1 Structure
+<section class="more-categories section-sm bg-light">
+  <div class="homepage-container">
+    <h2 class="section-title">Explore More Categories</h2>
+    <p class="section-subtitle">Discover our complete range</p>
+    <div class="categories-flex">
+      <div class="category-item">
+        <div class="category-thumb">
+          <img src="/uploads/categories/chains.jpg" alt="Chains" width="150" height="150">
+        </div>
+        <h4>Chains</h4>
+        <span>120 Products</span>
+      </div>
+      <div class="category-item">
+        <div class="category-thumb">
+          <img src="/uploads/categories/rings.jpg" alt="Rings" width="150" height="150">
+        </div>
+        <h4>Rings</h4>
+        <span>85 Products</span>
+      </div>
+      <div class="category-item">
+        <div class="category-thumb">
+          <img src="/uploads/categories/bracelets.jpg" alt="Bracelets" width="150" height="150">
+        </div>
+        <h4>Bracelets</h4>
+        <span>95 Products</span>
+      </div>
+      <div class="category-item">
+        <div class="category-thumb">
+          <img src="/uploads/categories/earrings.jpg" alt="Earrings" width="150" height="150">
+        </div>
+        <h4>Earrings</h4>
+        <span>110 Products</span>
+      </div>
+      <div class="category-item">
+        <div class="category-thumb">
+          <img src="/uploads/categories/dog-tags.jpg" alt="Dog Tags" width="150" height="150">
+        </div>
+        <h4>Dog Tags</h4>
+        <span>15 Products</span>
+      </div>
+      <div class="category-item">
+        <div class="category-thumb">
+          <img src="/uploads/categories/travel-tags.jpg" alt="Travel Tags" width="150" height="150">
+        </div>
+        <h4>Travel Tags</h4>
+        <span>8 Products</span>
+      </div>
+      <div class="category-item">
+        <div class="category-thumb">
+          <img src="/uploads/categories/kids-tags.jpg" alt="Kids Tags" width="150" height="150">
+        </div>
+        <h4>Kids Safety Tags</h4>
+        <span>6 Products</span>
+      </div>
+      <div class="category-item">
+        <div class="category-thumb">
+          <img src="/uploads/categories/medical-tags.jpg" alt="Medical Tags" width="150" height="150">
+        </div>
+        <h4>Medical Alert Tags</h4>
+        <span>5 Products</span>
+      </div>
+    </div>
+    <div class="categories-footer">
+      <a href="/categories/" class="btn btn-outline">View All Categories</a>
+    </div>
+  </div>
+</section>
+16.2 CSS Classes
+.categories-flex { display: flex; flex-wrap: wrap; gap: 30px; justify-content: center; margin-bottom: 40px; }
+.category-item { text-align: center; width: 150px; cursor: pointer; transition: all 0.3s; }
+.category-item:hover { transform: translateY(-5px); }
+.category-thumb { width: 150px; height: 150px; border-radius: 12px; overflow: hidden; margin-bottom: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+.category-thumb img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s; }
+.category-item:hover .category-thumb img { transform: scale(1.1); }
+.category-item h4 { font-size: 16px; font-weight: 600; color: #1A202C; margin-bottom: 5px; }
+.category-item span { font-size: 14px; color: #718096; }
+──────────────────────────────────────────────────
+17. SECTION 15: DELIVERY HIGHLIGHTS
+17.1 Structure
+<section class="delivery-highlights section">
+  <div class="homepage-container">
+    <div class="highlights-grid">
+      <div class="highlight-item">
+        <div class="highlight-icon">
+          <i class="icon-truck"></i>
+        </div>
+        <h4>Free Shipping</h4>
+        <p>On all orders above ₹999</p>
+      </div>
+      <div class="highlight-item">
+        <div class="highlight-icon">
+          <i class="icon-money"></i>
+        </div>
+        <h4>COD Available</h4>
+        <p>Cash on delivery nationwide</p>
+      </div>
+      <div class="highlight-item">
+        <div class="highlight-icon">
+          <i class="icon-refresh"></i>
+        </div>
+        <h4>Easy Returns</h4>
+        <p>7-day return policy</p>
+      </div>
+      <div class="highlight-item">
+        <div class="highlight-icon">
+          <i class="icon-shield"></i>
+        </div>
+        <h4>Secure Payment</h4>
+        <p>100% secure transactions</p>
+      </div>
+    </div>
+  </div>
+</section>
+17.2 CSS Classes
+.highlights-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 40px; }
+.highlight-item { text-align: center; padding: 30px 20px; }
+.highlight-icon { width: 80px; height: 80px; margin: 0 auto 20px; background: linear-gradient(135deg, #1B4F9E, #2E7CD6); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 32px; }
+.highlight-item h4 { font-size: 18px; font-weight: 600; color: #1A202C; margin-bottom: 10px; }
+.highlight-item p { font-size: 14px; color: #4A5568; }
+──────────────────────────────────────────────────
+18. SECTION 16: TESTIMONIALS
+18.1 Structure
+<section class="testimonials section-sm bg-light">
+  <div class="homepage-container">
+    <h2 class="section-title">What Our Customers Say</h2>
+    <p class="section-subtitle">Real stories from real customers</p>
+    <div class="testimonials-carousel">
+      <div class="testimonial-track" id="testimonial-track">
+        <div class="testimonial-card active">
+          <div class="testimonial-content">
+            <div class="testimonial-rating">
+              <i class="icon-star filled"></i>
+              <i class="icon-star filled"></i>
+              <i class="icon-star filled"></i>
+              <i class="icon-star filled"></i>
+              <i class="icon-star filled"></i>
+            </div>
+            <p class="testimonial-text">
+              "Absolutely love the quality of jewellery! The custom engraving was perfect for my anniversary gift. Customer service was exceptional too."
+            </p>
+            <div class="testimonial-author">
+              <img src="/uploads/testimonials/user1.jpg" alt="Priya Sharma" width="50" height="50">
+              <div class="author-info">
+                <h5>Priya Sharma</h5>
+                <span>Mumbai, Maharashtra</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <div class="testimonial-content">
+            <div class="testimonial-rating">
+              <i class="icon-star filled"></i>
+              <i class="icon-star filled"></i>
+              <i class="icon-star filled"></i>
+              <i class="icon-star filled"></i>
+              <i class="icon-star"></i>
+            </div>
+            <p class="testimonial-text">
+              "The Smart Pet Tag saved my dog! Someone found him and scanned the QR code. I got an instant notification with their location. Brilliant product!"
+            </p>
+            <div class="testimonial-author">
+              <img src="/uploads/testimonials/user2.jpg" alt="Rahul Verma" width="50" height="50">
+              <div class="author-info">
+                <h5>Rahul Verma</h5>
+                <span>Bengaluru, Karnataka</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <div class="testimonial-content">
+            <div class="testimonial-rating">
+              <i class="icon-star filled"></i>
+              <i class="icon-star filled"></i>
+              <i class="icon-star filled"></i>
+              <i class="icon-star filled"></i>
+              <i class="icon-star filled"></i>
+            </div>
+            <p class="testimonial-text">
+              "Beautiful designs at amazing prices. The gift wrapping was so elegant. My wife loved her birthday present. Will definitely order again!"
+            </p>
+            <div class="testimonial-author">
+              <img src="/uploads/testimonials/user3.jpg" alt="Amit Patel" width="50" height="50">
+              <div class="author-info">
+                <h5>Amit Patel</h5>
+                <span>Ahmedabad, Gujarat</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-controls">
+        <button class="testimonial-prev" onclick="changeTestimonial(-1)">
+          <i class="icon-chevron-left"></i>
+        </button>
+        <button class="testimonial-next" onclick="changeTestimonial(1)">
+          <i class="icon-chevron-right"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+18.2 CSS Classes
+.testimonials-carousel { position: relative; max-width: 800px; margin: 0 auto; }
+.testimonial-track { position: relative; height: 300px; }
+.testimonial-card { position: absolute; width: 100%; opacity: 0; transition: opacity 0.5s; }
+.testimonial-card.active { opacity: 1; }
+.testimonial-content { background: white; padding: 40px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); text-align: center; }
+.testimonial-rating { color: #F6E05E; font-size: 20px; margin-bottom: 20px; }
+.testimonial-text { font-size: 18px; color: #4A5568; line-height: 1.6; margin-bottom: 30px; font-style: italic; }
+.testimonial-author { display: flex; align-items: center; justify-content: center; gap: 15px; }
+.testimonial-author img { width: 50px; height: 50px; border-radius: 50%; }
+.author-info h5 { font-size: 16px; font-weight: 600; color: #1A202C; margin-bottom: 2px; }
+.author-info span { font-size: 14px; color: #718096; }
+──────────────────────────────────────────────────
+19. SECTION 17: SOCIAL PROOF SECTION
+19.1 Structure
+<section class="social-proof section">
+  <div class="homepage-container">
+    <h2 class="section-title">Join Our Community</h2>
+    <p class="section-subtitle">Follow us on Instagram for daily inspiration</p>
+    <div class="instagram-grid">
+      <div class="instagram-item">
+        <img src="/uploads/instagram/post1.jpg" alt="Instagram Post 1" width="300" height="300">
+        <div class="instagram-overlay">
+          <div class="instagram-stats">
+            <span><i class="icon-heart"></i> 234</span>
+            <span><i class="icon-message"></i> 12</span>
+          </div>
+        </div>
+      </div>
+      <div class="instagram-item">
+        <img src="/uploads/instagram/post2.jpg" alt="Instagram Post 2" width="300" height="300">
+        <div class="instagram-overlay">
+          <div class="instagram-stats">
+            <span><i class="icon-heart"></i> 189</span>
+            <span><i class="icon-message"></i> 8</span>
+          </div>
+        </div>
+      </div>
+      <div class="instagram-item">
+        <img src="/uploads/instagram/post3.jpg" alt="Instagram Post 3" width="300" height="300">
+        <div class="instagram-overlay">
+          <div class="instagram-stats">
+            <span><i class="icon-heart"></i> 456</span>
+            <span><i class="icon-message"></i> 23</span>
+          </div>
+        </div>
+      </div>
+      <div class="instagram-item">
+        <img src="/uploads/instagram/post4.jpg" alt="Instagram Post 4" width="300" height="300">
+        <div class="instagram-overlay">
+          <div class="instagram-stats">
+            <span><i class="icon-heart"></i> 321</span>
+            <span><i class="icon-message"></i> 15</span>
+          </div>
+        </div>
+      </div>
+      <div class="instagram-item">
+        <img src="/uploads/instagram/post5.jpg" alt="Instagram Post 5" width="300" height="300">
+        <div class="instagram-overlay">
+          <div class="instagram-stats">
+            <span><i class="icon-heart"></i> 567</span>
+            <span><i class="icon-message"></i> 34</span>
+          </div>
+        </div>
+      </div>
+      <div class="instagram-item">
+        <img src="https://instagram.com/p/EXAMPLE/media" alt="Latest Instagram Post" width="300" height="300">
+        <div class="instagram-overlay">
+          <div class="instagram-stats">
+            <span><i class="icon-heart"></i> Live</span>
+            <span><i class="icon-external"></i></span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="social-actions">
+      <a href="https://instagram.com/themengift" target="_blank" class="btn btn-primary btn-large">
+        <i class="icon-instagram"></i>
+        Follow @themengift
+      </a>
+      <div class="social-stats">
+        <span><strong>50K+</strong> Followers</span>
+        <span><strong>#THEMENGIFT</strong> trending</span>
+      </div>
+    </div>
+  </div>
+</section>
+19.2 Features
+- Static images for first 5 posts (upload via WordPress media)
+- 6th post pulls latest from Instagram using basic embed
+- Hover effect shows likes/comments
+- Images should be square 300x300px
+- Mobile: 2 columns on tablet, 1 column on mobile
+──────────────────────────────────────────────────
+20. SECTION 18: NEWSLETTER SIGNUP
+20.1 Structure
+<section class="newsletter section-sm bg-light">
+  <div class="homepage-container">
+    <div class="newsletter-content">
+      <div class="newsletter-text">
+        <h2 class="section-title">Stay in Style</h2>
+        <p class="section-subtitle">Get exclusive offers, new arrivals, and style tips delivered to your inbox</p>
+        <div class="newsletter-benefits">
+          <div class="benefit-item">
+            <i class="icon-check"></i>
+            <span>10% off on your first order</span>
+          </div>
+          <div class="benefit-item">
+            <i class="icon-check"></i>
+            <span>Early access to sales</span>
+          </div>
+          <div class="benefit-item">
+            <i class="icon-check"></i>
+            <span>Personalised recommendations</span>
+          </div>
+        </div>
+      </div>
+      <div class="newsletter-form">
+        <form id="newsletter-form" onsubmit="subscribeNewsletter(event)">
+          <div class="form-group">
+            <input type="email" id="newsletter-email" placeholder="Enter your email address" required>
+            <button type="submit" class="btn btn-primary btn-large">
+              Subscribe Now
+            </button>
+          </div>
+          <p class="form-note">
+            <i class="icon-lock"></i>
+            We respect your privacy. Unsubscribe anytime.
+          </p>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+20.2 JavaScript
+function subscribeNewsletter(event) {
+  event.preventDefault();
+  const email = document.getElementById('newsletter-email').value;
+  // AJAX call to WordPress
+  fetch('/wp-admin/admin-ajax.php', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: `action=subscribe_newsletter&email=${encodeURIComponent(email)}`
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.success) {
+      // Redirect to thank you page
+      window.location.href = '/newsletter-thank-you/?email=' + encodeURIComponent(email);
+    } else {
+      alert(data.message || 'Something went wrong. Please try again.');
+    }
+  });
+}
+20.3 WordPress PHP Handler
+// Add to functions.php
+add_action('wp_ajax_subscribe_newsletter', 'handle_newsletter_subscription');
+add_action('wp_ajax_nopriv_subscribe_newsletter', 'handle_newsletter_subscription');
+function handle_newsletter_subscription() {
+  $email = sanitize_email($_POST['email']);
+  if (!is_email($email)) {
+    wp_send_json_error(['message' => 'Invalid email address']);
+  }
+  // Save to database or email service
+  global $wpdb;
+  $table_name = $wpdb->prefix . 'newsletter_subscribers';
+  $result = $wpdb->insert(
+    $table_name,
+    [
+      'email' => $email,
+      'status' => 'active',
+      'created_at' => current_time('mysql')
+    ],
+    ['%s', '%s', '%s']
+  );
+  if ($result) {
+    wp_send_json_success(['message' => 'Successfully subscribed!']);
+  } else {
+    wp_send_json_error(['message' => 'Subscription failed. Please try again.']);
+  }
+}
+──────────────────────────────────────────────────
+21. SECTION 19: FOOTER
+21.1 Structure
+<footer class="main-footer">
+  <div class="footer-top">
+    <div class="homepage-container">
+      <div class="footer-grid">
+        <div class="footer-column">
+          <div class="footer-logo">
+            <img src="/assets/logo-white.svg" alt="THEMENGIFT" width="150" height="35">
+          </div>
+          <p class="footer-description">
+            Premium artificial jewellery, custom gifts, and smart pet tags. 
+            Making every moment special with quality and care.
+          </p>
+          <div class="footer-social">
+            <a href="https://instagram.com/themengift" target="_blank" title="Instagram">
+              <i class="icon-instagram"></i>
+            </a>
+            <a href="https://facebook.com/themengift" target="_blank" title="Facebook">
+              <i class="icon-facebook"></i>
+            </a>
+            <a href="https://youtube.com/themengift" target="_blank" title="YouTube">
+              <i class="icon-youtube"></i>
+            </a>
+            <a href="https://wa.me/919876543210" target="_blank" title="WhatsApp">
+              <i class="icon-whatsapp"></i>
+            </a>
+          </div>
+        </div>
+        <div class="footer-column">
+          <h4>Quick Links</h4>
+          <ul class="footer-links">
+            <li><a href="/about-us/">About Us</a></li>
+            <li><a href="/contact-us/">Contact Us</a></li>
+            <li><a href="/blog/">Blog</a></li>
+            <li><a href="/careers/">Careers</a></li>
+            <li><a href="/press/">Press</a></li>
+          </ul>
+        </div>
+        <div class="footer-column">
+          <h4>Shop</h4>
+          <ul class="footer-links">
+            <li><a href="/jewellery/">All Jewellery</a></li>
+            <li><a href="/custom-gifts/">Custom Gifts</a></li>
+            <li><a href="/smart-tags/">Smart Tags</a></li>
+            <li><a href="/corporate-gifting/">Corporate Gifting</a></li>
+            <li><a href="/gift-cards/">Gift Cards</a></li>
+          </ul>
+        </div>
+        <div class="footer-column">
+          <h4>Customer Service</h4>
+          <ul class="footer-links">
+            <li><a href="/my-account/">My Account</a></li>
+            <li><a href="/order-tracking/">Track Order</a></li>
+            <li><a href="/returns-exchanges/">Returns & Exchanges</a></li>
+            <li><a href="/shipping-policy/">Shipping Policy</a></li>
+            <li><a href="/size-guide/">Size Guide</a></li>
+          </ul>
+        </div>
+        <div class="footer-column">
+          <h4>Policies</h4>
+          <ul class="footer-links">
+            <li><a href="/privacy-policy/">Privacy Policy</a></li>
+            <li><a href="/terms-conditions/">Terms & Conditions</a></li>
+            <li><a href="/refund-policy/">Refund Policy</a></li>
+            <li><a href="/cookie-policy/">Cookie Policy</a></li>
+            <li><a href="/faq/">FAQ</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="homepage-container">
+      <div class="footer-bottom-content">
+        <div class="footer-copyright">
+          <p>&copy; 2026 THEMENGIFT. All rights reserved.</p>
+        </div>
+        <div class="footer-payments">
+          <span>We Accept:</span>
+          <img src="/assets/payments.svg" alt="Payment Methods" width="200" height="30">
+        </div>
+        <div class="footer-certified">
+          <img src="/assets/gst-certified.svg" alt="GST Certified" width="80" height="30">
+          <img src="/assets/ssl-secure.svg" alt="SSL Secure" width="80" height="30">
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+21.2 CSS Classes
+.main-footer { background: #1A202C; color: white; }
+.footer-top { padding: 60px 0; }
+.footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 1fr; gap: 40px; }
+.footer-column h4 { font-size: 18px; font-weight: 600; margin-bottom: 20px; color: white; }
+.footer-description { font-size: 14px; line-height: 1.6; margin-bottom: 25px; color: #CBD5E0; }
+.footer-social { display: flex; gap: 15px; }
+.footer-social a { width: 40px; height: 40px; background: rgba(255,255,255,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; transition: all 0.3s; }
+.footer-social a:hover { background: #1B4F9E; transform: translateY(-2px); }
+.footer-links { list-style: none; padding: 0; }
+.footer-links li { margin-bottom: 12px; }
+.footer-links a { color: #CBD5E0; text-decoration: none; font-size: 14px; transition: color 0.3s; }
+.footer-links a:hover { color: white; }
+.footer-bottom { background: #0F1419; padding: 20px 0; border-top: 1px solid #2D3748; }
+.footer-bottom-content { display: flex; justify-content: space-between; align-items: center; }
+.footer-copyright p { font-size: 14px; color: #718096; margin: 0; }
+.footer-payments { display: flex; align-items: center; gap: 15px; }
+.footer-payments span { font-size: 14px; color: #718096; }
+.footer-certified { display: flex; gap: 15px; }
+──────────────────────────────────────────────────
+22. MOBILE RESPONSIVENESS
+22.1 Breakpoints
+- Desktop: 1200px and above
+- Tablet: 768px - 1199px
+- Mobile: Below 768px
+22.2 Mobile Adjustments
+@media (max-width: 1199px) {
+  .footer-grid { grid-template-columns: 2fr 1fr 1fr; }
+  .footer-column:last-child { display: none; }
+}
+@media (max-width: 767px) {
+  .section { padding: 40px 0; }
+  .section-lg { padding: 60px 0; }
+  /* Header */
+  .header-content { flex-direction: column; gap: 20px; }
+  .search-bar { width: 100%; }
+  /* Hero */
+  .slide-content { padding-left: 20px; }
+  .slide-title { font-size: 32px; }
+  /* Grid adjustments */
+  .category-grid { grid-template-columns: 1fr; }
+  .emotion-grid { grid-template-columns: repeat(2, 1fr); }
+  .materials-grid { grid-template-columns: 1fr; }
+  .collections-grid { grid-template-columns: 1fr; }
+  .highlights-grid { grid-template-columns: repeat(2, 1fr); }
+  /* Footer */
+  .footer-grid { grid-template-columns: 1fr; gap: 30px; }
+  .footer-bottom-content { flex-direction: column; gap: 20px; text-align: center; }
+}
+──────────────────────────────────────────────────
+23. DOCUMENT SUMMARY
+Document 4 covers:
+- Complete specifications for all 19 homepage sections
+- HTML structure for each section
+- CSS classes and styling rules
+- JavaScript interactions where needed
+- Mobile responsiveness guidelines
+- Plugin dependencies (WooCommerce, YITH Wishlist, etc.)
+- Image specifications and Canva requirements
+- Admin controls for dynamic content
+Next Document: Document 5 — Shop, Category & Product Pages
+THEMENGIFT • themengift.com • Document 4 of 15
+Premium Jewellery • Custom Gifts • Smart Pet Tags • Made in India

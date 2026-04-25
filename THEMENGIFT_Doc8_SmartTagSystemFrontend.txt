@@ -1,0 +1,2357 @@
+THEMENGIFT
+themengift.com
+Premium Jewellery  •  Custom Gifts  •  Smart Pet Tags  •  Made in India
+WINDSURF AI AGENT BUILD DOCUMENT
+DOCUMENT 8 OF 15
+Smart Tag System Frontend
+Complete Public Scan Interface & Location Tracking System
+──────────────────────────────────────────────────
+1. HOW TO READ THIS DOCUMENT
+This document defines the complete Smart Tag frontend system that users interact with when scanning QR codes. It includes:
+- Public scan landing page with pet information
+- Location tracking (IP geolocation, GPS, device fingerprinting)
+- Contact form for reaching pet owners
+- Lost pet reporting and found pet alerts
+- Anonymous scanning options
+- Mobile app integration points
+- Emergency contact features
+The agent must implement this system with focus on accessibility, mobile optimization, and privacy compliance.
+──────────────────────────────────────────────────
+2. SMART TAG SYSTEM ARCHITECTURE
+2.1 URL Structure
+// Smart Tag URL Structure
+// Primary: themengift.com/tag/{tag_code}/
+// Alternative: themengift.com/scan/{tag_code}/
+// Short URL: tmg.in/{tag_code}/
+// Example URLs:
+// https://themengift.com/tag/TMG001234/
+// https://themengift.com/scan/TMG001234/
+// https://tmg.in/TMG001234/
+2.2 Global CSS Variables for Smart Tags
+:root {
+  /* Smart Tag Colors */
+  --tag-primary: #1B4F9E;
+  --tag-success: #38A169;
+  --tag-warning: #D69E2E;
+  --tag-danger: #E53E3E;
+  --tag-info: #4299E1;
+  /* Emergency Colors */
+  --emergency-bg: #FED7D7;
+  --emergency-border: #FC8181;
+  --emergency-text: #C53030;
+  /* Status Colors */
+  --status-active: #38A169;
+  --status-lost: #E53E3E;
+  --status-inactive: #718096;
+  /* Mobile Optimizations */
+  --mobile-max-width: 480px;
+  --touch-target-size: 44px;
+}
+──────────────────────────────────────────────────
+3. PUBLIC SCAN LANDING PAGE
+3.1 Main Scan Page Structure
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Tag - {{pet_name}} | THEMENGIFT</title>
+  <meta name="description" content="Found a pet with Smart Tag {{tag_code}}. View owner information and help reunite them.">
+  <!-- Open Graph for Social Sharing -->
+  <meta property="og:title" content="Found Pet - {{pet_name}}">
+  <meta property="og:description" content="Help reunite this pet with their owner">
+  <meta property="og:image" content="{{pet_image}}">
+  <meta property="og:url" content="{{current_url}}">
+  <!-- Mobile App Deep Link -->
+  <meta property="al:android:url" content="themengift://tag/{{tag_code}}" />
+  <meta property="al:android:package" content="com.themengift.app" />
+  <meta property="al:ios:url" content="themengift://tag/{{tag_code}}" />
+  <!-- Emergency Contact Meta -->
+  <meta name="theme-color" content="#1B4F9E">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+</head>
+<body class="scan-page">
+  <!-- Loading Screen -->
+  <div class="loading-screen" id="loading-screen">
+    <div class="loading-content">
+      <div class="loading-spinner"></div>
+      <p>Loading pet information...</p>
+    </div>
+  </div>
+  <!-- Error Screen -->
+  <div class="error-screen" id="error-screen" style="display: none;">
+    <div class="error-content">
+      <div class="error-icon">
+        <i class="icon-alert-circle"></i>
+      </div>
+      <h2>Tag Not Found</h2>
+      <p>This Smart Tag is not registered or has been deactivated.</p>
+      <div class="error-actions">
+        <button class="btn btn-primary" onclick="reportFoundPet()">
+          Report Found Pet
+        </button>
+        <a href="/" class="btn btn-outline">
+          Go to Homepage
+        </a>
+      </div>
+    </div>
+  </div>
+  <!-- Main Content -->
+  <div class="scan-container" id="scan-container" style="display: none;">
+    <!-- Emergency Banner (if pet is lost) -->
+    <div class="emergency-banner" id="emergency-banner" style="display: none;">
+      <div class="banner-content">
+        <div class="emergency-icon">
+          <i class="icon-alert-triangle"></i>
+        </div>
+        <div class="emergency-text">
+          <h2>⚠️ LOST PET</h2>
+          <p>This pet has been reported as lost. Please contact the owner immediately!</p>
+        </div>
+      </div>
+    </div>
+    <!-- Pet Information Card -->
+    <div class="pet-card">
+      <div class="pet-header">
+        <div class="pet-avatar">
+          <img src="{{pet_image}}" alt="{{pet_name}}" id="pet-image">
+          <div class="pet-status status-{{status}}" id="pet-status">
+            {{status_text}}
+          </div>
+        </div>
+        <div class="pet-basic-info">
+          <h1 class="pet-name">{{pet_name}}</h1>
+          <div class="pet-details">
+            <span class="pet-type">{{pet_type}}</span>
+            <span class="pet-breed">{{breed}}</span>
+            <span class="pet-age">{{age}}</span>
+          </div>
+          <div class="tag-info">
+            <span class="tag-code">Tag: {{tag_code}}</span>
+            <span class="scan-time">Scanned just now</span>
+          </div>
+        </div>
+      </div>
+      <!-- Quick Actions -->
+      <div class="quick-actions">
+        <button class="action-btn primary" onclick="contactOwner()" id="contact-btn">
+          <i class="icon-phone"></i>
+          Contact Owner
+        </button>
+        <button class="action-btn secondary" onclick="shareLocation()" id="share-location-btn">
+          <i class="icon-map-pin"></i>
+          Share Location
+        </button>
+        <button class="action-btn emergency" onclick="emergencyContact()" id="emergency-btn" style="display: none;">
+          <i class="icon-alert-triangle"></i>
+          Emergency
+        </button>
+      </div>
+    </div>
+    <!-- Tab Navigation -->
+    <div class="tab-navigation">
+      <button class="tab-btn active" data-tab="about" onclick="switchTab('about')">
+        About
+      </button>
+      <button class="tab-btn" data-tab="medical" onclick="switchTab('medical')">
+        Medical Info
+      </button>
+      <button class="tab-btn" data-tab="owner" onclick="switchTab('owner')">
+        Owner Info
+      </button>
+      <button class="tab-btn" data-tab="help" onclick="switchTab('help')">
+        How to Help
+      </button>
+    </div>
+    <!-- Tab Content -->
+    <div class="tab-content">
+      <!-- About Tab -->
+      <div class="tab-pane active" id="tab-about">
+        <div class="pet-description">
+          <h3>About {{pet_name}}</h3>
+          <p>{{description}}</p>
+        </div>
+        <div class="pet-characteristics">
+          <h3>Characteristics</h3>
+          <div class="characteristics-grid">
+            <div class="characteristic-item">
+              <i class="icon-palette"></i>
+              <span>Color: {{color}}</span>
+            </div>
+            <div class="characteristic-item">
+              <i class="icon-weight"></i>
+              <span>Size: {{size}}</span>
+            </div>
+            <div class="characteristic-item">
+              <i class="icon-user"></i>
+              <span>Gender: {{gender}}</span>
+            </div>
+            <div class="characteristic-item">
+              <i class="icon-heart"></i>
+              <span>Temperament: {{temperament}}</span>
+            </div>
+          </div>
+        </div>
+        <div class="special-notes" id="special-notes" style="display: none;">
+          <h3>Special Notes</h3>
+          <div class="notes-card">
+            <i class="icon-info"></i>
+            <p>{{special_notes}}</p>
+          </div>
+        </div>
+      </div>
+      <!-- Medical Tab -->
+      <div class="tab-pane" id="tab-medical">
+        <div class="medical-info">
+          <h3>Medical Information</h3>
+          <div class="medical-grid">
+            <div class="medical-item">
+              <div class="medical-icon">
+                <i class="icon-shield-check"></i>
+              </div>
+              <div class="medical-details">
+                <h4>Vaccination Status</h4>
+                <p>{{vaccination_status}}</p>
+              </div>
+            </div>
+            <div class="medical-item" id="allergies-item" style="display: none;">
+              <div class="medical-icon warning">
+                <i class="icon-alert-triangle"></i>
+              </div>
+              <div class="medical-details">
+                <h4>Allergies</h4>
+                <p>{{allergies}}</p>
+              </div>
+            </div>
+            <div class="medical-item" id="medications-item" style="display: none;">
+              <div class="medical-icon info">
+                <i class="icon-pill"></i>
+              </div>
+              <div class="medical-details">
+                <h4>Medications</h4>
+                <p>{{medications}}</p>
+              </div>
+            </div>
+            <div class="medical-item" id="vet-info-item">
+              <div class="medical-icon">
+                <i class="icon-hospital"></i>
+              </div>
+              <div class="medical-details">
+                <h4>Veterinary Clinic</h4>
+                <p>{{vet_clinic}}</p>
+                <p>{{vet_contact}}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Owner Tab -->
+      <div class="tab-pane" id="tab-owner">
+        <div class="owner-info">
+          <h3>Owner Information</h3>
+          <div class="owner-card">
+            <div class="owner-details">
+              <div class="owner-name">
+                <i class="icon-user"></i>
+                <span>{{owner_name}}</span>
+              </div>
+              <div class="owner-contact">
+                <i class="icon-phone"></i>
+                <span>{{owner_phone}}</span>
+              </div>
+              <div class="owner-email" id="owner-email" style="display: none;">
+                <i class="icon-mail"></i>
+                <span>{{owner_email}}</span>
+              </div>
+              <div class="owner-address">
+                <i class="icon-map-pin"></i>
+                <span>{{owner_address}}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Help Tab -->
+      <div class="tab-pane" id="tab-help">
+        <div class="help-content">
+          <h3>How You Can Help</h3>
+          <div class="help-steps">
+            <div class="step-item">
+              <div class="step-number">1</div>
+              <div class="step-content">
+                <h4>Ensure Pet's Safety</h4>
+                <p>Keep the pet in a safe, secure location away from traffic.</p>
+              </div>
+            </div>
+            <div class="step-item">
+              <div class="step-number">2</div>
+              <div class="step-content">
+                <h4>Contact the Owner</h4>
+                <p>Use the contact button to call or message the owner immediately.</p>
+              </div>
+            </div>
+            <div class="step-item">
+              <div class="step-number">3</div>
+              <div class="step-content">
+                <h4>Share Location</h4>
+                <p>Share your current location to help the owner find their pet.</p>
+              </div>
+            </div>
+            <div class="step-item">
+              <div class="step-number">4</div>
+              <div class="step-content">
+                <h4>Provide Care</h4>
+                <p>Offer water and keep the pet comfortable until help arrives.</p>
+              </div>
+            </div>
+          </div>
+          <div class="emergency-contacts" id="emergency-contacts" style="display: none;">
+            <h3>Emergency Contacts</h3>
+            <div class="contact-list">
+              <div class="contact-item">
+                <i class="icon-phone"></i>
+                <div class="contact-info">
+                  <h4>Alternate Contact</h4>
+                  <p>{{alternate_phone}}</p>
+                </div>
+              </div>
+              <div class="contact-item">
+                <i class="icon-hospital"></i>
+                <div class="contact-info">
+                  <h4>Nearest Vet</h4>
+                  <p>{{nearest_vet}}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Contact Modal -->
+    <div class="contact-modal" id="contact-modal" style="display: none;">
+      <div class="modal-overlay" onclick="closeContactModal()"></div>
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>Contact Owner</h3>
+          <button class="close-modal" onclick="closeContactModal()">
+            <i class="icon-x"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="contact-options">
+            <button class="contact-option" onclick="callOwner()">
+              <i class="icon-phone"></i>
+              <div class="option-info">
+                <h4>Call Owner</h4>
+                <p>{{owner_phone}}</p>
+              </div>
+            </button>
+            <button class="contact-option" onclick="messageOwner()">
+              <i class="icon-message-circle"></i>
+              <div class="option-info">
+                <h4>Send Message</h4>
+                <p>Send a message to the owner</p>
+              </div>
+            </button>
+            <button class="contact-option" onclick="shareLocation()">
+              <i class="icon-map-pin"></i>
+              <div class="option-info">
+                <h4>Share Location</h4>
+                <p>Share your current location</p>
+              </div>
+            </button>
+          </div>
+          <!-- Message Form -->
+          <div class="message-form" id="message-form" style="display: none;">
+            <h4>Send Message to Owner</h4>
+            <form onsubmit="sendMessage(event)">
+              <div class="form-group">
+                <label for="scanner-name">Your Name</label>
+                <input type="text" id="scanner-name" name="scanner_name" required>
+              </div>
+              <div class="form-group">
+                <label for="scanner-phone">Your Phone Number</label>
+                <input type="tel" id="scanner-phone" name="scanner_phone" pattern="[0-9]{10}" required>
+              </div>
+              <div class="form-group">
+                <label for="message-text">Message</label>
+                <textarea id="message-text" name="message" rows="4" required 
+                          placeholder="I found your pet near..."></textarea>
+              </div>
+              <div class="location-share">
+                <label class="checkbox-label">
+                  <input type="checkbox" id="include-location" name="include_location" checked>
+                  <span class="checkmark"></span>
+                  Include my current location
+                </label>
+              </div>
+              <div class="form-actions">
+                <button type="button" class="btn btn-outline" onclick="closeMessageForm()">
+                  Cancel
+                </button>
+                <button type="submit" class="btn btn-primary">
+                  Send Message
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Location Share Modal -->
+    <div class="location-modal" id="location-modal" style="display: none;">
+      <div class="modal-overlay" onclick="closeLocationModal()"></div>
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>Share Location</h3>
+          <button class="close-modal" onclick="closeLocationModal()">
+            <i class="icon-x"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="location-map" id="location-map">
+            <!-- Map will be loaded here -->
+          </div>
+          <div class="location-info">
+            <p><strong>Current Location:</strong></p>
+            <p id="location-address">Getting location...</p>
+          </div>
+          <div class="location-actions">
+            <button class="btn btn-primary" onclick="confirmLocationShare()">
+              <i class="icon-map-pin"></i>
+              Share This Location
+            </button>
+            <button class="btn btn-outline" onclick="refreshLocation()">
+              <i class="icon-refresh"></i>
+              Refresh Location
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Success Notification -->
+    <div class="notification success" id="success-notification" style="display: none;">
+      <i class="icon-check-circle"></i>
+      <span id="success-message">Message sent successfully!</span>
+    </div>
+    <!-- Footer -->
+    <footer class="scan-footer">
+      <div class="footer-content">
+        <div class="footer-logo">
+          <img src="/assets/logo.svg" alt="THEMENGIFT" width="120">
+        </div>
+        <div class="footer-links">
+          <a href="/privacy-policy/">Privacy Policy</a>
+          <a href="/terms-of-service/">Terms of Service</a>
+          <a href="/contact-us/">Contact Us</a>
+        </div>
+        <div class="footer-app">
+          <a href="/app-download/" class="app-link">
+            <i class="icon-download"></i>
+            Get the App
+          </a>
+        </div>
+      </div>
+    </footer>
+  </div>
+  <!-- Scripts -->
+  <script src="/assets/js/scan-page.js"></script>
+  <script src="/assets/js/location-tracker.js"></script>
+  <script src="/assets/js/contact-handler.js"></script>
+</body>
+</html>
+3.2 Scan Page CSS
+/* Scan Page Styles */
+.scan-page {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+  font-family: 'DM Sans', sans-serif;
+}
+/* Loading Screen */
+.loading-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255,255,255,0.95);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+.loading-content {
+  text-align: center;
+}
+.loading-spinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid #E2E8F0;
+  border-top: 4px solid var(--tag-primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 16px;
+}
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+/* Error Screen */
+.error-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+.error-content {
+  background: white;
+  border-radius: var(--radius-lg);
+  padding: 40px;
+  text-align: center;
+  max-width: 400px;
+  margin: 20px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+}
+.error-icon {
+  font-size: 64px;
+  color: var(--tag-danger);
+  margin-bottom: 16px;
+}
+.error-content h2 {
+  color: #1A202C;
+  margin-bottom: 12px;
+}
+.error-content p {
+  color: #4A5568;
+  margin-bottom: 24px;
+}
+/* Main Container */
+.scan-container {
+  min-height: 100vh;
+  padding-bottom: 80px;
+}
+/* Emergency Banner */
+.emergency-banner {
+  background: var(--emergency-bg);
+  border-bottom: 3px solid var(--emergency-border);
+  padding: 16px;
+  animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.8; }
+}
+.banner-content {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.emergency-icon {
+  font-size: 32px;
+  color: var(--emergency-text);
+  animation: shake 2s infinite;
+}
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+.emergency-text h2 {
+  color: var(--emergency-text);
+  margin-bottom: 4px;
+  font-size: 18px;
+}
+.emergency-text p {
+  color: var(--emergency-text);
+  margin: 0;
+  font-size: 14px;
+}
+/* Pet Card */
+.pet-card {
+  background: white;
+  margin: 20px;
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+}
+.pet-header {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 24px;
+}
+.pet-avatar {
+  position: relative;
+  flex-shrink: 0;
+}
+.pet-avatar img {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid var(--tag-primary);
+}
+.pet-status {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  background: var(--status-active);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+.pet-status.lost {
+  background: var(--status-lost);
+}
+.pet-status.inactive {
+  background: var(--status-inactive);
+}
+.pet-basic-info {
+  flex: 1;
+}
+.pet-name {
+  font-size: 28px;
+  font-weight: 700;
+  color: #1A202C;
+  margin-bottom: 8px;
+}
+.pet-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.pet-details span {
+  background: #F7FAFC;
+  padding: 4px 12px;
+  border-radius: 16px;
+  font-size: 14px;
+  color: #4A5568;
+}
+.tag-info {
+  display: flex;
+  gap: 16px;
+  font-size: 12px;
+  color: #718096;
+}
+/* Quick Actions */
+.quick-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.quick-actions.emergency {
+  grid-template-columns: 1fr 1fr 1fr;
+}
+.action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 16px;
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  text-decoration: none;
+}
+.action-btn.primary {
+  background: var(--tag-primary);
+  color: white;
+}
+.action-btn.primary:hover {
+  background: var(--btn-primary-hover);
+  transform: translateY(-2px);
+}
+.action-btn.secondary {
+  background: #F7FAFC;
+  color: var(--tag-primary);
+  border: 2px solid var(--tag-primary);
+}
+.action-btn.secondary:hover {
+  background: var(--tag-primary);
+  color: white;
+}
+.action-btn.emergency {
+  background: var(--tag-danger);
+  color: white;
+  grid-column: span 2;
+}
+.action-btn.emergency:hover {
+  background: #C53030;
+  transform: translateY(-2px);
+}
+/* Tab Navigation */
+.tab-navigation {
+  display: flex;
+  background: white;
+  margin: 0 20px;
+  border-radius: var(--radius-lg);
+  padding: 8px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  overflow-x: auto;
+}
+.tab-btn {
+  flex: 1;
+  padding: 12px 16px;
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-sm);
+  color: #4A5568;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+}
+.tab-btn.active {
+  background: var(--tag-primary);
+  color: white;
+}
+.tab-btn:hover:not(.active) {
+  background: #F7FAFC;
+}
+/* Tab Content */
+.tab-content {
+  margin: 20px;
+}
+.tab-pane {
+  display: none;
+  animation: fadeIn 0.3s ease-out;
+}
+.tab-pane.active {
+  display: block;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+/* Tab Content Sections */
+.pet-description,
+.pet-characteristics,
+.special-notes,
+.medical-info,
+.owner-info,
+.help-content {
+  background: white;
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  margin-bottom: 16px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+.pet-description h3,
+.pet-characteristics h3,
+.special-notes h3,
+.medical-info h3,
+.owner-info h3,
+.help-content h3 {
+  color: #1A202C;
+  margin-bottom: 16px;
+  font-size: 18px;
+}
+.characteristics-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+.characteristic-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: #F8FAFC;
+  border-radius: var(--radius-sm);
+}
+.characteristic-item i {
+  color: var(--tag-primary);
+  font-size: 20px;
+}
+.notes-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 16px;
+  background: #FEF5E7;
+  border: 1px solid #F6E05E;
+  border-radius: var(--radius-sm);
+}
+.notes-card i {
+  color: #D69E2E;
+  margin-top: 2px;
+}
+/* Medical Info */
+.medical-grid {
+  display: grid;
+  gap: 16px;
+}
+.medical-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 16px;
+  background: #F8FAFC;
+  border-radius: var(--radius-sm);
+  border-left: 4px solid var(--tag-success);
+}
+.medical-item.warning {
+  border-left-color: var(--tag-warning);
+}
+.medical-item.info {
+  border-left-color: var(--tag-info);
+}
+.medical-icon {
+  width: 40px;
+  height: 40px;
+  background: var(--tag-success);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.medical-icon.warning {
+  background: var(--tag-warning);
+}
+.medical-icon.info {
+  background: var(--tag-info);
+}
+.medical-details h4 {
+  color: #1A202C;
+  margin-bottom: 4px;
+  font-size: 16px;
+}
+.medical-details p {
+  color: #4A5568;
+  margin: 0;
+  font-size: 14px;
+}
+/* Owner Info */
+.owner-card {
+  background: #F8FAFC;
+  border-radius: var(--radius-sm);
+  padding: 20px;
+}
+.owner-details {
+  display: grid;
+  gap: 12px;
+}
+.owner-details > div {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.owner-details i {
+  color: var(--tag-primary);
+  width: 20px;
+}
+/* Help Content */
+.help-steps {
+  margin-bottom: 32px;
+}
+.step-item {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 20px;
+  align-items: flex-start;
+}
+.step-number {
+  width: 32px;
+  height: 32px;
+  background: var(--tag-primary);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+.step-content h4 {
+  color: #1A202C;
+  margin-bottom: 4px;
+  font-size: 16px;
+}
+.step-content p {
+  color: #4A5568;
+  margin: 0;
+  font-size: 14px;
+}
+/* Emergency Contacts */
+.contact-list {
+  display: grid;
+  gap: 12px;
+}
+.contact-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  background: #F8FAFC;
+  border-radius: var(--radius-sm);
+}
+.contact-item i {
+  color: var(--tag-primary);
+  font-size: 20px;
+}
+.contact-info h4 {
+  color: #1A202C;
+  margin-bottom: 4px;
+  font-size: 14px;
+}
+.contact-info p {
+  color: #4A5568;
+  margin: 0;
+  font-size: 13px;
+}
+/* Modals */
+.contact-modal,
+.location-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9998;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.modal-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(4px);
+}
+.modal-content {
+  position: relative;
+  background: white;
+  border-radius: var(--radius-lg);
+  max-width: 500px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  animation: modalSlideIn 0.3s ease-out;
+}
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px 24px 0;
+}
+.modal-header h3 {
+  color: #1A202C;
+  margin: 0;
+  font-size: 20px;
+}
+.close-modal {
+  width: 32px;
+  height: 32px;
+  background: #F7FAFC;
+  border: none;
+  border-radius: 50%;
+  color: #4A5568;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+}
+.close-modal:hover {
+  background: var(--tag-danger);
+  color: white;
+}
+.modal-body {
+  padding: 24px;
+}
+/* Contact Options */
+.contact-options {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.contact-option {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  background: #F8FAFC;
+  border: 2px solid transparent;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+.contact-option:hover {
+  border-color: var(--tag-primary);
+  background: white;
+}
+.contact-option i {
+  font-size: 24px;
+  color: var(--tag-primary);
+}
+.option-info h4 {
+  color: #1A202C;
+  margin-bottom: 4px;
+  font-size: 16px;
+}
+.option-info p {
+  color: #4A5568;
+  margin: 0;
+  font-size: 14px;
+}
+/* Message Form */
+.message-form {
+  border-top: 1px solid #E2E8F0;
+  padding-top: 24px;
+}
+.message-form h4 {
+  color: #1A202C;
+  margin-bottom: 16px;
+  font-size: 16px;
+}
+.form-group {
+  margin-bottom: 16px;
+}
+.form-group label {
+  display: block;
+  font-weight: 500;
+  color: #1A202C;
+  margin-bottom: 6px;
+  font-size: 14px;
+}
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #E2E8F0;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  transition: border-color var(--transition-fast);
+}
+.form-group input:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: var(--tag-primary);
+  box-shadow: 0 0 0 3px rgba(27,79,158,0.1);
+}
+.location-share {
+  margin-bottom: 20px;
+}
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #4A5568;
+}
+.checkbox-label input[type="checkbox"] {
+  display: none;
+}
+.checkmark {
+  width: 18px;
+  height: 18px;
+  border: 2px solid #CBD5E0;
+  border-radius: 4px;
+  position: relative;
+  transition: all var(--transition-fast);
+}
+.checkbox-label input:checked ~ .checkmark {
+  background: var(--tag-primary);
+  border-color: var(--tag-primary);
+}
+.checkbox-label input:checked ~ .checkmark:after {
+  content: '';
+  position: absolute;
+  left: 5px;
+  top: 2px;
+  width: 5px;
+  height: 9px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+.form-actions {
+  display: flex;
+  gap: 12px;
+}
+/* Location Modal */
+.location-map {
+  height: 200px;
+  background: #E2E8F0;
+  border-radius: var(--radius-md);
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #718096;
+}
+.location-info {
+  margin-bottom: 20px;
+}
+.location-info p {
+  color: #4A5568;
+  margin: 4px 0;
+  font-size: 14px;
+}
+.location-actions {
+  display: flex;
+  gap: 12px;
+}
+/* Notifications */
+.notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 16px 20px;
+  border-radius: var(--radius-md);
+  color: white;
+  font-weight: 500;
+  z-index: 10000;
+  animation: slideInRight 0.3s ease-out;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+}
+.notification.success {
+  background: var(--tag-success);
+}
+.notification.error {
+  background: var(--tag-danger);
+}
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+/* Footer */
+.scan-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: white;
+  border-top: 1px solid #E2E8F0;
+  padding: 16px 20px;
+  z-index: 100;
+}
+.footer-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.footer-links {
+  display: flex;
+  gap: 16px;
+}
+.footer-links a {
+  color: #4A5568;
+  text-decoration: none;
+  font-size: 12px;
+  transition: color var(--transition-fast);
+}
+.footer-links a:hover {
+  color: var(--tag-primary);
+}
+.app-link {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--tag-primary);
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 500;
+  transition: color var(--transition-fast);
+}
+.app-link:hover {
+  color: var(--btn-primary-hover);
+}
+/* Responsive Design */
+@media (max-width: 767px) {
+  .pet-header {
+    flex-direction: column;
+    text-align: center;
+    gap: 16px;
+  }
+  .pet-avatar img {
+    width: 80px;
+    height: 80px;
+  }
+  .pet-name {
+    font-size: 24px;
+  }
+  .pet-details {
+    justify-content: center;
+  }
+  .quick-actions {
+    grid-template-columns: 1fr;
+  }
+  .quick-actions.emergency {
+    grid-template-columns: 1fr;
+  }
+  .action-btn.emergency {
+    grid-column: span 1;
+  }
+  .tab-navigation {
+    margin: 0 16px;
+  }
+  .tab-btn {
+    font-size: 12px;
+    padding: 10px 12px;
+  }
+  .tab-content {
+    margin: 16px;
+  }
+  .characteristics-grid {
+    grid-template-columns: 1fr;
+  }
+  .step-item {
+    gap: 12px;
+  }
+  .step-number {
+    width: 28px;
+    height: 28px;
+    font-size: 14px;
+  }
+  .modal-content {
+    margin: 16px;
+    max-height: calc(100vh - 32px);
+  }
+  .contact-options {
+    gap: 8px;
+  }
+  .contact-option {
+    padding: 12px;
+  }
+  .form-actions {
+    flex-direction: column;
+  }
+  .location-actions {
+    flex-direction: column;
+  }
+  .footer-content {
+    flex-direction: column;
+    gap: 12px;
+    text-align: center;
+  }
+  .footer-links {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+  }
+}
+/* Touch Optimizations */
+@media (pointer: coarse) {
+  .action-btn,
+  .tab-btn,
+  .contact-option {
+    min-height: var(--touch-target-size);
+  }
+  .close-modal {
+    min-width: var(--touch-target-size);
+    min-height: var(--touch-target-size);
+  }
+}
+/* Print Styles */
+@media print {
+  .loading-screen,
+  .error-screen,
+  .quick-actions,
+  .tab-navigation,
+  .contact-modal,
+  .location-modal,
+  .notification,
+  .scan-footer {
+    display: none !important;
+  }
+  .scan-container {
+    background: white;
+  }
+  .pet-card {
+    box-shadow: none;
+    border: 1px solid #E2E8F0;
+  }
+  .tab-pane {
+    display: block !important;
+    page-break-inside: avoid;
+  }
+}
+──────────────────────────────────────────────────
+4. LOCATION TRACKING SYSTEM
+4.1 Location Tracking JavaScript
+// Location Tracker Class
+class LocationTracker {
+  constructor() {
+    this.currentLocation = null;
+    this.locationAccuracy = null;
+    this.locationTimestamp = null;
+    this.watchId = null;
+    this.isTracking = false;
+  }
+  async getCurrentLocation() {
+    try {
+      // Check if geolocation is supported
+      if (!navigator.geolocation) {
+        throw new Error('Geolocation is not supported by this browser');
+      }
+      // Show loading state
+      this.showLocationLoading(true);
+      // Get high accuracy position
+      const position = await this.getPosition({
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 0
+      });
+      // Process location
+      this.currentLocation = {
+        latitude: position.coords.latitude,
+        longitude: position.coords.longitude,
+        accuracy: position.coords.accuracy,
+        altitude: position.coords.altitude,
+        altitudeAccuracy: position.coords.altitudeAccuracy,
+        heading: position.coords.heading,
+        speed: position.coords.speed,
+        timestamp: position.timestamp
+      };
+      this.locationAccuracy = position.coords.accuracy;
+      this.locationTimestamp = new Date(position.timestamp);
+      // Get address from coordinates
+      const address = await this.reverseGeocode(
+        this.currentLocation.latitude,
+        this.currentLocation.longitude
+      );
+      // Update UI
+      this.updateLocationDisplay(address);
+      this.showLocationOnMap(this.currentLocation);
+      this.showLocationLoading(false);
+      return this.currentLocation;
+    } catch (error) {
+      this.handleLocationError(error);
+      this.showLocationLoading(false);
+      return null;
+    }
+  }
+  getPosition(options) {
+    return new Promise((resolve, reject) => {
+      navigator.geolocation.getCurrentPosition(resolve, reject, options);
+    });
+  }
+  async reverseGeocode(latitude, longitude) {
+    try {
+      // Use OpenStreetMap Nominatim API (free)
+      const response = await fetch(
+        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=18&addressdetails=1`,
+        {
+          headers: {
+            'User-Agent': 'THEMENGIFT Smart Tag System'
+          }
+        }
+      );
+      if (!response.ok) {
+        throw new Error('Failed to get address');
+      }
+      const data = await response.json();
+      if (data.error) {
+        throw new Error(data.error);
+      }
+      // Format address
+      const address = this.formatAddress(data.address);
+      return {
+        formatted: address,
+        raw: data
+      };
+    } catch (error) {
+      console.error('Reverse geocoding failed:', error);
+      return {
+        formatted: `${latitude.toFixed(6)}, ${longitude.toFixed(6)}`,
+        raw: null
+      };
+    }
+  }
+  formatAddress(address) {
+    const parts = [];
+    if (address.house_number) parts.push(address.house_number);
+    if (address.road) parts.push(address.road);
+    if (address.suburb) parts.push(address.suburb);
+    if (address.city || address.town || address.village) {
+      parts.push(address.city || address.town || address.village);
+    }
+    if (address.state) parts.push(address.state);
+    if (address.postcode) parts.push(address.postcode);
+    if (address.country) parts.push(address.country);
+    return parts.join(', ') || 'Unknown location';
+  }
+  async getIPBasedLocation() {
+    try {
+      // Fallback to IP-based location
+      const response = await fetch('https://ipapi.co/json/');
+      const data = await response.json();
+      return {
+        latitude: data.latitude,
+        longitude: data.longitude,
+        city: data.city,
+        region: data.region,
+        country: data.country_name,
+        accuracy: 10000, // IP location is less accurate
+        source: 'ip'
+      };
+    } catch (error) {
+      console.error('IP-based location failed:', error);
+      return null;
+    }
+  }
+  getDeviceFingerprint() {
+    // Generate a device fingerprint for additional tracking
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    ctx.textBaseline = 'top';
+    ctx.font = '14px Arial';
+    ctx.fillText('Device fingerprint', 2, 2);
+    const fingerprint = {
+      userAgent: navigator.userAgent,
+      language: navigator.language,
+      platform: navigator.platform,
+      screen: `${screen.width}x${screen.height}`,
+      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      canvas: canvas.toDataURL(),
+      timestamp: Date.now()
+    };
+    return btoa(JSON.stringify(fingerprint));
+  }
+  startLocationTracking() {
+    if (this.isTracking) return;
+    this.isTracking = true;
+    this.watchId = navigator.geolocation.watchPosition(
+      (position) => {
+        this.currentLocation = {
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+          accuracy: position.coords.accuracy,
+          timestamp: position.timestamp
+        };
+        // Update location in real-time
+        this.updateLocationDisplay(null);
+      },
+      (error) => {
+        console.error('Location tracking error:', error);
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 0
+      }
+    );
+  }
+  stopLocationTracking() {
+    if (this.watchId) {
+      navigator.geolocation.clearWatch(this.watchId);
+      this.watchId = null;
+    }
+    this.isTracking = false;
+  }
+  calculateDistance(lat1, lon1, lat2, lon2) {
+    // Haversine formula to calculate distance between two points
+    const R = 6371e3; // Earth's radius in meters
+    const φ1 = lat1 * Math.PI / 180;
+    const φ2 = lat2 * Math.PI / 180;
+    const Δφ = (lat2 - lat1) * Math.PI / 180;
+    const Δλ = (lon2 - lon1) * Math.PI / 180;
+    const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
+              Math.cos(φ1) * Math.cos(φ2) *
+              Math.sin(Δλ/2) * Math.sin(Δλ/2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    return R * c; // Distance in meters
+  }
+  updateLocationDisplay(address) {
+    const addressElement = document.getElementById('location-address');
+    if (addressElement) {
+      if (address && address.formatted) {
+        addressElement.textContent = address.formatted;
+        if (this.locationAccuracy) {
+          addressElement.textContent += ` (±${Math.round(this.locationAccuracy)}m)`;
+        }
+      } else if (this.currentLocation) {
+        addressElement.textContent = 
+          `${this.currentLocation.latitude.toFixed(6)}, ${this.currentLocation.longitude.toFixed(6)}`;
+      } else {
+        addressElement.textContent = 'Location unavailable';
+      }
+    }
+  }
+  showLocationOnMap(location) {
+    const mapElement = document.getElementById('location-map');
+    if (!mapElement || !location) return;
+    // Create a simple map display (can be replaced with Google Maps or Mapbox)
+    mapElement.innerHTML = `
+      <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: url('https://maps.googleapis.com/maps/api/staticmap?center=${location.latitude},${location.longitude}&zoom=15&size=400x200&markers=color:red%7C${location.latitude},${location.longitude}&key=YOUR_API_KEY') center/cover; position: relative;">
+        <div style="background: rgba(255,255,255,0.9); padding: 8px; border-radius: 4px; font-size: 12px;">
+          📍 Location shared
+        </div>
+      </div>
+    `;
+  }
+  showLocationLoading(show) {
+    const addressElement = document.getElementById('location-address');
+    if (addressElement) {
+      addressElement.textContent = show ? 'Getting location...' : addressElement.textContent;
+    }
+  }
+  handleLocationError(error) {
+    let message = 'Unable to get your location';
+    switch (error.code) {
+      case error.PERMISSION_DENIED:
+        message = 'Location access denied. Please enable location services.';
+        break;
+      case error.POSITION_UNAVAILABLE:
+        message = 'Location information unavailable.';
+        break;
+      case error.TIMEOUT:
+        message = 'Location request timed out.';
+        break;
+    }
+    this.showNotification(message, 'error');
+    // Fallback to IP-based location
+    this.getIPBasedLocation().then(ipLocation => {
+      if (ipLocation) {
+        this.currentLocation = ipLocation;
+        this.updateLocationDisplay({ formatted: ipLocation.city });
+      }
+    });
+  }
+  showNotification(message, type = 'info') {
+    // Show notification to user
+    const notification = document.createElement('div');
+    notification.className = `notification ${type}`;
+    notification.innerHTML = `
+      <i class="icon-${type === 'error' ? 'alert-circle' : 'info'}"></i>
+      <span>${message}</span>
+    `;
+    document.body.appendChild(notification);
+    setTimeout(() => {
+      notification.remove();
+    }, 5000);
+  }
+}
+// Initialize location tracker
+const locationTracker = new LocationTracker();
+──────────────────────────────────────────────────
+5. CONTACT HANDLER SYSTEM
+5.1 Contact Handler JavaScript
+// Contact Handler Class
+class ContactHandler {
+  constructor() {
+    this.tagData = null;
+    this.scannerInfo = {};
+    this.isProcessing = false;
+  }
+  async initialize(tagCode) {
+    try {
+      // Load tag data
+      this.tagData = await this.loadTagData(tagCode);
+      if (!this.tagData) {
+        this.showError('Tag not found or inactive');
+        return false;
+      }
+      // Record scan event
+      await this.recordScanEvent(tagCode);
+      return true;
+    } catch (error) {
+      console.error('Contact handler initialization failed:', error);
+      this.showError('Failed to load tag information');
+      return false;
+    }
+  }
+  async loadTagData(tagCode) {
+    try {
+      const response = await fetch('/wp-admin/admin-ajax.php', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: `action=get_tag_data&tag_code=${encodeURIComponent(tagCode)}`
+      });
+      const data = await response.json();
+      if (data.success) {
+        return data.data;
+      } else {
+        throw new Error(data.message);
+      }
+    } catch (error) {
+      console.error('Failed to load tag data:', error);
+      return null;
+    }
+  }
+  async recordScanEvent(tagCode) {
+    try {
+      // Get location data
+      const location = await locationTracker.getCurrentLocation();
+      // Get device fingerprint
+      const fingerprint = locationTracker.getDeviceFingerprint();
+      // Prepare scan data
+      const scanData = {
+        tag_code: tagCode,
+        scanner_info: {
+          user_agent: navigator.userAgent,
+          fingerprint: fingerprint,
+          timestamp: new Date().toISOString(),
+          location: location
+        }
+      };
+      // Send to server
+      const response = await fetch('/wp-admin/admin-ajax.php', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: `action=record_scan&scan_data=${encodeURIComponent(JSON.stringify(scanData))}`
+      });
+      const result = await response.json();
+      if (!result.success) {
+        console.error('Failed to record scan:', result.message);
+      }
+      return result;
+    } catch (error) {
+      console.error('Failed to record scan event:', error);
+      return null;
+    }
+  }
+  async sendMessage(formData) {
+    if (this.isProcessing) return;
+    this.isProcessing = true;
+    this.showProcessing(true);
+    try {
+      // Get location if included
+      if (formData.get('include_location')) {
+        const location = await locationTracker.getCurrentLocation();
+        if (location) {
+          formData.set('location', JSON.stringify(location));
+        }
+      }
+      // Add tag data
+      formData.set('tag_code', this.tagData.tag_code);
+      formData.set('tag_id', this.tagData.tag_id);
+      // Send message
+      const response = await fetch('/wp-admin/admin-ajax.php', {
+        method: 'POST',
+        body: formData
+      });
+      const result = await response.json();
+      if (result.success) {
+        this.showSuccess('Message sent successfully!');
+        this.closeMessageForm();
+        // Track conversion
+        this.trackConversion('message_sent');
+      } else {
+        throw new Error(result.message);
+      }
+    } catch (error) {
+      this.showError('Failed to send message. Please try again.');
+      console.error('Send message error:', error);
+    } finally {
+      this.isProcessing = false;
+      this.showProcessing(false);
+    }
+  }
+  async shareLocation() {
+    try {
+      const location = await locationTracker.getCurrentLocation();
+      if (!location) {
+        this.showError('Unable to get your location');
+        return;
+      }
+      // Prepare location data
+      const locationData = {
+        tag_code: this.tagData.tag_code,
+        location: location,
+        timestamp: new Date().toISOString()
+      };
+      // Send location to server
+      const response = await fetch('/wp-admin/admin-ajax.php', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: `action=share_location&location_data=${encodeURIComponent(JSON.stringify(locationData))}`
+      });
+      const result = await response.json();
+      if (result.success) {
+        this.showSuccess('Location shared with owner!');
+        // Track conversion
+        this.trackConversion('location_shared');
+      } else {
+        throw new Error(result.message);
+      }
+    } catch (error) {
+      this.showError('Failed to share location');
+      console.error('Share location error:', error);
+    }
+  }
+  async emergencyContact() {
+    if (!this.tagData.emergency_contact) {
+      this.showError('No emergency contact available');
+      return;
+    }
+    const confirmed = confirm(
+      `Call emergency contact: ${this.tagData.emergency_contact.name} at ${this.tagData.emergency_contact.phone}?`
+    );
+    if (confirmed) {
+      window.location.href = `tel:${this.tagData.emergency_contact.phone}`;
+      // Track emergency contact
+      this.trackConversion('emergency_contact');
+    }
+  }
+  callOwner() {
+    if (!this.tagData.owner_phone) {
+      this.showError('Owner phone number not available');
+      return;
+    }
+    // Track call attempt
+    this.trackConversion('call_attempt');
+    // Initiate phone call
+    window.location.href = `tel:${this.tagData.owner_phone}`;
+  }
+  messageOwner() {
+    // Show message form
+    document.getElementById('message-form').style.display = 'block';
+  }
+  closeMessageForm() {
+    document.getElementById('message-form').style.display = 'none';
+    document.querySelector('#message-form form').reset();
+  }
+  async reportFoundPet() {
+    const confirmed = confirm('Do you want to report that you found a pet without a working Smart Tag?');
+    if (confirmed) {
+      // Redirect to found pet report form
+      window.location.href = '/report-found-pet/';
+    }
+  }
+  trackConversion(action) {
+    // Track conversion for analytics
+    try {
+      const conversionData = {
+        tag_code: this.tagData.tag_code,
+        action: action,
+        timestamp: new Date().toISOString(),
+        location: locationTracker.currentLocation,
+        user_agent: navigator.userAgent
+      };
+      // Send to analytics endpoint
+      fetch('/wp-admin/admin-ajax.php', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: `action=track_conversion&conversion_data=${encodeURIComponent(JSON.stringify(conversionData))}`
+      }).catch(error => {
+        console.error('Failed to track conversion:', error);
+      });
+    } catch (error) {
+      console.error('Conversion tracking error:', error);
+    }
+  }
+  showProcessing(show) {
+    const submitBtn = document.querySelector('#message-form button[type="submit"]');
+    if (submitBtn) {
+      submitBtn.disabled = show;
+      submitBtn.innerHTML = show ? 'Sending...' : 'Send Message';
+    }
+  }
+  showSuccess(message) {
+    this.showNotification(message, 'success');
+  }
+  showError(message) {
+    this.showNotification(message, 'error');
+  }
+  showNotification(message, type) {
+    // Remove existing notifications
+    const existing = document.querySelectorAll('.notification');
+    existing.forEach(n => n.remove());
+    // Create new notification
+    const notification = document.createElement('div');
+    notification.className = `notification ${type}`;
+    notification.innerHTML = `
+      <i class="icon-${type === 'success' ? 'check-circle' : 'alert-circle'}"></i>
+      <span>${message}</span>
+    `;
+    document.body.appendChild(notification);
+    // Auto remove after 5 seconds
+    setTimeout(() => {
+      notification.remove();
+    }, 5000);
+  }
+}
+// Initialize contact handler
+const contactHandler = new ContactHandler();
+// Global functions for HTML onclick handlers
+function contactOwner() {
+  document.getElementById('contact-modal').style.display = 'flex';
+}
+function closeContactModal() {
+  document.getElementById('contact-modal').style.display = 'none';
+  contactHandler.closeMessageForm();
+}
+function callOwner() {
+  contactHandler.callOwner();
+}
+function messageOwner() {
+  contactHandler.messageOwner();
+}
+function sendMessage(event) {
+  event.preventDefault();
+  const formData = new FormData(event.target);
+  contactHandler.sendMessage(formData);
+}
+async function shareLocation() {
+  await contactHandler.shareLocation();
+  closeLocationModal();
+}
+function emergencyContact() {
+  contactHandler.emergencyContact();
+}
+function reportFoundPet() {
+  contactHandler.reportFoundPet();
+}
+──────────────────────────────────────────────────
+6. SCAN PAGE INITIALIZATION
+6.1 Main Initialization Script
+// Scan Page Initialization
+class ScanPage {
+  constructor() {
+    this.tagCode = null;
+    this.tagData = null;
+    this.isLoaded = false;
+  }
+  async initialize() {
+    try {
+      // Extract tag code from URL
+      this.tagCode = this.extractTagCode();
+      if (!this.tagCode) {
+        this.showError('Invalid tag code');
+        return;
+      }
+      // Initialize contact handler
+      const success = await contactHandler.initialize(this.tagCode);
+      if (!success) {
+        return;
+      }
+      // Get tag data
+      this.tagData = contactHandler.tagData;
+      // Render page content
+      await this.renderPage();
+      // Setup event listeners
+      this.setupEventListeners();
+      // Hide loading screen
+      this.hideLoading();
+      this.isLoaded = true;
+    } catch (error) {
+      console.error('Scan page initialization failed:', error);
+      this.showError('Failed to load page');
+    }
+  }
+  extractTagCode() {
+    // Extract tag code from URL path
+    const path = window.location.pathname;
+    // Handle different URL formats
+    const patterns = [
+      /\/tag\/([A-Z0-9]+)\/?$/,
+      /\/scan\/([A-Z0-9]+)\/?$/,
+      /\/([A-Z0-9]{10})\/?$/
+    ];
+    for (const pattern of patterns) {
+      const match = path.match(pattern);
+      if (match) {
+        return match[1];
+      }
+    }
+    return null;
+  }
+  async renderPage() {
+    // Update page title
+    document.title = `${this.tagData.pet_name} - Smart Tag | THEMENGIFT`;
+    // Update meta tags
+    this.updateMetaTags();
+    // Render pet information
+    this.renderPetInfo();
+    // Render medical information
+    this.renderMedicalInfo();
+    // Render owner information
+    this.renderOwnerInfo();
+    // Show emergency banner if pet is lost
+    if (this.tagData.status === 'lost') {
+      this.showEmergencyBanner();
+    }
+    // Show emergency button if available
+    if (this.tagData.emergency_contact) {
+      document.getElementById('emergency-btn').style.display = 'flex';
+    }
+  }
+  updateMetaTags() {
+    // Update Open Graph tags
+    const ogTitle = document.querySelector('meta[property="og:title"]');
+    const ogDescription = document.querySelector('meta[property="og:description"]');
+    const ogImage = document.querySelector('meta[property="og:image"]');
+    if (ogTitle) ogTitle.content = `Found Pet - ${this.tagData.pet_name}`;
+    if (ogDescription) ogDescription.content = `Help reunite ${this.tagData.pet_name} with their owner`;
+    if (ogImage) ogImage.content = this.tagData.pet_image;
+  }
+  renderPetInfo() {
+    // Update pet name
+    const petNameElement = document.getElementById('pet-name');
+    if (petNameElement) {
+      petNameElement.textContent = this.tagData.pet_name;
+    }
+    // Update pet image
+    const petImageElement = document.getElementById('pet-image');
+    if (petImageElement) {
+      petImageElement.src = this.tagData.pet_image;
+      petImageElement.alt = this.tagData.pet_name;
+    }
+    // Update pet details
+    const petDetails = document.querySelector('.pet-details');
+    if (petDetails) {
+      petDetails.innerHTML = `
+        <span class="pet-type">${this.tagData.pet_type}</span>
+        <span class="pet-breed">${this.tagData.breed}</span>
+        <span class="pet-age">${this.tagData.age}</span>
+      `;
+    }
+    // Update tag info
+    const tagInfo = document.querySelector('.tag-info');
+    if (tagInfo) {
+      tagInfo.innerHTML = `
+        <span class="tag-code">Tag: ${this.tagData.tag_code}</span>
+        <span class="scan-time">Scanned just now</span>
+      `;
+    }
+    // Update status
+    const statusElement = document.getElementById('pet-status');
+    if (statusElement) {
+      statusElement.textContent = this.tagData.status_text;
+      statusElement.className = `pet-status status-${this.tagData.status}`;
+    }
+    // Update description
+    const descriptionElement = document.querySelector('#tab-about .pet-description p');
+    if (descriptionElement) {
+      descriptionElement.textContent = this.tagData.description || 'No description available';
+    }
+    // Update characteristics
+    this.renderCharacteristics();
+    // Update special notes
+    if (this.tagData.special_notes) {
+      const specialNotes = document.getElementById('special-notes');
+      const notesText = document.querySelector('#special-notes p');
+      if (specialNotes && notesText) {
+        notesText.textContent = this.tagData.special_notes;
+        specialNotes.style.display = 'block';
+      }
+    }
+  }
+  renderCharacteristics() {
+    const characteristicsGrid = document.querySelector('.characteristics-grid');
+    if (!characteristicsGrid) return;
+    const characteristics = [
+      { icon: 'icon-palette', label: 'Color', value: this.tagData.color },
+      { icon: 'icon-weight', label: 'Size', value: this.tagData.size },
+      { icon: 'icon-user', label: 'Gender', value: this.tagData.gender },
+      { icon: 'icon-heart', label: 'Temperament', value: this.tagData.temperament }
+    ];
+    characteristicsGrid.innerHTML = characteristics
+      .filter(char => char.value)
+      .map(char => `
+        <div class="characteristic-item">
+          <i class="${char.icon}"></i>
+          <span>${char.label}: ${char.value}</span>
+        </div>
+      `).join('');
+  }
+  renderMedicalInfo() {
+    // Update vaccination status
+    const vaccinationStatus = document.querySelector('.medical-item:first-child .medical-details p');
+    if (vaccinationStatus) {
+      vaccinationStatus.textContent = this.tagData.vaccination_status;
+    }
+    // Show allergies if present
+    if (this.tagData.allergies) {
+      const allergiesItem = document.getElementById('allergies-item');
+      const allergiesText = allergiesItem.querySelector('.medical-details p');
+      if (allergiesText) {
+        allergiesText.textContent = this.tagData.allergies;
+        allergiesItem.style.display = 'flex';
+      }
+    }
+    // Show medications if present
+    if (this.tagData.medications) {
+      const medicationsItem = document.getElementById('medications-item');
+      const medicationsText = medicationsItem.querySelector('.medical-details p');
+      if (medicationsText) {
+        medicationsText.textContent = this.tagData.medications;
+        medicationsItem.style.display = 'flex';
+      }
+    }
+    // Update vet info
+    const vetClinic = document.querySelector('#vet-info-item .medical-details p:first-child');
+    const vetContact = document.querySelector('#vet-info-item .medical-details p:last-child');
+    if (vetClinic) vetClinic.textContent = this.tagData.vet_clinic;
+    if (vetContact) vetContact.textContent = this.tagData.vet_contact;
+  }
+  renderOwnerInfo() {
+    const ownerDetails = document.querySelector('.owner-details');
+    if (!ownerDetails) return;
+    const ownerInfo = [
+      { icon: 'icon-user', text: this.tagData.owner_name },
+      { icon: 'icon-phone', text: this.tagData.owner_phone }
+    ];
+    if (this.tagData.owner_email) {
+      ownerInfo.push({ icon: 'icon-mail', text: this.tagData.owner_email });
+    }
+    if (this.tagData.owner_address) {
+      ownerInfo.push({ icon: 'icon-map-pin', text: this.tagData.owner_address });
+    }
+    ownerDetails.innerHTML = ownerInfo.map(info => `
+      <div class="${info.icon === 'icon-mail' ? 'owner-email' : ''}">
+        <i class="${info.icon}"></i>
+        <span>${info.text}</span>
+      </div>
+    `).join('');
+  }
+  showEmergencyBanner() {
+    const banner = document.getElementById('emergency-banner');
+    if (banner) {
+      banner.style.display = 'block';
+    }
+  }
+  setupEventListeners() {
+    // Tab switching
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const tab = btn.dataset.tab;
+        this.switchTab(tab);
+      });
+    });
+    // Handle back button
+    window.addEventListener('popstate', (event) => {
+      if (event.state && event.state.tab) {
+        this.switchTab(event.state.tab);
+      }
+    });
+    // Handle visibility change (pause/resume location tracking)
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        locationTracker.stopLocationTracking();
+      } else if (this.isLoaded) {
+        // Optionally restart tracking
+      }
+    });
+    // Handle online/offline status
+    window.addEventListener('online', () => {
+      this.showNotification('Connection restored', 'success');
+    });
+    window.addEventListener('offline', () => {
+      this.showNotification('Connection lost', 'error');
+    });
+  }
+  switchTab(tabName) {
+    // Update tab buttons
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.tab === tabName);
+    });
+    // Update tab content
+    document.querySelectorAll('.tab-pane').forEach(pane => {
+      pane.classList.toggle('active', pane.id === `tab-${tabName}`);
+    });
+    // Update URL
+    const url = new URL(window.location);
+    url.hash = tabName;
+    window.history.pushState({ tab: tabName }, '', url);
+  }
+  hideLoading() {
+    const loadingScreen = document.getElementById('loading-screen');
+    const scanContainer = document.getElementById('scan-container');
+    if (loadingScreen) loadingScreen.style.display = 'none';
+    if (scanContainer) scanContainer.style.display = 'block';
+  }
+  showError(message) {
+    const loadingScreen = document.getElementById('loading-screen');
+    const errorScreen = document.getElementById('error-screen');
+    if (loadingScreen) loadingScreen.style.display = 'none';
+    if (errorScreen) {
+      errorScreen.style.display = 'flex';
+      const errorMessage = errorScreen.querySelector('p');
+      if (errorMessage) errorMessage.textContent = message;
+    }
+  }
+  showNotification(message, type = 'info') {
+    contactHandler.showNotification(message, type);
+  }
+}
+// Initialize scan page when DOM is ready
+document.addEventListener('DOMContentLoaded', async () => {
+  const scanPage = new ScanPage();
+  await scanPage.initialize();
+  // Handle initial tab from hash
+  const hash = window.location.hash.substring(1);
+  if (hash && ['about', 'medical', 'owner', 'help'].includes(hash)) {
+    scanPage.switchTab(hash);
+  }
+});
+// Global functions for tab switching
+function switchTab(tabName) {
+  const scanPage = window.scanPage;
+  if (scanPage) {
+    scanPage.switchTab(tabName);
+  }
+}
+──────────────────────────────────────────────────
+7. LOCATION MODAL HANDLERS
+7.1 Location Modal Functions
+// Location Modal Functions
+function showLocationModal() {
+  document.getElementById('location-modal').style.display = 'flex';
+  loadLocationMap();
+}
+function closeLocationModal() {
+  document.getElementById('location-modal').style.display = 'none';
+}
+async function loadLocationMap() {
+  try {
+    const location = await locationTracker.getCurrentLocation();
+    if (location) {
+      locationTracker.showLocationOnMap(location);
+    }
+  } catch (error) {
+    console.error('Failed to load location map:', error);
+  }
+}
+async function refreshLocation() {
+  const mapElement = document.getElementById('location-map');
+  if (mapElement) {
+    mapElement.innerHTML = '<div style="text-align: center; color: #718096;">🔄 Refreshing location...</div>';
+  }
+  await loadLocationMap();
+}
+async function confirmLocationShare() {
+  await shareLocation();
+}
+──────────────────────────────────────────────────
+8. WORDPRESS BACKEND HANDLERS
+8.1 AJAX Handlers for Smart Tag System
+<?php
+// Add to functions.php
+class THEMENGIFT_Smart_Tag_AJAX {
+    public function __construct() {
+        add_action('wp_ajax_get_tag_data', [$this, 'get_tag_data']);
+        add_action('wp_ajax_nopriv_get_tag_data', [$this, 'get_tag_data']);
+        add_action('wp_ajax_record_scan', [$this, 'record_scan']);
+        add_action('wp_ajax_nopriv_record_scan', [$this, 'record_scan']);
+        add_action('wp_ajax_share_location', [$this, 'share_location']);
+        add_action('wp_ajax_nopriv_share_location', [$this, 'share_location']);
+        add_action('wp_ajax_track_conversion', [$this, 'track_conversion']);
+        add_action('wp_ajax_nopriv_track_conversion', [$this, 'track_conversion']);
+    }
+    public function get_tag_data() {
+        $tag_code = sanitize_text_field($_POST['tag_code']);
+        if (empty($tag_code)) {
+            wp_send_json_error(['message' => 'Tag code is required']);
+        }
+        global $wpdb;
+        // Get tag data
+        $tag = $wpdb->get_row($wpdb->prepare(
+            "SELECT t.*, c.customer_name, c.customer_phone, c.customer_email, c.customer_address 
+             FROM {$wpdb->prefix}tag_customers c 
+             JOIN {$wpdb->prefix}tag_subscriptions s ON c.customer_id = s.customer_id 
+             JOIN {$wpdb->prefix}tags t ON s.subscription_id = t.subscription_id 
+             WHERE t.tag_code = %s AND t.status = 'active' AND s.status = 'active'",
+            $tag_code
+        ));
+        if (!$tag) {
+            wp_send_json_error(['message' => 'Tag not found or inactive']);
+        }
+        // Get pet profile
+        $pet_profile = $wpdb->get_row($wpdb->prepare(
+            "SELECT * FROM {$wpdb->prefix}tag_profiles WHERE tag_id = %d",
+            $tag->tag_id
+        ));
+        // Prepare response data
+        $data = [
+            'tag_id' => $tag->tag_id,
+            'tag_code' => $tag->tag_code,
+            'tag_type_id' => $tag->tag_type_id,
+            'status' => $tag->status,
+            'status_text' => ucfirst($tag->status),
+            'created_at' => $tag->created_at,
+            'pet_name' => $pet_profile->pet_name ?? 'Unknown',
+            'pet_type' => $pet_profile->pet_type ?? 'Unknown',
+            'breed' => $pet_profile->breed ?? 'Unknown',
+            'age' => $pet_profile->age ?? 'Unknown',
+            'gender' => $pet_profile->gender ?? 'Unknown',
+            'color' => $pet_profile->color ?? 'Unknown',
+            'size' => $pet_profile->size ?? 'Unknown',
+            'temperament' => $pet_profile->temperament ?? 'Unknown',
+            'description' => $pet_profile->description ?? '',
+            'special_notes' => $pet_profile->special_notes ?? '',
+            'vaccination_status' => $pet_profile->vaccination_status ?? 'Unknown',
+            'allergies' => $pet_profile->allergies ?? '',
+            'medications' => $pet_profile->medications ?? '',
+            'vet_clinic' => $pet_profile->vet_clinic ?? '',
+            'vet_contact' => $pet_profile->vet_contact ?? '',
+            'pet_image' => $pet_profile->pet_image ?? '/assets/default-pet.jpg',
+            'owner_name' => $tag->customer_name,
+            'owner_phone' => $tag->customer_phone,
+            'owner_email' => $tag->customer_email,
+            'owner_address' => $tag->customer_address,
+            'emergency_contact' => $this->get_emergency_contact($tag->customer_id)
+        ];
+        wp_send_json_success($data);
+    }
+    public function record_scan() {
+        $scan_data = json_decode(stripslashes($_POST['scan_data']), true);
+        if (!$scan_data) {
+            wp_send_json_error(['message' => 'Invalid scan data']);
+        }
+        global $wpdb;
+        // Insert scan event
+        $result = $wpdb->insert(
+            $wpdb->prefix . 'tag_scan_events',
+            [
+                'tag_id' => $this->get_tag_id_by_code($scan_data['tag_code']),
+                'scanner_ip' => $_SERVER['REMOTE_ADDR'],
+                'scanner_user_agent' => $scan_data['scanner_info']['user_agent'],
+                'scanner_fingerprint' => $scan_data['scanner_info']['fingerprint'],
+                'scan_location' => json_encode($scan_data['scanner_info']['location'] ?? null),
+                'scan_timestamp' => current_time('mysql'),
+                'created_at' => current_time('mysql')
+            ],
+            ['%d', '%s', '%s', '%s', '%s', '%s', '%s']
+        );
+        if ($result === false) {
+            wp_send_json_error(['message' => 'Failed to record scan']);
+        }
+        // Send notification to tag owner
+        $this->send_scan_notification($scan_data['tag_code'], $scan_data);
+        wp_send_json_success(['message' => 'Scan recorded successfully']);
+    }
+    public function share_location() {
+        $location_data = json_decode(stripslashes($_POST['location_data']), true);
+        if (!$location_data) {
+            wp_send_json_error(['message' => 'Invalid location data']);
+        }
+        global $wpdb;
+        // Insert location share
+        $result = $wpdb->insert(
+            $wpdb->prefix . 'tag_location_shares',
+            [
+                'tag_id' => $this->get_tag_id_by_code($location_data['tag_code']),
+                'shared_location' => json_encode($location_data['location']),
+                'share_timestamp' => current_time('mysql'),
+                'created_at' => current_time('mysql')
+            ],
+            ['%d', '%s', '%s', '%s']
+        );
+        if ($result === false) {
+            wp_send_json_error(['message' => 'Failed to share location']);
+        }
+        // Send location notification to owner
+        $this->send_location_notification($location_data['tag_code'], $location_data);
+        wp_send_json_success(['message' => 'Location shared successfully']);
+    }
+    public function track_conversion() {
+        $conversion_data = json_decode(stripslashes($_POST['conversion_data']), true);
+        if (!$conversion_data) {
+            wp_send_json_error(['message' => 'Invalid conversion data']);
+        }
+        global $wpdb;
+        // Insert conversion tracking
+        $result = $wpdb->insert(
+            $wpdb->prefix . 'tag_conversions',
+            [
+                'tag_id' => $this->get_tag_id_by_code($conversion_data['tag_code']),
+                'conversion_type' => $conversion_data['action'],
+                'conversion_data' => json_encode($conversion_data),
+                'conversion_timestamp' => current_time('mysql'),
+                'created_at' => current_time('mysql')
+            ],
+            ['%d', '%s', '%s', '%s', '%s']
+        );
+        if ($result === false) {
+            wp_send_json_error(['message' => 'Failed to track conversion']);
+        }
+        wp_send_json_success(['message' => 'Conversion tracked successfully']);
+    }
+    private function get_tag_id_by_code($tag_code) {
+        global $wpdb;
+        return $wpdb->get_var($wpdb->prepare(
+            "SELECT tag_id FROM {$wpdb->prefix}tags WHERE tag_code = %s",
+            $tag_code
+        ));
+    }
+    private function get_emergency_contact($customer_id) {
+        global $wpdb;
+        return $wpdb->get_row($wpdb->prepare(
+            "SELECT * FROM {$wpdb->prefix}tag_emergency_contacts WHERE customer_id = %d",
+            $customer_id
+        ));
+    }
+    private function send_scan_notification($tag_code, $scan_data) {
+        // Implementation for sending scan notification to tag owner
+        // This could send SMS, email, or push notification
+    }
+    private function send_location_notification($tag_code, $location_data) {
+        // Implementation for sending location notification to tag owner
+        // This could send SMS, email, or push notification with location details
+    }
+}
+new THEMENGIFT_Smart_Tag_AJAX();
+?>
+──────────────────────────────────────────────────
+9. DOCUMENT SUMMARY
+Document 8 covers:
+- Complete public scan landing page with pet information display
+- Location tracking system (GPS, IP geolocation, device fingerprinting)
+- Contact system with call, message, and location sharing
+- Emergency contact functionality for lost pets
+- Mobile-optimized responsive design
+- Tab-based information organization
+- Real-time scan event recording
+- Conversion tracking and analytics
+- WordPress AJAX backend integration
+- Error handling and fallbacks
+- Accessibility and print styles
+Next Document: Document 9 — Admin Dashboard & Management
+THEMENGIFT • themengift.com • Document 8 of 15
+Premium Jewellery • Custom Gifts • Smart Pet Tags • Made in India

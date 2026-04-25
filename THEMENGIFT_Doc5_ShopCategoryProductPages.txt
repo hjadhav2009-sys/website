@@ -1,0 +1,3225 @@
+THEMENGIFT
+themengift.com
+Premium Jewellery  •  Custom Gifts  •  Smart Pet Tags  •  Made in India
+WINDSURF AI AGENT BUILD DOCUMENT
+DOCUMENT 5 OF 15
+Shop, Category & Product Pages
+Beautiful & Detailed E-commerce Experience — Complete Specifications
+──────────────────────────────────────────────────
+1. HOW TO READ THIS DOCUMENT
+This document defines every aspect of the e-commerce pages beyond the homepage. Each page includes:
+- Detailed layout specifications with pixel-perfect measurements
+- Advanced interactions and animations
+- Mobile-first responsive design
+- WooCommerce integration points
+- Performance optimization techniques
+- Accessibility compliance
+The agent must build these pages with attention to detail, focusing on user experience and visual beauty.
+──────────────────────────────────────────────────
+2. GLOBAL E-COMMERCE SETTINGS
+2.1 Page Configuration
+- Shop Page: /shop/ (WordPress → WooCommerce → Shop Page)
+- Cart Page: /cart/ (WooCommerce default)
+- Checkout Page: /checkout/ (WooCommerce default)
+- My Account: /my-account/ (WooCommerce default)
+- Products per page: 24 (configurable in WooCommerce)
+- Default sorting: Popularity
+2.2 Global CSS Variables for E-commerce
+:root {
+  /* Product Card Spacing */
+  --product-card-padding: 20px;
+  --product-card-gap: 24px;
+  --product-image-height: 300px;
+  --product-thumb-size: 80px;
+  /* Animations */
+  --transition-fast: 0.2s ease;
+  --transition-smooth: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  /* Shadows */
+  --shadow-card: 0 2px 8px rgba(0,0,0,0.08);
+  --shadow-card-hover: 0 8px 24px rgba(27,79,158,0.15);
+  --shadow-modal: 0 20px 60px rgba(0,0,0,0.3);
+  /* Border Radius */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  /* Z-index Layers */
+  --z-dropdown: 1000;
+  --z-sticky: 1020;
+  --z-modal: 1050;
+  --z-tooltip: 1070;
+}
+2.3 Loading States & Skeletons
+/* Skeleton Loader Animation */
+@keyframes skeleton-loading {
+  0% { background-position: -200px 0; }
+  100% { background-position: calc(200px + 100%) 0; }
+}
+.skeleton {
+  background: linear-gradient(90deg, #f0f0f0 0px, #f8f8f8 40px, #f0f0f0 80px);
+  background-size: 200px 100%;
+  animation: skeleton-loading 1.5s ease-in-out infinite;
+}
+.skeleton-text { height: 16px; margin-bottom: 8px; border-radius: 4px; }
+.skeleton-title { height: 24px; width: 80%; margin-bottom: 12px; border-radius: 4px; }
+.skeleton-image { height: var(--product-image-height); border-radius: var(--radius-md); }
+──────────────────────────────────────────────────
+3. SHOP PAGE — MAIN PRODUCT LISTING
+3.1 Overall Layout Structure
+<div class="shop-page">
+  <!-- Breadcrumb -->
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <div class="container">
+      <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/" itemprop="item"><span itemprop="name">Home</span></a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <span itemprop="name">Shop</span>
+          <meta itemprop="position" content="2" />
+        </li>
+      </ol>
+    </div>
+  </nav>
+  <!-- Page Header -->
+  <header class="shop-header">
+    <div class="container">
+      <h1 class="page-title">Shop All Products</h1>
+      <p class="page-subtitle">Discover our complete collection of premium jewellery and gifts</p>
+    </div>
+  </header>
+  <div class="shop-content">
+    <!-- Filter Sidebar -->
+    <aside class="shop-sidebar" role="complementary">
+      <div class="filter-sticky">
+        <!-- Filter content here -->
+      </div>
+    </aside>
+    <!-- Main Content -->
+    <main class="shop-main" role="main">
+      <!-- Top Bar -->
+      <div class="shop-top-bar">
+        <!-- Top bar content here -->
+      </div>
+      <!-- Product Grid -->
+      <div class="products-grid" id="products-container">
+        <!-- Products loaded via AJAX -->
+      </div>
+      <!-- Load More / Pagination -->
+      <div class="shop-pagination">
+        <!-- Pagination here -->
+      </div>
+    </main>
+  </div>
+</div>
+3.2 Filter Sidebar (Left Side)
+<aside class="shop-sidebar">
+  <div class="filter-sticky">
+    <!-- Mobile Filter Toggle -->
+    <button class="filter-toggle-mobile" onclick="toggleMobileFilters()">
+      <i class="icon-filter"></i>
+      Filters
+      <span class="filter-count">(0)</span>
+    </button>
+    <div class="filters-panel">
+      <!-- Clear All Filters -->
+      <div class="filter-actions">
+        <button class="clear-filters" onclick="clearAllFilters()">
+          Clear All
+        </button>
+        <button class="close-filters-mobile" onclick="toggleMobileFilters()">
+          <i class="icon-close"></i>
+        </button>
+      </div>
+      <!-- Categories Filter -->
+      <div class="filter-group">
+        <h3 class="filter-title" onclick="toggleFilter('categories')">
+          Categories
+          <i class="icon-chevron-down"></i>
+        </h3>
+        <div class="filter-content" id="filter-categories">
+          <ul class="filter-list">
+            <li class="filter-item">
+              <label class="filter-label">
+                <input type="checkbox" name="category" value="rings" onchange="applyFilters()">
+                <span class="checkmark"></span>
+                <span class="filter-text">Rings</span>
+                <span class="filter-count">(85)</span>
+              </label>
+            </li>
+            <li class="filter-item">
+              <label class="filter-label">
+                <input type="checkbox" name="category" value="chains" onchange="applyFilters()">
+                <span class="checkmark"></span>
+                <span class="filter-text">Chains</span>
+                <span class="filter-count">(120)</span>
+              </label>
+            </li>
+            <li class="filter-item">
+              <label class="filter-label">
+                <input type="checkbox" name="category" value="bracelets" onchange="applyFilters()">
+                <span class="checkmark"></span>
+                <span class="filter-text">Bracelets</span>
+                <span class="filter-count">(95)</span>
+              </label>
+            </li>
+            <li class="filter-item">
+              <label class="filter-label">
+                <input type="checkbox" name="category" value="earrings" onchange="applyFilters()">
+                <span class="checkmark"></span>
+                <span class="filter-text">Earrings</span>
+                <span class="filter-count">(110)</span>
+              </label>
+            </li>
+            <li class="filter-item">
+              <label class="filter-label">
+                <input type="checkbox" name="category" value="smart-tags" onchange="applyFilters()">
+                <span class="checkmark"></span>
+                <span class="filter-text">Smart Tags</span>
+                <span class="filter-count">(12)</span>
+              </label>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <!-- Price Range Filter -->
+      <div class="filter-group">
+        <h3 class="filter-title" onclick="toggleFilter('price')">
+          Price Range
+          <i class="icon-chevron-down"></i>
+        </h3>
+        <div class="filter-content" id="filter-price">
+          <div class="price-range">
+            <div class="price-inputs">
+              <div class="price-input-group">
+                <label for="min-price">Min</label>
+                <input type="number" id="min-price" placeholder="0" min="0" max="10000" onchange="applyFilters()">
+              </div>
+              <span class="price-separator">-</span>
+              <div class="price-input-group">
+                <label for="max-price">Max</label>
+                <input type="number" id="max-price" placeholder="10000" min="0" max="10000" onchange="applyFilters()">
+              </div>
+            </div>
+            <div class="price-slider">
+              <input type="range" id="price-slider" min="0" max="10000" value="10000" step="100" oninput="updatePriceRange(this.value)">
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Material Filter -->
+      <div class="filter-group">
+        <h3 class="filter-title" onclick="toggleFilter('material')">
+          Material
+          <i class="icon-chevron-down"></i>
+        </h3>
+        <div class="filter-content" id="filter-material">
+          <ul class="filter-list">
+            <li class="filter-item">
+              <label class="filter-label">
+                <input type="checkbox" name="material" value="gold-plated" onchange="applyFilters()">
+                <span class="checkmark"></span>
+                <span class="filter-text">Gold Plated</span>
+                <span class="filter-count">(156)</span>
+              </label>
+            </li>
+            <li class="filter-item">
+              <label class="filter-label">
+                <input type="checkbox" name="material" value="silver-plated" onchange="applyFilters()">
+                <span class="checkmark"></span>
+                <span class="filter-text">Silver Plated</span>
+                <span class="filter-count">(142)</span>
+              </label>
+            </li>
+            <li class="filter-item">
+              <label class="filter-label">
+                <input type="checkbox" name="material" value="stainless-steel" onchange="applyFilters()">
+                <span class="checkmark"></span>
+                <span class="filter-text">Stainless Steel</span>
+                <span class="filter-count">(89)</span>
+              </label>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <!-- Color Filter -->
+      <div class="filter-group">
+        <h3 class="filter-title" onclick="toggleFilter('color')">
+          Color
+          <i class="icon-chevron-down"></i>
+        </h3>
+        <div class="filter-content" id="filter-color">
+          <ul class="color-list">
+            <li class="color-item">
+              <label class="color-label">
+                <input type="checkbox" name="color" value="gold" onchange="applyFilters()">
+                <span class="color-swatch" style="background: #FFD700;"></span>
+                <span class="color-name">Gold</span>
+              </label>
+            </li>
+            <li class="color-item">
+              <label class="color-label">
+                <input type="checkbox" name="color" value="silver" onchange="applyFilters()">
+                <span class="color-swatch" style="background: #C0C0C0;"></span>
+                <span class="color-name">Silver</span>
+              </label>
+            </li>
+            <li class="color-item">
+              <label class="color-label">
+                <input type="checkbox" name="color" value="rose-gold" onchange="applyFilters()">
+                <span class="color-swatch" style="background: #E0BFB8;"></span>
+                <span class="color-name">Rose Gold</span>
+              </label>
+            </li>
+            <li class="color-item">
+              <label class="color-label">
+                <input type="checkbox" name="color" value="black" onchange="applyFilters()">
+                <span class="color-swatch" style="background: #000000;"></span>
+                <span class="color-name">Black</span>
+              </label>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</aside>
+3.3 Top Bar (Above Products)
+<div class="shop-top-bar">
+  <div class="top-bar-left">
+    <span class="results-count">
+      Showing <span id="results-start">1</span>-<span id="results-end">24</span> of <span id="results-total">422</span> products
+    </span>
+  </div>
+  <div class="top-bar-right">
+    <!-- View Toggle -->
+    <div class="view-toggle">
+      <button class="view-btn active" data-view="grid" onclick="setViewMode('grid')" title="Grid View">
+        <i class="icon-grid"></i>
+      </button>
+      <button class="view-btn" data-view="list" onclick="setViewMode('list')" title="List View">
+        <i class="icon-list"></i>
+      </button>
+    </div>
+    <!-- Sort Dropdown -->
+    <div class="sort-dropdown">
+      <button class="sort-toggle" onclick="toggleSortDropdown()">
+        Sort by: <span id="current-sort">Popularity</span>
+        <i class="icon-chevron-down"></i>
+      </button>
+      <div class="sort-menu" id="sort-menu">
+        <a href="#" class="sort-option active" data-sort="popularity" onclick="sortProducts('popularity')">
+          Popularity
+        </a>
+        <a href="#" class="sort-option" data-sort="price-low" onclick="sortProducts('price-low')">
+          Price: Low to High
+        </a>
+        <a href="#" class="sort-option" data-sort="price-high" onclick="sortProducts('price-high')">
+          Price: High to Low
+        </a>
+        <a href="#" class="sort-option" data-sort="newest" onclick="sortProducts('newest')">
+          Newest First
+        </a>
+        <a href="#" class="sort-option" data-sort="rating" onclick="sortProducts('rating')">
+          Customer Rating
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+3.4 Product Grid (3 Columns Desktop, 2 Tablet, 2 Mobile)
+<div class="products-grid" id="products-container">
+  <!-- Product Card Template -->
+  <div class="product-card" data-product-id="12345">
+    <!-- Quick Actions -->
+    <div class="product-quick-actions">
+      <button class="quick-action quick-view" onclick="openQuickView(12345)" title="Quick View">
+        <i class="icon-eye"></i>
+      </button>
+      <button class="quick-action wishlist" onclick="toggleWishlist(12345)" title="Add to Wishlist">
+        <i class="icon-heart"></i>
+      </button>
+      <button class="quick-action compare" onclick="addToCompare(12345)" title="Add to Compare">
+        <i class="icon-scale"></i>
+      </button>
+    </div>
+    <!-- Product Image -->
+    <div class="product-image">
+      <a href="/product/sample-product/">
+        <img src="/uploads/products/sample-1.jpg" 
+             alt="Sample Product" 
+             width="300" 
+             height="300"
+             loading="lazy"
+             onerror="this.src='/assets/placeholder-product.jpg'">
+      </a>
+      <!-- Badges -->
+      <div class="product-badges">
+        <span class="badge badge-sale">-20%</span>
+        <span class="badge badge-new">New</span>
+      </div>
+      <!-- Hover Image -->
+      <img src="/uploads/products/sample-1-hover.jpg" 
+           alt="Sample Product Hover" 
+           class="product-image-hover"
+           width="300" 
+           height="300">
+    </div>
+    <!-- Product Info -->
+    <div class="product-info">
+      <div class="product-category">
+        <a href="/category/rings/">Rings</a>
+      </div>
+      <h3 class="product-title">
+        <a href="/product/sample-product/">Elegant Diamond Ring</a>
+      </h3>
+      <div class="product-rating">
+        <div class="stars" title="4.5 out of 5 stars">
+          <i class="icon-star filled"></i>
+          <i class="icon-star filled"></i>
+          <i class="icon-star filled"></i>
+          <i class="icon-star filled"></i>
+          <i class="icon-star half"></i>
+        </div>
+        <span class="rating-count">(234)</span>
+      </div>
+      <div class="product-price">
+        <span class="current-price">₹1,999</span>
+        <span class="original-price">₹2,499</span>
+      </div>
+      <div class="product-variations">
+        <div class="variation-swatches">
+          <span class="swatch" style="background: #FFD700;" title="Gold"></span>
+          <span class="swatch" style="background: #C0C0C0;" title="Silver"></span>
+          <span class="swatch" style="background: #E0BFB8;" title="Rose Gold"></span>
+        </div>
+      </div>
+      <button class="btn btn-primary btn-block add-to-cart" onclick="addToCart(12345)">
+        <i class="icon-cart"></i>
+        Add to Cart
+      </button>
+    </div>
+  </div>
+</div>
+3.5 CSS for Shop Page
+/* Shop Page Layout */
+.shop-page {
+  background: #FAFBFC;
+  min-height: 100vh;
+}
+.breadcrumb {
+  background: white;
+  padding: 16px 0;
+  border-bottom: 1px solid #E2E8F0;
+}
+.breadcrumb ol {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-size: 14px;
+}
+.breadcrumb a {
+  color: #4A5568;
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+.breadcrumb a:hover {
+  color: #1B4F9E;
+}
+.shop-header {
+  background: white;
+  padding: 40px 0;
+  text-align: center;
+  border-bottom: 1px solid #E2E8F0;
+}
+.page-title {
+  font-size: 36px;
+  font-weight: 700;
+  color: #1A202C;
+  margin-bottom: 8px;
+}
+.page-subtitle {
+  font-size: 18px;
+  color: #4A5568;
+  margin: 0;
+}
+.shop-content {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 40px;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+/* Sidebar */
+.shop-sidebar {
+  position: relative;
+}
+.filter-sticky {
+  position: sticky;
+  top: 100px;
+  background: white;
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  box-shadow: var(--shadow-card);
+  max-height: calc(100vh - 120px);
+  overflow-y: auto;
+}
+.filter-toggle-mobile {
+  display: none;
+  width: 100%;
+  padding: 12px 16px;
+  background: #1B4F9E;
+  color: white;
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+.filter-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #E2E8F0;
+}
+.clear-filters {
+  background: none;
+  border: none;
+  color: #1B4F9E;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 4px 0;
+}
+.clear-filters:hover {
+  text-decoration: underline;
+}
+.filter-group {
+  margin-bottom: 24px;
+}
+.filter-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 16px;
+  font-weight: 600;
+  color: #1A202C;
+  margin: 0 0 16px 0;
+  cursor: pointer;
+  padding: 8px 0;
+  border-bottom: 1px solid transparent;
+  transition: all var(--transition-fast);
+}
+.filter-title:hover {
+  color: #1B4F9E;
+  border-bottom-color: #1B4F9E;
+}
+.filter-content {
+  margin-bottom: 8px;
+}
+.filter-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.filter-item {
+  margin-bottom: 12px;
+}
+.filter-label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-size: 14px;
+  color: #4A5568;
+  transition: color var(--transition-fast);
+}
+.filter-label:hover {
+  color: #1A202C;
+}
+.filter-label input[type="checkbox"] {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+}
+.checkmark {
+  width: 18px;
+  height: 18px;
+  border: 2px solid #CBD5E0;
+  border-radius: 4px;
+  margin-right: 12px;
+  position: relative;
+  transition: all var(--transition-fast);
+}
+.filter-label input:checked ~ .checkmark {
+  background: #1B4F9E;
+  border-color: #1B4F9E;
+}
+.filter-label input:checked ~ .checkmark:after {
+  content: '';
+  position: absolute;
+  left: 5px;
+  top: 2px;
+  width: 5px;
+  height: 9px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+.filter-text {
+  flex: 1;
+}
+.filter-count {
+  color: #718096;
+  font-size: 12px;
+}
+/* Price Range */
+.price-inputs {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.price-input-group {
+  flex: 1;
+}
+.price-input-group label {
+  display: block;
+  font-size: 12px;
+  color: #718096;
+  margin-bottom: 4px;
+}
+.price-input-group input {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #E2E8F0;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+}
+.price-separator {
+  color: #4A5568;
+  font-weight: 500;
+}
+.price-slider input {
+  width: 100%;
+  height: 6px;
+  border-radius: 3px;
+  background: #E2E8F0;
+  outline: none;
+  -webkit-appearance: none;
+}
+.price-slider input::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #1B4F9E;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+/* Color Swatches */
+.color-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+.color-item {
+  margin-bottom: 0;
+}
+.color-label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-size: 14px;
+  color: #4A5568;
+  transition: color var(--transition-fast);
+}
+.color-swatch {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  margin-right: 8px;
+  border: 2px solid transparent;
+  transition: all var(--transition-fast);
+}
+.color-label input:checked ~ .color-swatch {
+  border-color: #1B4F9E;
+  box-shadow: 0 0 0 2px rgba(27,79,158,0.2);
+}
+/* Top Bar */
+.shop-top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+  padding: 16px 20px;
+  background: white;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+}
+.results-count {
+  font-size: 14px;
+  color: #4A5568;
+}
+.top-bar-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+.view-toggle {
+  display: flex;
+  background: #F7FAFC;
+  border-radius: var(--radius-sm);
+  padding: 4px;
+}
+.view-btn {
+  padding: 8px 12px;
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-sm);
+  color: #4A5568;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+.view-btn.active,
+.view-btn:hover {
+  background: white;
+  color: #1B4F9E;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+.sort-dropdown {
+  position: relative;
+}
+.sort-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: white;
+  border: 1px solid #E2E8F0;
+  border-radius: var(--radius-sm);
+  color: #4A5568;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+.sort-toggle:hover {
+  border-color: #1B4F9E;
+  color: #1A202C;
+}
+.sort-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 4px;
+  background: white;
+  border: 1px solid #E2E8F0;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card);
+  min-width: 200px;
+  z-index: var(--z-dropdown);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: all var(--transition-fast);
+}
+.sort-menu.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+.sort-option {
+  display: block;
+  padding: 12px 16px;
+  color: #4A5568;
+  text-decoration: none;
+  font-size: 14px;
+  transition: all var(--transition-fast);
+}
+.sort-option:hover,
+.sort-option.active {
+  background: #F7FAFC;
+  color: #1B4F9E;
+}
+.sort-option:first-child {
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
+}
+.sort-option:last-child {
+  border-radius: 0 0 var(--radius-md) var(--radius-md);
+}
+/* Product Grid */
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--product-card-gap);
+  margin-bottom: 40px;
+}
+.product-card {
+  background: white;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  position: relative;
+  transition: all var(--transition-smooth);
+  box-shadow: var(--shadow-card);
+}
+.product-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-card-hover);
+}
+.product-quick-actions {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  opacity: 0;
+  transform: translateX(10px);
+  transition: all var(--transition-smooth);
+  z-index: 10;
+}
+.product-card:hover .product-quick-actions {
+  opacity: 1;
+  transform: translateX(0);
+}
+.quick-action {
+  width: 40px;
+  height: 40px;
+  background: white;
+  border: none;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  transition: all var(--transition-fast);
+}
+.quick-action:hover {
+  background: #1B4F9E;
+  color: white;
+  transform: scale(1.1);
+}
+.quick-action.wishlist.active {
+  background: #E53E3E;
+  color: white;
+}
+.product-image {
+  position: relative;
+  height: var(--product-image-height);
+  overflow: hidden;
+}
+.product-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--transition-smooth);
+}
+.product-image-hover {
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  transition: opacity var(--transition-smooth);
+}
+.product-card:hover .product-image-hover {
+  opacity: 1;
+}
+.product-badges {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.badge {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.badge-sale {
+  background: #E53E3E;
+  color: white;
+}
+.badge-new {
+  background: #38A169;
+  color: white;
+}
+.product-info {
+  padding: var(--product-card-padding);
+}
+.product-category {
+  margin-bottom: 8px;
+}
+.product-category a {
+  color: #718096;
+  text-decoration: none;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: color var(--transition-fast);
+}
+.product-category a:hover {
+  color: #1B4F9E;
+}
+.product-title {
+  margin: 0 0 12px 0;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+.product-title a {
+  color: #1A202C;
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+.product-title a:hover {
+  color: #1B4F9E;
+}
+.product-rating {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.stars {
+  display: flex;
+  gap: 2px;
+  color: #F6E05E;
+  font-size: 14px;
+}
+.rating-count {
+  font-size: 12px;
+  color: #718096;
+}
+.product-price {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.current-price {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1A202C;
+}
+.original-price {
+  font-size: 16px;
+  color: #718096;
+  text-decoration: line-through;
+}
+.product-variations {
+  margin-bottom: 16px;
+}
+.variation-swatches {
+  display: flex;
+  gap: 8px;
+}
+.swatch {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 2px solid #E2E8F0;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+.swatch:hover,
+.swatch.active {
+  border-color: #1B4F9E;
+  transform: scale(1.1);
+}
+.add-to-cart {
+  width: 100%;
+  padding: 12px;
+  background: #1B4F9E;
+  color: white;
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.add-to-cart:hover {
+  background: #2E7CD6;
+  transform: translateY(-1px);
+}
+.add-to-cart.loading {
+  background: #718096;
+  pointer-events: none;
+}
+.add-to-cart.added {
+  background: #38A169;
+}
+/* Responsive Design */
+@media (max-width: 1199px) {
+  .shop-content {
+    grid-template-columns: 260px 1fr;
+    gap: 32px;
+  }
+  .products-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 767px) {
+  .shop-content {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    padding: 24px 16px;
+  }
+  .shop-sidebar {
+    order: 2;
+  }
+  .shop-main {
+    order: 1;
+  }
+  .filter-toggle-mobile {
+    display: flex;
+  }
+  .filters-panel {
+    position: fixed;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: white;
+    z-index: var(--z-modal);
+    overflow-y: auto;
+    transition: left var(--transition-smooth);
+  }
+  .filters-panel.show {
+    left: 0;
+  }
+  .filter-sticky {
+    position: static;
+    box-shadow: none;
+    padding: 20px;
+  }
+  .products-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+  .shop-top-bar {
+    flex-direction: column;
+    gap: 16px;
+    align-items: stretch;
+  }
+  .top-bar-right {
+    justify-content: space-between;
+  }
+  .page-title {
+    font-size: 28px;
+  }
+  .page-subtitle {
+    font-size: 16px;
+  }
+}
+3.6 JavaScript for Shop Page
+// Filter Management
+class ShopFilters {
+  constructor() {
+    this.filters = {
+      categories: [],
+      priceMin: 0,
+      priceMax: 10000,
+      materials: [],
+      colors: []
+    };
+    this.currentPage = 1;
+    this.isLoading = false;
+  }
+  applyFilters() {
+    // Collect filter values
+    this.filters.categories = Array.from(document.querySelectorAll('input[name="category"]:checked')).map(el => el.value);
+    this.filters.materials = Array.from(document.querySelectorAll('input[name="material"]:checked')).map(el => el.value);
+    this.filters.colors = Array.from(document.querySelectorAll('input[name="color"]:checked')).map(el => el.value);
+    this.filters.priceMin = parseInt(document.getElementById('min-price').value) || 0;
+    this.filters.priceMax = parseInt(document.getElementById('max-price').value) || 10000;
+    this.currentPage = 1;
+    this.loadProducts();
+    this.updateFilterCount();
+  }
+  loadProducts() {
+    if (this.isLoading) return;
+    this.isLoading = true;
+    this.showLoadingState();
+    const formData = new FormData();
+    formData.append('action', 'filter_products');
+    formData.append('filters', JSON.stringify(this.filters));
+    formData.append('page', this.currentPage);
+    fetch('/wp-admin/admin-ajax.php', {
+      method: 'POST',
+      body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+      this.renderProducts(data.products);
+      this.updatePagination(data.pagination);
+      this.updateResultsCount(data.count);
+      this.hideLoadingState();
+      this.isLoading = false;
+    })
+    .catch(error => {
+      console.error('Error loading products:', error);
+      this.hideLoadingState();
+      this.isLoading = false;
+    });
+  }
+  showLoadingState() {
+    const container = document.getElementById('products-container');
+    container.innerHTML = '';
+    // Show skeleton loaders
+    for (let i = 0; i < 6; i++) {
+      const skeleton = this.createProductSkeleton();
+      container.appendChild(skeleton);
+    }
+  }
+  createProductSkeleton() {
+    const skeleton = document.createElement('div');
+    skeleton.className = 'product-card skeleton-card';
+    skeleton.innerHTML = `
+      <div class="skeleton skeleton-image"></div>
+      <div class="product-info">
+        <div class="skeleton skeleton-text"></div>
+        <div class="skeleton skeleton-title"></div>
+        <div class="skeleton skeleton-text"></div>
+        <div class="skeleton skeleton-text"></div>
+      </div>
+    `;
+    return skeleton;
+  }
+  renderProducts(products) {
+    const container = document.getElementById('products-container');
+    container.innerHTML = '';
+    products.forEach(product => {
+      const productCard = this.createProductCard(product);
+      container.appendChild(productCard);
+    });
+  }
+  createProductCard(product) {
+    const card = document.createElement('div');
+    card.className = 'product-card';
+    card.dataset.productId = product.id;
+    card.innerHTML = `
+      <div class="product-quick-actions">
+        <button class="quick-action quick-view" onclick="openQuickView(${product.id})" title="Quick View">
+          <i class="icon-eye"></i>
+        </button>
+        <button class="quick-action wishlist ${product.in_wishlist ? 'active' : ''}" onclick="toggleWishlist(${product.id})" title="Add to Wishlist">
+          <i class="icon-heart"></i>
+        </button>
+        <button class="quick-action compare" onclick="addToCompare(${product.id})" title="Add to Compare">
+          <i class="icon-scale"></i>
+        </button>
+      </div>
+      <div class="product-image">
+        <a href="${product.permalink}">
+          <img src="${product.image}" alt="${product.title}" width="300" height="300" loading="lazy">
+        </a>
+        ${product.badges ? `<div class="product-badges">${product.badges}</div>` : ''}
+        ${product.hover_image ? `<img src="${product.hover_image}" alt="${product.title}" class="product-image-hover" width="300" height="300">` : ''}
+      </div>
+      <div class="product-info">
+        <div class="product-category">
+          <a href="${product.category_url}">${product.category}</a>
+        </div>
+        <h3 class="product-title">
+          <a href="${product.permalink}">${product.title}</a>
+        </h3>
+        <div class="product-rating">
+          <div class="stars" title="${product.rating} out of 5 stars">
+            ${this.renderStars(product.rating)}
+          </div>
+          <span class="rating-count">(${product.review_count})</span>
+        </div>
+        <div class="product-price">
+          <span class="current-price">₹${product.price}</span>
+          ${product.sale_price ? `<span class="original-price">₹${product.sale_price}</span>` : ''}
+        </div>
+        ${product.variations ? `
+          <div class="product-variations">
+            <div class="variation-swatches">
+              ${product.variations.map(variation => 
+                `<span class="swatch" style="background: ${variation.color};" title="${variation.name}"></span>`
+              ).join('')}
+            </div>
+          </div>
+        ` : ''}
+        <button class="btn btn-primary btn-block add-to-cart" onclick="addToCart(${product.id})">
+          <i class="icon-cart"></i>
+          Add to Cart
+        </button>
+      </div>
+    `;
+    return card;
+  }
+  renderStars(rating) {
+    const fullStars = Math.floor(rating);
+    const hasHalfStar = rating % 1 !== 0;
+    const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+    let stars = '';
+    for (let i = 0; i < fullStars; i++) {
+      stars += '<i class="icon-star filled"></i>';
+    }
+    if (hasHalfStar) {
+      stars += '<i class="icon-star half"></i>';
+    }
+    for (let i = 0; i < emptyStars; i++) {
+      stars += '<i class="icon-star"></i>';
+    }
+    return stars;
+  }
+  updateFilterCount() {
+    const count = this.filters.categories.length + 
+                  this.filters.materials.length + 
+                  this.filters.colors.length + 
+                  (this.filters.priceMin > 0 ? 1 : 0) + 
+                  (this.filters.priceMax < 10000 ? 1 : 0);
+    document.querySelector('.filter-count').textContent = count > 0 ? `(${count})` : '';
+  }
+}
+// Initialize filters
+const shopFilters = new ShopFilters();
+// Global functions
+function toggleFilter(filterId) {
+  const content = document.getElementById(`filter-${filterId}`);
+  const title = content.previousElementSibling;
+  const icon = title.querySelector('i');
+  if (content.style.display === 'none') {
+    content.style.display = 'block';
+    icon.style.transform = 'rotate(0deg)';
+  } else {
+    content.style.display = 'none';
+    icon.style.transform = 'rotate(-90deg)';
+  }
+}
+function toggleMobileFilters() {
+  const panel = document.querySelector('.filters-panel');
+  panel.classList.toggle('show');
+  document.body.style.overflow = panel.classList.contains('show') ? 'hidden' : '';
+}
+function clearAllFilters() {
+  document.querySelectorAll('.filters-panel input[type="checkbox"]').forEach(cb => cb.checked = false);
+  document.getElementById('min-price').value = '';
+  document.getElementById('max-price').value = '';
+  shopFilters.applyFilters();
+}
+function applyFilters() {
+  shopFilters.applyFilters();
+}
+function toggleSortDropdown() {
+  const menu = document.getElementById('sort-menu');
+  menu.classList.toggle('show');
+}
+function sortProducts(sortBy) {
+  // Update sort state and reload products
+  event.preventDefault();
+  document.getElementById('current-sort').textContent = event.target.textContent;
+  document.querySelectorAll('.sort-option').forEach(opt => opt.classList.remove('active'));
+  event.target.classList.add('active');
+  toggleSortDropdown();
+  shopFilters.loadProducts();
+}
+function setViewMode(view) {
+  document.querySelectorAll('.view-btn').forEach(btn => btn.classList.remove('active'));
+  document.querySelector(`[data-view="${view}"]`).classList.add('active');
+  const grid = document.getElementById('products-container');
+  if (view === 'list') {
+    grid.classList.add('list-view');
+  } else {
+    grid.classList.remove('list-view');
+  }
+}
+// Close dropdowns when clicking outside
+document.addEventListener('click', function(event) {
+  if (!event.target.closest('.sort-dropdown')) {
+    document.getElementById('sort-menu').classList.remove('show');
+  }
+});
+// Infinite scroll for mobile
+let isLoadingMore = false;
+function loadMoreProducts() {
+  if (isLoadingMore) return;
+  const scrollPosition = window.innerHeight + window.scrollY;
+  const threshold = document.body.offsetHeight - 1000;
+  if (scrollPosition >= threshold) {
+    isLoadingMore = true;
+    shopFilters.currentPage++;
+    shopFilters.loadProducts();
+    // Reset flag after a delay
+    setTimeout(() => {
+      isLoadingMore = false;
+    }, 1000);
+  }
+}
+window.addEventListener('scroll', loadMoreProducts);
+──────────────────────────────────────────────────
+4. CATEGORY PAGES
+4.1 Category Hero Banner
+<div class="category-hero" style="background-image: url('/uploads/categories/rings-hero.jpg');">
+  <div class="category-hero-overlay"></div>
+  <div class="container">
+    <div class="category-hero-content">
+      <nav class="category-breadcrumb">
+        <a href="/">Home</a>
+        <i class="icon-chevron-right"></i>
+        <a href="/shop/">Shop</a>
+        <i class="icon-chevron-right"></i>
+        <span>Rings</span>
+      </nav>
+      <h1 class="category-title">Rings Collection</h1>
+      <p class="category-description">
+        Discover our stunning collection of elegant rings, from timeless classics to modern designs. 
+        Crafted with precision and available in gold, silver, and rose gold plating.
+      </p>
+      <div class="category-stats">
+        <div class="stat-item">
+          <span class="stat-number">85</span>
+          <span class="stat-label">Products</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number">₹499</span>
+          <span class="stat-label">Starting From</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number">4.6★</span>
+          <span class="stat-label">Avg Rating</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+4.2 Category Banner Specifications (For Canva)
+<!-- Banner dimensions and requirements -->
+<!--
+Category Hero Banner Specifications:
+- Dimensions: 1920x600px
+- Format: JPG or PNG
+- File size: Under 500KB
+- Safe text area: Center 60% (avoid important elements on edges)
+- Color scheme: Complement THEMENGIFT brand (#1B4F9E)
+- Style: Lifestyle/product photography with elegant presentation
+- Text overlay: Add subtle gradient overlay for text readability
+- Categories needed:
+  * Rings: Elegant hand with ring, soft lighting
+  * Chains: Layered necklaces on neutral background
+  * Bracelets: Wrist showcase with multiple styles
+  * Earrings: Ear close-up with various designs
+  * Smart Tags: Pet with collar tag, tech aesthetic
+-->
+4.3 Subcategories Grid
+<div class="category-subcategories">
+  <div class="container">
+    <h2 class="subcategories-title">Shop by Type</h2>
+    <div class="subcategories-grid">
+      <div class="subcategory-card">
+        <div class="subcategory-image">
+          <img src="/uploads/subcategories/engagement-rings.jpg" alt="Engagement Rings" width="300" height="200">
+          <div class="subcategory-overlay">
+            <h3>Engagement Rings</h3>
+            <p>25 Products</p>
+            <a href="/category/rings/engagement/" class="btn btn-outline">Shop Now</a>
+          </div>
+        </div>
+      </div>
+      <div class="subcategory-card">
+        <div class="subcategory-image">
+          <img src="/uploads/subcategories/wedding-rings.jpg" alt="Wedding Rings" width="300" height="200">
+          <div class="subcategory-overlay">
+            <h3>Wedding Rings</h3>
+            <p>18 Products</p>
+            <a href="/category/rings/wedding/" class="btn btn-outline">Shop Now</a>
+          </div>
+        </div>
+      </div>
+      <div class="subcategory-card">
+        <div class="subcategory-image">
+          <img src="/uploads/subcategories/fashion-rings.jpg" alt="Fashion Rings" width="300" height="200">
+          <div class="subcategory-overlay">
+            <h3>Fashion Rings</h3>
+            <p>42 Products</p>
+            <a href="/category/rings/fashion/" class="btn btn-outline">Shop Now</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+4.4 Featured Products Section
+<div class="category-featured">
+  <div class="container">
+    <h2 class="featured-title">Featured Rings</h2>
+    <div class="featured-products">
+      <!-- Same product card structure as shop page -->
+      <div class="product-card featured">
+        <div class="featured-badge">
+          <i class="icon-star"></i>
+          <span>Featured</span>
+        </div>
+        <!-- Product card content -->
+      </div>
+    </div>
+  </div>
+</div>
+4.5 Category Page CSS
+.category-hero {
+  position: relative;
+  height: 600px;
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  display: flex;
+  align-items: center;
+  margin-bottom: 60px;
+}
+.category-hero-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(27,79,158,0.8), rgba(0,0,0,0.6));
+}
+.category-hero-content {
+  position: relative;
+  z-index: 2;
+  color: white;
+  max-width: 600px;
+}
+.category-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 24px;
+  font-size: 14px;
+}
+.category-breadcrumb a {
+  color: rgba(255,255,255,0.8);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+.category-breadcrumb a:hover {
+  color: white;
+}
+.category-breadcrumb i {
+  color: rgba(255,255,255,0.6);
+  font-size: 12px;
+}
+.category-title {
+  font-size: 48px;
+  font-weight: 700;
+  margin-bottom: 16px;
+  line-height: 1.2;
+}
+.category-description {
+  font-size: 18px;
+  line-height: 1.6;
+  margin-bottom: 32px;
+  opacity: 0.95;
+}
+.category-stats {
+  display: flex;
+  gap: 40px;
+}
+.stat-item {
+  text-align: center;
+}
+.stat-number {
+  display: block;
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.stat-label {
+  font-size: 14px;
+  opacity: 0.8;
+}
+/* Subcategories */
+.category-subcategories {
+  margin-bottom: 60px;
+}
+.subcategories-title {
+  font-size: 32px;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 40px;
+  color: #1A202C;
+}
+.subcategories-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+}
+.subcategory-card {
+  position: relative;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+  transition: all var(--transition-smooth);
+}
+.subcategory-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-card-hover);
+}
+.subcategory-image {
+  position: relative;
+  height: 200px;
+}
+.subcategory-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--transition-smooth);
+}
+.subcategory-card:hover .subcategory-image img {
+  transform: scale(1.05);
+}
+.subcategory-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+  padding: 30px 20px 20px;
+  color: white;
+  transform: translateY(100%);
+  transition: transform var(--transition-smooth);
+}
+.subcategory-card:hover .subcategory-overlay {
+  transform: translateY(0);
+}
+.subcategory-overlay h3 {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+.subcategory-overlay p {
+  font-size: 14px;
+  margin-bottom: 16px;
+  opacity: 0.9;
+}
+/* Featured Products */
+.category-featured {
+  margin-bottom: 60px;
+}
+.featured-title {
+  font-size: 32px;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 40px;
+  color: #1A202C;
+}
+.featured-products {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 30px;
+}
+.product-card.featured {
+  border: 2px solid #1B4F9E;
+  position: relative;
+}
+.featured-badge {
+  position: absolute;
+  top: -12px;
+  left: 20px;
+  background: #1B4F9E;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  z-index: 10;
+}
+/* Responsive */
+@media (max-width: 1199px) {
+  .subcategories-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .featured-products {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+@media (max-width: 767px) {
+  .category-hero {
+    height: 400px;
+    background-attachment: scroll;
+  }
+  .category-title {
+    font-size: 32px;
+  }
+  .category-description {
+    font-size: 16px;
+  }
+  .category-stats {
+    gap: 20px;
+  }
+  .stat-number {
+    font-size: 24px;
+  }
+  .subcategories-grid {
+    grid-template-columns: 1fr;
+  }
+  .featured-products {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+──────────────────────────────────────────────────
+5. PRODUCT DETAIL PAGE
+5.1 Overall Layout
+<div class="product-page">
+  <!-- Breadcrumb -->
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <div class="container">
+      <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/" itemprop="item"><span itemprop="name">Home</span></a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/shop/" itemprop="item"><span itemprop="name">Shop</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/category/rings/" itemprop="item"><span itemprop="name">Rings</span></a>
+          <meta itemprop="position" content="3" />
+        </li>
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <span itemprop="name">Elegant Diamond Ring</span>
+          <meta itemprop="position" content="4" />
+        </li>
+      </ol>
+    </div>
+  </nav>
+  <div class="container">
+    <div class="product-container">
+      <!-- Left Column - Image Gallery -->
+      <div class="product-gallery">
+        <!-- Gallery content here -->
+      </div>
+      <!-- Right Column - Product Info -->
+      <div class="product-details">
+        <!-- Product info here -->
+      </div>
+    </div>
+    <!-- Product Tabs -->
+    <div class="product-tabs">
+      <!-- Tabs content here -->
+    </div>
+    <!-- Related Products -->
+    <div class="related-products">
+      <!-- Related products here -->
+    </div>
+  </div>
+</div>
+5.2 Image Gallery with Zoom
+<div class="product-gallery">
+  <!-- Main Image -->
+  <div class="main-image-container">
+    <div class="zoom-container" id="zoom-container">
+      <img src="/uploads/products/elegant-diamond-ring-1.jpg" 
+           alt="Elegant Diamond Ring" 
+           id="main-product-image"
+           width="600" 
+           height="600"
+           data-zoom="/uploads/products/elegant-diamond-ring-1-zoom.jpg">
+    </div>
+    <!-- Zoom Lens -->
+    <div class="zoom-lens" id="zoom-lens"></div>
+    <!-- Badges -->
+    <div class="gallery-badges">
+      <span class="badge badge-sale">-20%</span>
+      <span class="badge badge-new">New Arrival</span>
+    </div>
+    <!-- Video Button -->
+    <button class="video-btn" onclick="openProductVideo()">
+      <i class="icon-play"></i>
+      <span>Watch Video</span>
+    </button>
+  </div>
+  <!-- Thumbnail Gallery -->
+  <div class="thumbnail-gallery">
+    <div class="thumbnail-list">
+      <div class="thumbnail active" onclick="changeImage(0)">
+        <img src="/uploads/products/elegant-diamond-ring-1-thumb.jpg" 
+             alt="Elegant Diamond Ring - View 1" 
+             width="80" 
+             height="80">
+      </div>
+      <div class="thumbnail" onclick="changeImage(1)">
+        <img src="/uploads/products/elegant-diamond-ring-2-thumb.jpg" 
+             alt="Elegant Diamond Ring - View 2" 
+             width="80" 
+             height="80">
+      </div>
+      <div class="thumbnail" onclick="changeImage(2)">
+        <img src="/uploads/products/elegant-diamond-ring-3-thumb.jpg" 
+             alt="Elegant Diamond Ring - View 3" 
+             width="80" 
+             height="80">
+      </div>
+      <div class="thumbnail video-thumbnail" onclick="playProductVideo()">
+        <img src="/uploads/products/elegant-diamond-ring-video-thumb.jpg" 
+             alt="Product Video" 
+             width="80" 
+             height="80">
+        <div class="video-overlay">
+          <i class="icon-play"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- 360 Degree View -->
+  <div class="view-360" id="view-360" style="display: none;">
+    <div class="view-360-container">
+      <img src="/uploads/products/360/1.jpg" alt="360 View" id="image-360">
+    </div>
+    <button class="close-360" onclick="close360View()">
+      <i class="icon-close"></i>
+    </button>
+  </div>
+</div>
+5.3 Product Information Panel
+<div class="product-details">
+  <!-- Category & SKU -->
+  <div class="product-meta">
+    <span class="product-category">
+      <a href="/category/rings/">Rings</a>
+    </span>
+    <span class="product-sku">SKU: TMG-RING-001</span>
+  </div>
+  <!-- Title -->
+  <h1 class="product-title">Elegant Diamond Ring</h1>
+  <!-- Rating -->
+  <div class="product-rating">
+    <div class="stars" title="4.5 out of 5 stars">
+      <i class="icon-star filled"></i>
+      <i class="icon-star filled"></i>
+      <i class="icon-star filled"></i>
+      <i class="icon-star filled"></i>
+      <i class="icon-star half"></i>
+    </div>
+    <a href="#reviews" class="rating-link">
+      <span class="rating-value">4.5</span>
+      <span class="rating-count">(234 reviews)</span>
+    </a>
+  </div>
+  <!-- Price -->
+  <div class="product-price-section">
+    <div class="price-main">
+      <span class="current-price">₹1,999</span>
+      <span class="original-price">₹2,499</span>
+      <span class="discount-badge">20% OFF</span>
+    </div>
+    <div class="price-info">
+      <span class="tax-info">Inclusive of all taxes</span>
+      <span class="shipping-info">+ Free Shipping</span>
+    </div>
+  </div>
+  <!-- Short Description -->
+  <div class="product-short-description">
+    <p>
+      Experience timeless elegance with this stunning diamond ring. 
+      Featuring a brilliant cut centerpiece surrounded by smaller diamonds, 
+      crafted in 18K gold plating for lasting beauty.
+    </p>
+  </div>
+  <!-- Variations -->
+  <div class="product-variations">
+    <!-- Material Selection -->
+    <div class="variation-group">
+      <label class="variation-label">Material:</label>
+      <div class="variation-options">
+        <button class="variation-option active" data-value="gold-plated" onclick="selectVariation('material', 'gold-plated')">
+          <span class="option-swatch" style="background: #FFD700;"></span>
+          <span class="option-name">Gold Plated</span>
+        </button>
+        <button class="variation-option" data-value="silver-plated" onclick="selectVariation('material', 'silver-plated')">
+          <span class="option-swatch" style="background: #C0C0C0;"></span>
+          <span class="option-name">Silver Plated</span>
+        </button>
+        <button class="variation-option" data-value="rose-gold" onclick="selectVariation('material', 'rose-gold')">
+          <span class="option-swatch" style="background: #E0BFB8;"></span>
+          <span class="option-name">Rose Gold</span>
+        </button>
+      </div>
+    </div>
+    <!-- Size Selection -->
+    <div class="variation-group">
+      <label class="variation-label">Size:</label>
+      <div class="variation-options">
+        <button class="size-option" data-value="6" onclick="selectVariation('size', '6')">6</button>
+        <button class="size-option" data-value="7" onclick="selectVariation('size', '7')">7</button>
+        <button class="size-option active" data-value="8" onclick="selectVariation('size', '8')">8</button>
+        <button class="size-option" data-value="9" onclick="selectVariation('size', '9')">9</button>
+        <button class="size-option" data-value="10" onclick="selectVariation('size', '10')">10</button>
+        <button class="size-guide" onclick="openSizeGuide()">
+          <i class="icon-ruler"></i>
+          Size Guide
+        </button>
+      </div>
+    </div>
+  </div>
+  <!-- Customization (for Smart Tags) -->
+  <div class="product-customization" id="customization-section" style="display: none;">
+    <h3>Personalize Your Tag</h3>
+    <!-- Engraving Text -->
+    <div class="custom-field">
+      <label for="engraving-text">Engraving Text (Max 20 characters)</label>
+      <input type="text" 
+             id="engraving-text" 
+             maxlength="20" 
+             placeholder="Enter text for engraving"
+             oninput="updateEngravingPreview()">
+      <span class="char-count">
+        <span id="char-current">0</span>/20
+      </span>
+    </div>
+    <!-- Font Selection -->
+    <div class="custom-field">
+      <label>Font Style:</label>
+      <div class="font-options">
+        <button class="font-option active" data-font="elegant" onclick="selectFont('elegant')">Elegant</button>
+        <button class="font-option" data-font="modern" onclick="selectFont('modern')">Modern</button>
+        <button class="font-option" data-font="classic" onclick="selectFont('classic')">Classic</button>
+      </div>
+    </div>
+    <!-- Photo Upload -->
+    <div class="custom-field">
+      <label for="photo-upload">Upload Photo (Optional)</label>
+      <div class="photo-upload-area" onclick="document.getElementById('photo-upload').click()">
+        <input type="file" 
+               id="photo-upload" 
+               accept="image/*" 
+               style="display: none;"
+               onchange="handlePhotoUpload(event)">
+        <div class="upload-placeholder">
+          <i class="icon-camera"></i>
+          <span>Click to upload photo</span>
+          <small>JPG, PNG up to 5MB</small>
+        </div>
+        <div class="photo-preview" id="photo-preview" style="display: none;">
+          <img src="" alt="Preview" id="preview-image">
+          <button type="button" class="remove-photo" onclick="removePhoto()">
+            <i class="icon-close"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+    <!-- Preview -->
+    <div class="customization-preview">
+      <h4>Preview</h4>
+      <div class="preview-box">
+        <img src="/assets/tag-template.png" alt="Tag Preview" width="200" height="200">
+        <div class="preview-text" id="preview-text"></div>
+      </div>
+    </div>
+  </div>
+  <!-- Quantity & Add to Cart -->
+  <div class="purchase-section">
+    <div class="quantity-selector">
+      <label for="quantity">Quantity:</label>
+      <div class="quantity-input">
+        <button type="button" onclick="updateQuantity(-1)">-</button>
+        <input type="number" 
+               id="quantity" 
+               name="quantity" 
+               value="1" 
+               min="1" 
+               max="10" 
+               onchange="validateQuantity()">
+        <button type="button" onclick="updateQuantity(1)">+</button>
+      </div>
+    </div>
+    <div class="add-to-cart-section">
+      <button type="button" 
+              class="btn btn-primary btn-large add-to-cart-btn" 
+              onclick="addToCart()">
+        <i class="icon-cart"></i>
+        Add to Cart
+      </button>
+      <div class="secondary-actions">
+        <button type="button" 
+                class="btn btn-outline wishlist-btn" 
+                onclick="toggleWishlist()">
+          <i class="icon-heart"></i>
+          <span>Add to Wishlist</span>
+        </button>
+        <button type="button" 
+                class="btn btn-outline compare-btn" 
+                onclick="addToCompare()">
+          <i class="icon-scale"></i>
+          <span>Compare</span>
+        </button>
+      </div>
+    </div>
+  </div>
+  <!-- Trust Badges -->
+  <div class="trust-badges">
+    <div class="trust-item">
+      <i class="icon-truck"></i>
+      <span>Free Delivery</span>
+    </div>
+    <div class="trust-item">
+      <i class="icon-shield"></i>
+      <span>Secure Payment</span>
+    </div>
+    <div class="trust-item">
+      <i class="icon-refresh"></i>
+      <span>7-Day Returns</span>
+    </div>
+    <div class="trust-item">
+      <i class="icon-award"></i>
+      <span>1 Year Warranty</span>
+    </div>
+  </div>
+  <!-- Share & Save -->
+  <div class="share-section">
+    <div class="share-buttons">
+      <span class="share-label">Share:</span>
+      <button class="share-btn" onclick="shareProduct('whatsapp')">
+        <i class="icon-whatsapp"></i>
+      </button>
+      <button class="share-btn" onclick="shareProduct('facebook')">
+        <i class="icon-facebook"></i>
+      </button>
+      <button class="share-btn" onclick="shareProduct('twitter')">
+        <i class="icon-twitter"></i>
+      </button>
+      <button class="share-btn" onclick="copyProductLink()">
+        <i class="icon-link"></i>
+      </button>
+    </div>
+    <button class="save-later" onclick="saveForLater()">
+      <i class="icon-bookmark"></i>
+      Save for Later
+    </button>
+  </div>
+</div>
+5.4 Product Tabs
+<div class="product-tabs">
+  <div class="tabs-navigation">
+    <button class="tab-btn active" data-tab="description" onclick="switchTab('description')">
+      Description
+    </button>
+    <button class="tab-btn" data-tab="specifications" onclick="switchTab('specifications')">
+      Specifications
+    </button>
+    <button class="tab-btn" data-tab="reviews" onclick="switchTab('reviews')">
+      Reviews <span class="review-count">(234)</span>
+    </button>
+    <button class="tab-btn" data-tab="shipping" onclick="switchTab('shipping')">
+      Shipping & Returns
+    </button>
+  </div>
+  <div class="tabs-content">
+    <!-- Description Tab -->
+    <div class="tab-content active" id="tab-description">
+      <div class="description-content">
+        <h3>Product Description</h3>
+        <p>
+          Experience timeless elegance with this stunning diamond ring from THEMENGIFT. 
+          Meticulously crafted to perfection, this ring features a brilliant cut centerpiece 
+          surrounded by smaller diamonds, creating a mesmerizing sparkle that captures light from every angle.
+        </p>
+        <h4>Key Features:</h4>
+        <ul>
+          <li>Brilliant cut center stone (1.5 carat equivalent)</li>
+          <li>Surrounded by 12 smaller diamonds (0.5 carat total weight)</li>
+          <li>18K gold plating over durable brass base</li>
+          <li>Hypoallergenic and nickel-free</li>
+          <li>Water-resistant design</li>
+        </ul>
+        <h4>Perfect For:</h4>
+        <p>
+          This versatile ring is perfect for engagements, anniversaries, or as a stunning fashion statement. 
+          Its classic design ensures it will never go out of style, making it a cherished piece for years to come.
+        </p>
+        <!-- Care Instructions -->
+        <div class="care-instructions">
+          <h4>Care Instructions:</h4>
+          <ol>
+            <li>Store in the provided jewelry box when not wearing</li>
+            <li>Clean gently with a soft, dry cloth</li>
+            <li>Avoid contact with water, perfumes, and harsh chemicals</li>
+            <li>Remove before swimming or exercising</li>
+            <li>Professional cleaning recommended every 6 months</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+    <!-- Specifications Tab -->
+    <div class="tab-content" id="tab-specifications">
+      <div class="specifications-table">
+        <table>
+          <tbody>
+            <tr>
+              <td>Material</td>
+              <td>18K Gold Plated Brass</td>
+            </tr>
+            <tr>
+              <td>Stone Type</td>
+              <td>Cubic Zirconia (AAA Grade)</td>
+            </tr>
+            <tr>
+              <td>Center Stone Size</td>
+              <td>6mm (1.5 carat equivalent)</td>
+            </tr>
+            <tr>
+              <td>Side Stones</td>
+              <td>12 pieces, 1.5mm each</td>
+            </tr>
+            <tr>
+              <td>Ring Width</td>
+              <td>2mm</td>
+            </tr>
+            <tr>
+              <td>Available Sizes</td>
+              <td>6, 7, 8, 9, 10</td>
+            </tr>
+            <tr>
+              <td>Weight</td>
+              <td>3.5 grams</td>
+            </tr>
+            <tr>
+              <td>Hypoallergenic</td>
+              <td>Yes</td>
+            </tr>
+            <tr>
+              <td>Water Resistant</td>
+              <td>Yes</td>
+            </tr>
+            <tr>
+              <td>Warranty</td>
+              <td>1 Year Manufacturing Warranty</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <!-- Reviews Tab -->
+    <div class="tab-content" id="tab-reviews">
+      <div class="reviews-section">
+        <!-- Review Summary -->
+        <div class="review-summary">
+          <div class="summary-left">
+            <div class="average-rating">
+              <span class="rating-number">4.5</span>
+              <div class="stars large">
+                <i class="icon-star filled"></i>
+                <i class="icon-star filled"></i>
+                <i class="icon-star filled"></i>
+                <i class="icon-star filled"></i>
+                <i class="icon-star half"></i>
+              </div>
+              <span class="total-reviews">Based on 234 reviews</span>
+            </div>
+          </div>
+          <div class="summary-right">
+            <div class="rating-bars">
+              <div class="rating-bar">
+                <span class="bar-label">5★</span>
+                <div class="bar-track">
+                  <div class="bar-fill" style="width: 65%;"></div>
+                </div>
+                <span class="bar-count">152</span>
+              </div>
+              <div class="rating-bar">
+                <span class="bar-label">4★</span>
+                <div class="bar-track">
+                  <div class="bar-fill" style="width: 20%;"></div>
+                </div>
+                <span class="bar-count">47</span>
+              </div>
+              <div class="rating-bar">
+                <span class="bar-label">3★</span>
+                <div class="bar-track">
+                  <div class="bar-fill" style="width: 10%;"></div>
+                </div>
+                <span class="bar-count">23</span>
+              </div>
+              <div class="rating-bar">
+                <span class="bar-label">2★</span>
+                <div class="bar-track">
+                  <div class="bar-fill" style="width: 3%;"></div>
+                </div>
+                <span class="bar-count">7</span>
+              </div>
+              <div class="rating-bar">
+                <span class="bar-label">1★</span>
+                <div class="bar-track">
+                  <div class="bar-fill" style="width: 2%;"></div>
+                </div>
+                <span class="bar-count">5</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Write Review Button -->
+        <div class="write-review-section">
+          <button class="btn btn-primary" onclick="openReviewForm()">
+            Write a Review
+          </button>
+        </div>
+        <!-- Reviews List -->
+        <div class="reviews-list">
+          <!-- Review Example -->
+          <div class="review-item">
+            <div class="review-header">
+              <div class="reviewer-info">
+                <img src="/uploads/reviewers/user1.jpg" alt="Priya Sharma" width="50" height="50">
+                <div class="reviewer-details">
+                  <h4>Priya Sharma</h4>
+                  <div class="review-rating">
+                    <div class="stars">
+                      <i class="icon-star filled"></i>
+                      <i class="icon-star filled"></i>
+                      <i class="icon-star filled"></i>
+                      <i class="icon-star filled"></i>
+                      <i class="icon-star filled"></i>
+                    </div>
+                    <span class="review-date">2 weeks ago</span>
+                  </div>
+                </div>
+              </div>
+              <div class="review-verified">
+                <i class="icon-check-circle"></i>
+                <span>Verified Purchase</span>
+              </div>
+            </div>
+            <div class="review-content">
+              <p>
+                Absolutely love this ring! The quality is exceptional and it looks even better in person. 
+                The diamonds sparkle beautifully and the gold plating is very durable. I've worn it daily 
+                for 3 months and it still looks brand new. Highly recommend!
+              </p>
+            </div>
+            <div class="review-images">
+              <img src="/uploads/reviews/review1-1.jpg" alt="Customer Photo" width="100" height="100">
+              <img src="/uploads/reviews/review1-2.jpg" alt="Customer Photo" width="100" height="100">
+            </div>
+            <div class="review-actions">
+              <button class="helpful-btn" onclick="markHelpful(1)">
+                <i class="icon-thumbs-up"></i>
+                Helpful (23)
+              </button>
+              <button class="report-btn" onclick="reportReview(1)">
+                Report
+              </button>
+            </div>
+          </div>
+        </div>
+        <!-- Load More Reviews -->
+        <div class="load-more-section">
+          <button class="btn btn-outline" onclick="loadMoreReviews()">
+            Load More Reviews
+          </button>
+        </div>
+      </div>
+    </div>
+    <!-- Shipping Tab -->
+    <div class="tab-content" id="tab-shipping">
+      <div class="shipping-content">
+        <div class="shipping-section">
+          <h3>Shipping Information</h3>
+          <div class="shipping-options">
+            <div class="shipping-option">
+              <div class="option-header">
+                <i class="icon-truck"></i>
+                <h4>Standard Shipping</h4>
+              </div>
+              <p>Delivery within 5-7 business days</p>
+              <p><strong>FREE</strong> on orders above ₹999</p>
+              <p>₹49 for orders below ₹999</p>
+            </div>
+            <div class="shipping-option">
+              <div class="option-header">
+                <i class="icon-rocket"></i>
+                <h4>Express Shipping</h4>
+              </div>
+              <p>Delivery within 2-3 business days</p>
+              <p><strong>₹149</strong> for all orders</p>
+            </div>
+          </div>
+        </div>
+        <div class="returns-section">
+          <h3>Return Policy</h3>
+          <p>We offer a 7-day return policy from the date of delivery. Here's what you need to know:</p>
+          <ul>
+            <li>Items must be unused, unworn, and in original packaging</li>
+            <li>All tags and labels must be intact</li>
+            <li>Custom engraved items cannot be returned unless defective</li>
+            <li>Shipping charges for returns are borne by the customer</li>
+            <li>Refunds are processed within 5-7 business days after receipt</li>
+          </ul>
+        </div>
+        <div class="payment-section">
+          <h3>Payment & Security</h3>
+          <p>We accept the following payment methods:</p>
+          <div class="payment-methods">
+            <div class="payment-method">
+              <i class="icon-credit-card"></i>
+              <span>Credit/Debit Cards</span>
+            </div>
+            <div class="payment-method">
+              <i class="icon-wallet"></i>
+              <span>UPI Payments</span>
+            </div>
+            <div class="payment-method">
+              <i class="icon-money"></i>
+              <span>Cash on Delivery</span>
+            </div>
+            <div class="payment-method">
+              <i class="icon-bank"></i>
+              <span>Net Banking</span>
+            </div>
+          </div>
+          <p>All transactions are secured with 256-bit SSL encryption.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+5.5 Related Products Section
+<div class="related-products">
+  <div class="section-header">
+    <h2>You May Also Like</h2>
+    <a href="/category/rings/" class="view-all-link">View All</a>
+  </div>
+  <div class="related-grid">
+    <!-- Related Product Cards -->
+    <div class="related-product-card">
+      <div class="related-image">
+        <img src="/uploads/products/related-1.jpg" alt="Related Product" width="300" height="300">
+        <div class="related-overlay">
+          <button class="quick-view-btn" onclick="openQuickView(12346)">
+            <i class="icon-eye"></i>
+          </button>
+        </div>
+      </div>
+      <div class="related-info">
+        <h4>Diamond Heart Ring</h4>
+        <div class="related-price">₹1,799</div>
+        <button class="btn btn-primary btn-small" onclick="addToCart(12346)">
+          Add to Cart
+        </button>
+      </div>
+    </div>
+    <!-- More related products... -->
+  </div>
+  <!-- Complete the Look Section -->
+  <div class="complete-look">
+    <h3>Complete the Look</h3>
+    <div class="look-grid">
+      <!-- Complementary products -->
+    </div>
+  </div>
+</div>
+5.6 Product Page CSS
+/* Product Page Layout */
+.product-page {
+  background: #FAFBFC;
+  padding-bottom: 60px;
+}
+.product-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  margin-bottom: 60px;
+}
+/* Product Gallery */
+.product-gallery {
+  position: sticky;
+  top: 100px;
+  height: fit-content;
+}
+.main-image-container {
+  position: relative;
+  margin-bottom: 20px;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: white;
+  box-shadow: var(--shadow-card);
+}
+.zoom-container {
+  position: relative;
+  width: 100%;
+  height: 600px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+#main-product-image {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  cursor: zoom-in;
+}
+.zoom-lens {
+  position: absolute;
+  width: 150px;
+  height: 150px;
+  border: 2px solid #1B4F9E;
+  border-radius: 50%;
+  pointer-events: none;
+  opacity: 0;
+  background: rgba(255,255,255,0.3);
+  display: none;
+}
+.gallery-badges {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.video-btn {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  background: rgba(0,0,0,0.7);
+  color: white;
+  border: none;
+  border-radius: var(--radius-md);
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+.video-btn:hover {
+  background: rgba(0,0,0,0.9);
+}
+.thumbnail-gallery {
+  margin-top: 20px;
+}
+.thumbnail-list {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding: 4px;
+}
+.thumbnail {
+  flex-shrink: 0;
+  width: 80px;
+  height: 80px;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+.thumbnail.active {
+  border-color: #1B4F9E;
+  box-shadow: 0 0 0 2px rgba(27,79,158,0.2);
+}
+.thumbnail:hover {
+  border-color: #1B4F9E;
+}
+.thumbnail img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.video-thumbnail {
+  position: relative;
+}
+.video-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0,0,0,0.7);
+  color: white;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+/* Product Details */
+.product-details {
+  position: sticky;
+  top: 100px;
+  height: fit-content;
+}
+.product-meta {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+  font-size: 14px;
+}
+.product-category a {
+  color: #1B4F9E;
+  text-decoration: none;
+  font-weight: 500;
+}
+.product-sku {
+  color: #718096;
+}
+.product-title {
+  font-size: 32px;
+  font-weight: 700;
+  color: #1A202C;
+  margin-bottom: 16px;
+  line-height: 1.2;
+}
+.product-rating {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.rating-link {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  text-decoration: none;
+  color: #4A5568;
+  transition: color var(--transition-fast);
+}
+.rating-link:hover {
+  color: #1B4F9E;
+}
+.rating-value {
+  font-weight: 600;
+  color: #1A202C;
+}
+/* Price Section */
+.product-price-section {
+  background: white;
+  padding: 24px;
+  border-radius: var(--radius-lg);
+  margin-bottom: 24px;
+  box-shadow: var(--shadow-card);
+}
+.price-main {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.current-price {
+  font-size: 32px;
+  font-weight: 700;
+  color: #1A202C;
+}
+.original-price {
+  font-size: 20px;
+  color: #718096;
+  text-decoration: line-through;
+}
+.discount-badge {
+  background: #38A169;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 600;
+}
+.price-info {
+  display: flex;
+  gap: 16px;
+  font-size: 14px;
+  color: #4A5568;
+}
+/* Variations */
+.product-variations {
+  background: white;
+  padding: 24px;
+  border-radius: var(--radius-lg);
+  margin-bottom: 24px;
+  box-shadow: var(--shadow-card);
+}
+.variation-group {
+  margin-bottom: 24px;
+}
+.variation-group:last-child {
+  margin-bottom: 0;
+}
+.variation-label {
+  display: block;
+  font-weight: 600;
+  color: #1A202C;
+  margin-bottom: 12px;
+}
+.variation-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.variation-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border: 2px solid #E2E8F0;
+  border-radius: var(--radius-md);
+  background: white;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+.variation-option:hover {
+  border-color: #1B4F9E;
+}
+.variation-option.active {
+  border-color: #1B4F9E;
+  background: #F0F9FF;
+}
+.option-swatch {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 1px solid rgba(0,0,0,0.1);
+}
+.size-option {
+  width: 48px;
+  height: 48px;
+  border: 2px solid #E2E8F0;
+  border-radius: var(--radius-md);
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+.size-option:hover {
+  border-color: #1B4F9E;
+}
+.size-option.active {
+  border-color: #1B4F9E;
+  background: #1B4F9E;
+  color: white;
+}
+.size-guide {
+  padding: 8px 16px;
+  background: #F7FAFC;
+  border: 1px solid #E2E8F0;
+  border-radius: var(--radius-md);
+  color: #4A5568;
+  text-decoration: none;
+  font-size: 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all var(--transition-fast);
+}
+.size-guide:hover {
+  background: #1B4F9E;
+  color: white;
+  border-color: #1B4F9E;
+}
+/* Customization */
+.product-customization {
+  background: white;
+  padding: 24px;
+  border-radius: var(--radius-lg);
+  margin-bottom: 24px;
+  box-shadow: var(--shadow-card);
+}
+.custom-field {
+  margin-bottom: 24px;
+}
+.custom-field label {
+  display: block;
+  font-weight: 600;
+  color: #1A202C;
+  margin-bottom: 8px;
+}
+.custom-field input[type="text"] {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid #E2E8F0;
+  border-radius: var(--radius-md);
+  font-size: 16px;
+  transition: border-color var(--transition-fast);
+}
+.custom-field input[type="text"]:focus {
+  outline: none;
+  border-color: #1B4F9E;
+  box-shadow: 0 0 0 3px rgba(27,79,158,0.1);
+}
+.char-count {
+  font-size: 12px;
+  color: #718096;
+  margin-top: 4px;
+}
+.font-options {
+  display: flex;
+  gap: 8px;
+}
+.font-option {
+  padding: 8px 16px;
+  border: 1px solid #E2E8F0;
+  border-radius: var(--radius-md);
+  background: white;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+.font-option:hover {
+  border-color: #1B4F9E;
+}
+.font-option.active {
+  border-color: #1B4F9E;
+  background: #1B4F9E;
+  color: white;
+}
+.photo-upload-area {
+  border: 2px dashed #E2E8F0;
+  border-radius: var(--radius-md);
+  padding: 40px;
+  text-align: center;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+.photo-upload-area:hover {
+  border-color: #1B4F9E;
+  background: #F0F9FF;
+}
+.upload-placeholder {
+  color: #4A5568;
+}
+.upload-placeholder i {
+  font-size: 32px;
+  margin-bottom: 12px;
+  display: block;
+}
+.photo-preview {
+  position: relative;
+  display: inline-block;
+}
+.photo-preview img {
+  max-width: 200px;
+  max-height: 200px;
+  border-radius: var(--radius-md);
+}
+.remove-photo {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  width: 24px;
+  height: 24px;
+  background: #E53E3E;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+/* Purchase Section */
+.purchase-section {
+  background: white;
+  padding: 24px;
+  border-radius: var(--radius-lg);
+  margin-bottom: 24px;
+  box-shadow: var(--shadow-card);
+}
+.quantity-selector {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+.quantity-input {
+  display: flex;
+  align-items: center;
+  border: 1px solid #E2E8F0;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+.quantity-input button {
+  width: 40px;
+  height: 40px;
+  border: none;
+  background: #F7FAFC;
+  color: #4A5568;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+.quantity-input button:hover {
+  background: #1B4F9E;
+  color: white;
+}
+.quantity-input input {
+  width: 60px;
+  height: 40px;
+  border: none;
+  text-align: center;
+  font-size: 16px;
+  font-weight: 500;
+}
+.add-to-cart-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.add-to-cart-btn {
+  width: 100%;
+  padding: 16px;
+  font-size: 18px;
+  font-weight: 600;
+}
+.secondary-actions {
+  display: flex;
+  gap: 12px;
+}
+.secondary-actions button {
+  flex: 1;
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+/* Trust Badges */
+.trust-badges {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+.trust-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  background: #F7FAFC;
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  color: #4A5568;
+}
+.trust-item i {
+  color: #1B4F9E;
+  font-size: 18px;
+}
+/* Share Section */
+.share-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 0;
+  border-top: 1px solid #E2E8F0;
+}
+.share-buttons {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.share-label {
+  font-size: 14px;
+  color: #4A5568;
+}
+.share-btn {
+  width: 36px;
+  height: 36px;
+  border: 1px solid #E2E8F0;
+  border-radius: 50%;
+  background: white;
+  color: #4A5568;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+}
+.share-btn:hover {
+  border-color: #1B4F9E;
+  color: #1B4F9E;
+}
+.save-later {
+  background: none;
+  border: none;
+  color: #1B4F9E;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: color var(--transition-fast);
+}
+.save-later:hover {
+  color: #2E7CD6;
+}
+/* Product Tabs */
+.product-tabs {
+  background: white;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+  margin-bottom: 60px;
+}
+.tabs-navigation {
+  display: flex;
+  background: #F7FAFC;
+  border-bottom: 1px solid #E2E8F0;
+}
+.tab-btn {
+  flex: 1;
+  padding: 16px 24px;
+  background: none;
+  border: none;
+  color: #4A5568;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  position: relative;
+}
+.tab-btn:hover {
+  color: #1A202C;
+  background: rgba(27,79,158,0.05);
+}
+.tab-btn.active {
+  color: #1B4F9E;
+  background: white;
+}
+.tab-btn.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: #1B4F9E;
+}
+.tab-content {
+  padding: 32px;
+  display: none;
+}
+.tab-content.active {
+  display: block;
+}
+/* Responsive Design */
+@media (max-width: 1199px) {
+  .product-container {
+    gap: 40px;
+  }
+  .product-gallery,
+  .product-details {
+    position: static;
+  }
+}
+@media (max-width: 767px) {
+  .product-container {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  .product-title {
+    font-size: 24px;
+  }
+  .current-price {
+    font-size: 24px;
+  }
+  .variation-options {
+    gap: 6px;
+  }
+  .variation-option {
+    padding: 6px 12px;
+    font-size: 14px;
+  }
+  .size-option {
+    width: 40px;
+    height: 40px;
+  }
+  .trust-badges {
+    grid-template-columns: 1fr;
+  }
+  .share-section {
+    flex-direction: column;
+    gap: 16px;
+    align-items: stretch;
+  }
+  .tabs-navigation {
+    overflow-x: auto;
+  }
+  .tab-btn {
+    flex-shrink: 0;
+    min-width: 120px;
+  }
+  .tab-content {
+    padding: 20px;
+  }
+  .zoom-container {
+    height: 400px;
+  }
+}
+──────────────────────────────────────────────────
+6. QUICK VIEW MODAL
+6.1 Quick View Structure
+<div class="quick-view-modal" id="quick-view-modal">
+  <div class="quick-view-overlay" onclick="closeQuickView()"></div>
+  <div class="quick-view-content">
+    <button class="close-quick-view" onclick="closeQuickView()">
+      <i class="icon-close"></i>
+    </button>
+    <div class="quick-view-container">
+      <!-- Product Image -->
+      <div class="quick-view-image">
+        <img src="/uploads/products/quick-view.jpg" alt="Product" width="400" height="400">
+        <div class="quick-view-badges">
+          <span class="badge badge-sale">-20%</span>
+        </div>
+      </div>
+      <!-- Product Info -->
+      <div class="quick-view-info">
+        <h3 class="quick-view-title">Elegant Diamond Ring</h3>
+        <div class="quick-view-rating">
+          <div class="stars">
+            <i class="icon-star filled"></i>
+            <i class="icon-star filled"></i>
+            <i class="icon-star filled"></i>
+            <i class="icon-star filled"></i>
+            <i class="icon-star half"></i>
+          </div>
+          <span class="rating-count">(234)</span>
+        </div>
+        <div class="quick-view-price">
+          <span class="current-price">₹1,999</span>
+          <span class="original-price">₹2,499</span>
+        </div>
+        <div class="quick-view-description">
+          <p>Experience timeless elegance with this stunning diamond ring...</p>
+        </div>
+        <div class="quick-view-variations">
+          <!-- Material options -->
+          <div class="variation-group">
+            <label>Material:</label>
+            <div class="variation-options">
+              <button class="variation-option active">
+                <span class="option-swatch" style="background: #FFD700;"></span>
+              </button>
+              <button class="variation-option">
+                <span class="option-swatch" style="background: #C0C0C0;"></span>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="quick-view-actions">
+          <div class="quick-view-quantity">
+            <label>Quantity:</label>
+            <div class="quantity-input">
+              <button type="button" onclick="updateQuickViewQuantity(-1)">-</button>
+              <input type="number" value="1" min="1" max="10" id="quick-view-quantity">
+              <button type="button" onclick="updateQuickViewQuantity(1)">+</button>
+            </div>
+          </div>
+          <div class="quick-view-buttons">
+            <button class="btn btn-primary btn-block" onclick="addToCartFromQuickView()">
+              <i class="icon-cart"></i>
+              Add to Cart
+            </button>
+            <button class="btn btn-outline btn-block" onclick="viewFullProduct()">
+              View Full Details
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+6.2 Quick View CSS
+.quick-view-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: var(--z-modal);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.quick-view-modal.show {
+  display: flex;
+}
+.quick-view-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(4px);
+}
+.quick-view-content {
+  position: relative;
+  background: white;
+  border-radius: var(--radius-xl);
+  max-width: 900px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: var(--shadow-modal);
+  animation: modalSlideIn 0.3s ease-out;
+}
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+.close-quick-view {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 40px;
+  height: 40px;
+  background: #F7FAFC;
+  border: none;
+  border-radius: 50%;
+  color: #4A5568;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  transition: all var(--transition-fast);
+}
+.close-quick-view:hover {
+  background: #E53E3E;
+  color: white;
+}
+.quick-view-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  padding: 40px;
+}
+.quick-view-image {
+  position: relative;
+}
+.quick-view-image img {
+  width: 100%;
+  height: auto;
+  border-radius: var(--radius-lg);
+}
+.quick-view-badges {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+}
+.quick-view-info {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.quick-view-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #1A202C;
+  margin: 0;
+}
+.quick-view-price {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.quick-view-actions {
+  margin-top: 20px;
+}
+.quick-view-quantity {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+.quick-view-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+@media (max-width: 767px) {
+  .quick-view-container {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    padding: 24px;
+  }
+  .quick-view-content {
+    margin: 20px;
+    max-height: calc(100vh - 40px);
+  }
+}
+──────────────────────────────────────────────────
+7. COMPARE FUNCTIONALITY
+7.1 Compare Bar
+<div class="compare-bar" id="compare-bar" style="display: none;">
+  <div class="container">
+    <div class="compare-content">
+      <div class="compare-info">
+        <i class="icon-scale"></i>
+        <span id="compare-count">0</span> products selected for comparison
+      </div>
+      <div class="compare-products" id="compare-products">
+        <!-- Products will be added here dynamically -->
+      </div>
+      <div class="compare-actions">
+        <button class="btn btn-primary" onclick="openCompareModal()" id="compare-btn" disabled>
+          Compare
+        </button>
+        <button class="btn btn-outline" onclick="clearCompare()">
+          Clear All
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+7.2 Compare Modal
+<div class="compare-modal" id="compare-modal">
+  <div class="compare-overlay" onclick="closeCompareModal()"></div>
+  <div class="compare-content">
+    <div class="compare-header">
+      <h2>Compare Products</h2>
+      <button class="close-compare" onclick="closeCompareModal()">
+        <i class="icon-close"></i>
+      </button>
+    </div>
+    <div class="compare-table-wrapper">
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th>Features</th>
+            <!-- Product headers will be added dynamically -->
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Comparison rows will be added dynamically -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+──────────────────────────────────────────────────
+8. RECENTLY VIEWED PRODUCTS
+8.1 Recently Viewed Section
+<div class="recently-viewed">
+  <div class="container">
+    <h2 class="section-title">Recently Viewed</h2>
+    <div class="recently-grid" id="recently-grid">
+      <!-- Products will be added dynamically -->
+    </div>
+  </div>
+</div>
+8.2 Recently Viewed JavaScript
+class RecentlyViewed {
+  constructor() {
+    this.products = this.getRecentlyViewed();
+    this.maxProducts = 8;
+  }
+  getRecentlyViewed() {
+    const stored = localStorage.getItem('recentlyViewed');
+    return stored ? JSON.parse(stored) : [];
+  }
+  addProduct(productId) {
+    let products = this.getRecentlyViewed();
+    // Remove if already exists
+    products = products.filter(id => id !== productId);
+    // Add to beginning
+    products.unshift(productId);
+    // Keep only max products
+    products = products.slice(0, this.maxProducts);
+    // Save to localStorage
+    localStorage.setItem('recentlyViewed', JSON.stringify(products));
+    // Update display
+    this.displayProducts();
+  }
+  displayProducts() {
+    const container = document.getElementById('recently-grid');
+    if (!container) return;
+    if (this.products.length === 0) {
+      container.style.display = 'none';
+      return;
+    }
+    container.style.display = 'grid';
+    // Load and render products
+  }
+}
+// Initialize
+const recentlyViewed = new RecentlyViewed();
+──────────────────────────────────────────────────
+9. PERFORMANCE OPTIMIZATION
+9.1 Lazy Loading Images
+// Intersection Observer for lazy loading
+const imageObserver = new IntersectionObserver((entries, observer) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const img = entry.target;
+      img.src = img.dataset.src;
+      img.classList.remove('lazy');
+      observer.unobserve(img);
+    }
+  });
+});
+// Observe all lazy images
+document.querySelectorAll('img[data-src]').forEach(img => {
+  imageObserver.observe(img);
+});
+9.2 Image Optimization
+// Add to functions.php
+add_filter('wp_get_attachment_image_attributes', 'optimize_product_images', 10, 3);
+function optimize_product_images($attr, $attachment, $size) {
+  // Add loading="lazy" to all images
+  $attr['loading'] = 'lazy';
+  // Add WebP support
+  if (isset($attr['src'])) {
+    $webp_src = str_replace(['.jpg', '.jpeg', '.png'], '.webp', $attr['src']);
+    if (file_exists(str_replace(wp_upload_dir()['baseurl'], wp_upload_dir()['basedir'], $webp_src))) {
+      $attr['src'] = $webp_src;
+    }
+  }
+  return $attr;
+}
+──────────────────────────────────────────────────
+10. DOCUMENT SUMMARY
+Document 5 covers:
+- Complete Shop page with advanced filtering (3/2/2 grid layout)
+- Category pages with hero banners (1920x600px for Canva)
+- Product detail pages with image zoom, variations, and customization
+- Quick view modal with AJAX loading
+- Compare functionality with side-by-side comparison
+- Recently viewed products tracking
+- Performance optimization with lazy loading
+- Mobile-responsive design with touch gestures
+- Skeleton loaders and smooth animations
+- Smart Tags special layout for customization
+Next Document: Document 6 — Cart, Checkout & Razorpay Payment
+THEMENGIFT • themengift.com • Document 5 of 15
+Premium Jewellery • Custom Gifts • Smart Pet Tags • Made in India

@@ -1,0 +1,527 @@
+THEMENGIFT
+themengift.com
+COMPLETE BRAND IDENTITY SYSTEM
+For Web Developers, Designers & Marketing Team
+Premium Jewellery  •  Custom Gifts  •  Smart Pet Tags  •  Made in India
+1. Brand Overview
+Brand Name
+THEMENGIFT (also written as The Men Gift)
+Domain
+themengift.com
+Trademark
+Registered trademark — India
+Products
+Jewellery, Custom Gifts, Smart Pet Tags
+Business Type
+D2C eCommerce — India
+Brand Positioning
+Premium but affordable. Made in India.
+Target Audience
+Men and women 22–45 years. Gift buyers.
+Brand Personality
+Modern, premium, trustworthy, warm
+Competitors
+GIVA, Palmonas, YellowChimes, Voylla
+USP
+In-house laser engraving + Smart QR Pet Tags
+2. Colour Palette
+These are the ONLY colours used across the entire website. Do not add any other colours without approval.
+Primary Colours — Use these 95% of the time
+Swatch
+Name
+Hex Code
+Where Used
+Royal Blue
+#1B4F9E
+Buttons, CTAs, links, icons, badges, prices
+Sky Blue
+#4A90D9
+Hover states, secondary accents, icons on hover
+Dark Navy
+#0A2463
+Hero/CTA dark backgrounds, dark overlays
+Ice Blue
+#EEF4FF
+Section backgrounds, badge fills, card highlights
+Off White
+#F8FAFF
+Alternating section backgrounds
+Pure White
+#FFFFFF
+Main page background, card backgrounds
+Rich Black
+#0A0A1A
+Footer background, dark section backgrounds
+Dark Text
+#1A202C
+All body headings and primary text
+Slate Gray
+#4A5568
+Descriptions, subtitles, secondary text
+Border Gray
+#E2E8F0
+Card borders, dividers, input borders
+Accent Colours — Use sparingly for specific purposes only
+Swatch
+Name
+Hex Code
+Use ONLY for
+Sale Red
+#E53E3E
+Sale badges, Flash Deal urgency banners
+Star Amber
+#F59E0B
+Star rating displays ONLY. Nothing else.
+Success Green
+#166534
+Trust ticks, success messages, checkboxes
+Gradient Combinations
+Use
+CSS Value
+Where
+Hero / CTA Dark
+linear-gradient(135deg, #0A2463, #1B4F9E)
+CTA banners, dark hero overlays
+Feature Light
+linear-gradient(135deg, #EEF4FF, #DBEAFE)
+Feature sections, pet tag section
+Button Hover
+linear-gradient(135deg, #1B4F9E, #0A2463)
+Button hover state gradient
+Announcement Bar
+linear-gradient(90deg, #1B4F9E, #4A90D9)
+Top announcement bar only
+3. Typography
+Two fonts only. Never use any other font on the website.
+Heading Font — Plus Jakarta Sans
+Used for: All H1, H2, H3, H4 headings, button text, price display, section labels.
+Source: Google Fonts (free). Import from: fonts.googleapis.com
+Element
+Size + Weight
+Notes
+H1 — Hero heading
+56px / 800
+Desktop. Tablet: 40px. Mobile: 30px.
+H2 — Section heading
+32px / 700
+Desktop. Tablet: 26px. Mobile: 22px.
+H3 — Sub-section
+22px / 700
+Desktop. Mobile: 18px.
+H4 — Card title
+18px / 600
+Desktop. Mobile: 16px.
+Price display
+16–24px / 700
+Color: #1B4F9E. Always bold.
+Button text
+14px / 600
+DM Sans for buttons. Never Plus Jakarta Sans.
+Badge / pill text
+11–12px / 700
+Uppercase. Letter-spacing: 0.08em.
+Line height headings
+1.15–1.25
+Tight for large headings.
+Body Font — DM Sans
+Used for: Body text, descriptions, labels, navigation, buttons, captions, footer text.
+Source: Google Fonts (free).
+Element
+Size + Weight
+Notes
+Body text
+15px / 400
+Line height: 1.7. Color: #1A202C.
+Secondary text
+14px / 400
+Color: #4A5568. Descriptions.
+Label / caption
+13px / 500
+Color: #4A5568.
+Small / legal
+12px / 400
+Color: #718096. Footer small text.
+Navigation links
+14px / 500
+Color: #1A202C. Hover: #1B4F9E.
+Button text
+14px / 600
+All buttons. Slight letter-spacing: 0.01em.
+Line height body
+1.7
+Comfortable reading spacing.
+Google Fonts Import Code
+Add this in <head> of every HTML page, or in WordPress → Appearance → Customize → Additional CSS at the top:
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=DM+Sans:wght@300;400;500;600&display=swap');
+body {
+  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 15px;
+  color: #1A202C;
+  line-height: 1.7;
+}
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 700;
+  color: #1A202C;
+  line-height: 1.2;
+}
+4. Button Styles
+Button Type
+Background
+Text
+Border
+Use When
+Primary (solid)
+#1B4F9E
+#FFFFFF
+none
+Main actions: Shop Now, Add to Cart, Subscribe
+Outline
+transparent
+#1B4F9E
+2px solid #1B4F9E
+Secondary actions: View All, Learn More
+Ghost (on dark)
+transparent
+#FFFFFF
+2px solid rgba(255,255,255,0.8)
+Buttons on dark/photo backgrounds
+Danger / Sale
+#E53E3E
+#FFFFFF
+none
+Flash sale, urgency CTA only
+Pill shaped
+#1B4F9E
+#FFFFFF
+none
+Price filters, category pills, tag buttons
+All buttons — shared properties:
+Property
+Value
+Notes
+Font
+DM Sans 14px 600
+Never Plus Jakarta Sans on buttons
+Border radius
+6–8px
+Standard buttons. Pill buttons: 50px.
+Padding
+12px 24px
+Standard. Large: 14px 32px. Small: 9px 18px.
+Transition
+all 0.2s ease
+Smooth hover animation
+Hover transform
+translateY(-1px)
+Slight lift on hover
+Letter spacing
+0.01em
+Very slight — just enough
+5. Spacing & Layout
+Section Padding Scale
+Section Type
+Desktop
+Tablet
+Mobile
+Large section (hero, feature)
+60px top/bottom
+48px top/bottom
+32px top/bottom
+Normal section (products, etc)
+48px top/bottom
+40px top/bottom
+24px top/bottom
+Small section (trust strip etc)
+24px top/bottom
+20px top/bottom
+16px top/bottom
+Announcement bar
+9px top/bottom
+9px top/bottom
+7px top/bottom
+Container sides
+24px left/right
+20px left/right
+12px left/right
+Grid & Card Layout
+Property
+Value
+Notes
+Max container width
+1200px
+Centre with margin: 0 auto
+Card gap
+12–16px
+Gap between cards in grids
+Product grid desktop
+4 columns
+auto-fill minmax(220px, 1fr)
+Product grid tablet
+3 columns
+Product grid mobile
+2 columns
+Recipient cards desktop
+4 columns
+Equal width
+Recipient cards mobile
+2 columns
+Feature banners
+2 columns 50/50
+Stack on mobile
+Testimonials desktop
+2 columns (2x2)
+Testimonials mobile
+1 column
+Full width cards
+6. Border Radius System
+Variable
+Value
+Used For
+Examples
+--r-xs
+4px
+Sale badges, small tags
+SALE badge, NEW badge
+--r-sm
+6px
+Standard buttons, inputs
+Shop Now button, search field
+--r-md
+10px
+Form inputs, dropdowns
+Checkout form fields
+--r-lg
+16px
+Product cards, image cards
+Product card, recipient card
+--r-xl
+24px
+Feature sections, modals
+Pet tag section, CTA banner
+--r-pill
+50px
+Price filter buttons
+Under ₹1499 pill button
+50%
+50%
+Circles only
+Category icons, avatar photos
+7. Box Shadow System
+Name
+CSS Value
+Use When
+--shadow-sm
+0 2px 8px rgba(27,79,158,0.08)
+Header shadow, small raised elements
+--shadow-md
+0 8px 24px rgba(27,79,158,0.12)
+Cards on hover state, feature sections
+--shadow-lg
+0 16px 48px rgba(27,79,158,0.16)
+Dropdowns, modals, sticky elements
+8. CSS Variables — Copy & Use
+Paste this at the top of your main CSS file. Use these variable names everywhere in your code.
+:root {
+  /* ── BRAND COLOURS ── */
+  --tmg-blue:         #1B4F9E;   /* Primary — buttons, CTAs, prices */
+  --tmg-blue-dark:    #0A2463;   /* Hover state, dark headers */
+  --tmg-blue-light:   #4A90D9;   /* Secondary hover, highlights */
+  --tmg-blue-pale:    #EEF4FF;   /* Section backgrounds, badges */
+  --tmg-off-white:    #F8FAFF;   /* Alternate section backgrounds */
+  --tmg-white:        #FFFFFF;   /* Main background, cards */
+  --tmg-black:        #0A0A1A;   /* Footer, dark sections */
+  --tmg-text:         #1A202C;   /* All primary text */
+  --tmg-gray:         #4A5568;   /* Descriptions, secondary text */
+  --tmg-light:        #718096;   /* Captions, tertiary text */
+  --tmg-border:       #E2E8F0;   /* Card borders, input borders */
+  --tmg-sale:         #E53E3E;   /* Sale badges ONLY */
+  --tmg-star:         #F59E0B;   /* Star ratings ONLY */
+  --tmg-success:      #166534;   /* Success states, trust ticks */
+  /* ── FONTS ── */
+  --font-heading:  'Plus Jakarta Sans', sans-serif;
+  --font-body:     'DM Sans', -apple-system, sans-serif;
+  /* ── BORDER RADIUS ── */
+  --r-xs:    4px;
+  --r-sm:    6px;
+  --r-md:    10px;
+  --r-lg:    16px;
+  --r-xl:    24px;
+  --r-pill:  50px;
+  /* ── SHADOWS ── */
+  --shadow-sm:   0 2px 8px rgba(27,79,158,0.08);
+  --shadow-md:   0 8px 24px rgba(27,79,158,0.12);
+  --shadow-lg:   0 16px 48px rgba(27,79,158,0.16);
+  /* ── TRANSITIONS ── */
+  --transition:       all 0.2s ease;
+  --transition-slow:  all 0.3s ease;
+  /* ── LAYOUT ── */
+  --max-width:    1200px;
+  --gap-sm:       8px;
+  --gap-md:       12px;
+  --gap-lg:       16px;
+  --gap-xl:       24px;
+}
+9. Brand Rules for Developers
+These rules must be followed on every page of the website. No exceptions without approval.
+Must Do — Green Rules
+✓
+Rule — must always follow
+✓
+All headings use Plus Jakarta Sans. All body text uses DM Sans. Never mix or substitute.
+✓
+All primary action buttons must be #1B4F9E blue background with white text.
+✓
+All product cards: white background, 1px solid #E2E8F0 border, 16px border radius.
+✓
+Cards on hover: translateY(-4px) transform + var(--shadow-md) blue shadow.
+✓
+All prices displayed in #1B4F9E blue, Plus Jakarta Sans, 700 weight.
+✓
+Sections alternate backgrounds: white → off-white (#F8FAFF) → white → etc.
+✓
+Footer background is always #0A0A1A (rich black) with white/gray text.
+✓
+Max content width is 1200px, always centred with margin: 0 auto.
+✓
+All images in cards use object-fit: cover to maintain consistent proportions.
+✓
+All transitions use 0.2s ease for smooth professional feel.
+✓
+Product images on cards: fixed height (220px desktop, 180px mobile), object-fit cover.
+✓
+Sale badges: #E53E3E red, white text, 4px border radius, 11px font size.
+✓
+All form inputs: 1.5px border #E2E8F0, 10px border radius, focus border #1B4F9E.
+✓
+Announcement bar: always #1B4F9E blue background, white text, 38px height.
+Must Not Do — Red Rules
+✗
+Never do this
+✗
+Never use more than 3 colours in a single section (blue, white, dark only).
+✗
+Never use any font other than Plus Jakarta Sans and DM Sans.
+✗
+Never add rainbow or multi-colour gradients. Only blue gradients allowed.
+✗
+Never use red (#E53E3E) for anything except sale badges and flash deals.
+✗
+Never use amber/yellow (#F59E0B) for anything except star ratings.
+✗
+Never use CSS to override Elementor homepage sections — they control different areas.
+✗
+Never put any Additional CSS that styles homepage elements — Elementor handles homepage.
+✗
+Never use black buttons. Primary buttons are always blue.
+✗
+Never use fonts from anywhere other than Google Fonts.
+✗
+Never use decorative shadows (only functional shadows as listed in the shadow system).
+10. Standard Components Reference
+Quick reference for how specific components should always look.
+Product Card
+.product-card {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 16px;       /* --r-lg */
+  overflow: hidden;
+  transition: all 0.25s ease;
+}
+.product-card:hover {
+  border-color: #4A90D9;
+  box-shadow: 0 8px 24px rgba(27,79,158,0.12);   /* --shadow-md */
+  transform: translateY(-4px);
+}
+.product-card img {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  display: block;
+}
+.product-card .price {
+  color: #1B4F9E;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+}
+Section Heading Pattern
+/* Every section heading has: */
+/* 1. Small label above (uppercase, light blue) */
+/* 2. Bold H2 main heading */
+/* 3. Optional subtitle */
+.section-label {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #4A90D9;            /* Light blue */
+  text-align: center;
+  margin-bottom: 8px;
+}
+.section-heading {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 32px;
+  font-weight: 700;
+  color: #1A202C;
+  text-align: center;
+  margin-bottom: 8px;
+}
+.section-subtitle {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  color: #718096;
+  text-align: center;
+  max-width: 520px;
+  margin: 0 auto 40px;
+}
+Trust Badge / Pill
+.product-badge {
+  background: #EEF4FF;
+  color: #1B4F9E;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 20px;      /* Pill shape */
+  display: inline-block;
+}
+.sale-badge {
+  background: #E53E3E;
+  color: #FFFFFF;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 8px;
+  border-radius: 4px;      /* --r-xs */
+}
+11. Developer Handover Checklist
+Before the developer starts working, confirm all of these are shared with them.
+□
+Give to developer before they start
+□
+This brand identity document (THEMENGIFT_BrandIdentity.docx)
+□
+The clean CSS file (themengift-clean-v2.css) — the only CSS they should use
+□
+Your logo file — transparent PNG, minimum 400px wide
+□
+All product photos organised by category folder
+□
+Your Supabase project URL and API key (for PetMark system)
+□
+Your Razorpay API keys (for payment)
+□
+Your WhatsApp business number for support widget
+□
+Your Instagram handle for Instagram feed section
+□
+WooCommerce admin access (themengift.com/wp-admin)
+□
+Hostinger FTP/File Manager access
+□
+All 10 Elementor guides (THEMENGIFT_Guide1 through Guide10)
+□
+References: giva.com, palmonas.com, yellowchimes.com
+THEMENGIFT — Brand Identity System v1.0  •  themengift.com
+Premium Jewellery  •  Custom Gifts  •  Smart Pet Tags  •  Made in India
