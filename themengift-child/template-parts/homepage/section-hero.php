@@ -67,7 +67,7 @@ $slides = [
                 <div class="mt-9 flex flex-wrap gap-x-6 gap-y-3 text-sm" style="color:rgba(255,255,255,0.85);">
                     <span class="flex items-center gap-2">⭐ 4.8/5 Rating</span>
                     <span class="flex items-center gap-2">🏅 Trademark Registered</span>
-                    <span class="flex items-center gap-2">🚚 Free shipping ₹499+</span>
+                    <span class="flex items-center gap-2">🚚 Free shipping ₹699+</span>
                 </div>
             </div>
             <?php endforeach; ?>

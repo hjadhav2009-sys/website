@@ -33,9 +33,25 @@ get_header();
                 $all_imgs = array_merge([$main_img], array_map(fn($id) => wp_get_attachment_url($id), $attachment_ids));
                 ?>
                 <!-- Main image -->
-                <div style="border-radius:24px; overflow:hidden; aspect-ratio:1; background:#fff; border:1.5px solid #E5E5EA; margin-bottom:14px; position:relative;" id="tmg-main-img-wrap">
+                <div style="border-radius:24px; overflow:hidden; aspect-ratio:1; background:#fff; border:1.5px solid #E5E5EA; margin-bottom:14px; position:relative; cursor:zoom-in;" id="tmg-main-img-wrap" onmousemove="zoomImg(event)" onmouseleave="resetImg()">
                     <img id="tmg-main-img" src="<?php echo esc_url($all_imgs[0]); ?>" alt="<?php the_title_attribute(); ?>"
-                        style="width:100%; height:100%; object-fit:cover; transition:opacity 0.3s;">
+                        style="width:100%; height:100%; object-fit:cover; transition:transform 0.1s ease-out, opacity 0.3s; transform-origin:center center;">
+                    <script>
+                    function zoomImg(e) {
+                        var wrap = document.getElementById('tmg-main-img-wrap');
+                        var img = document.getElementById('tmg-main-img');
+                        var rect = wrap.getBoundingClientRect();
+                        var x = (e.clientX - rect.left) / rect.width * 100;
+                        var y = (e.clientY - rect.top) / rect.height * 100;
+                        img.style.transformOrigin = x + '% ' + y + '%';
+                        img.style.transform = 'scale(1.8)';
+                    }
+                    function resetImg() {
+                        var img = document.getElementById('tmg-main-img');
+                        img.style.transformOrigin = 'center center';
+                        img.style.transform = 'scale(1)';
+                    }
+                    </script>
                     <?php if($product->is_on_sale()): 
                         $reg = (float)$product->get_regular_price();
                         $sal = (float)$product->get_sale_price();
@@ -170,12 +186,21 @@ get_header();
                         Save to Wishlist
                     </button>
                     <?php endif; ?>
-                    <a href="https://wa.me/?text=Check+this+out:+<?php echo urlencode(get_permalink()); ?>"
-                        style="display:inline-flex; align-items:center; gap:6px; padding:10px 18px; border:1.5px solid #E5E5EA; border-radius:10px; background:#fff; font-size:13px; font-weight:600; color:#1D1D1F; cursor:pointer; text-decoration:none; transition:all 0.2s;"
-                        onmouseover="this.style.borderColor='#25D366'; this.style.color='#25D366'" onmouseout="this.style.borderColor='#E5E5EA'; this.style.color='#1D1D1F'" target="_blank">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-                        Share on WhatsApp
+                    <?php 
+                    $wa_text = "Hi I am interested in " . get_the_title() . " " . get_permalink();
+                    ?>
+                    <a href="https://wa.me/919999999999?text=<?php echo urlencode($wa_text); ?>"
+                        style="display:inline-flex; align-items:center; gap:6px; padding:10px 18px; border:1.5px solid #25D366; border-radius:10px; background:#25D366; font-size:13px; font-weight:700; color:#fff; cursor:pointer; text-decoration:none; transition:all 0.2s;"
+                        onmouseover="this.style.background='#1DA851'; this.style.borderColor='#1DA851';" onmouseout="this.style.background='#25D366'; this.style.borderColor='#25D366';" target="_blank">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                        Order on WhatsApp
                     </a>
+                </div>
+
+                <!-- Delivery Estimate -->
+                <div style="margin-top:20px; font-size:13px; color:#1D1D1F; font-weight:600; padding:12px; border-radius:10px; background:#FBFBFD; border:1px solid #E5E5EA;">
+                    📅 Estimated Delivery: <span style="color:#0A2463;"><?php echo date('M d', strtotime('+2 days')); ?> - <?php echo date('M d', strtotime('+5 days')); ?></span>
+                    <p style="font-size:11px; color:#86868B; margin:4px 0 0; font-weight:400;">Standard: 2 days. Custom/Personalised: 3-5 days.</p>
                 </div>
             </div>
         </div><!-- end product grid -->

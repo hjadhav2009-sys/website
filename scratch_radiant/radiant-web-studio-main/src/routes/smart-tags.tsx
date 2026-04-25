@@ -35,9 +35,9 @@ const FEATURES = [
 ];
 
 const PLANS = [
-  { name: "Lite", price: "₹499", tag: "Best for travel & vehicle", features: ["1 smart tag", "Lifetime profile", "Up to 100 scans/yr", "Email alerts only"] },
-  { name: "Pro", price: "₹999", tag: "Most popular — pets & kids", popular: true, features: ["1 smart tag", "Lifetime profile", "Unlimited scans", "SMS + WhatsApp + email alerts", "GPS scan map"] },
-  { name: "Family", price: "₹1,999", tag: "For 4+ members & pets", features: ["4 smart tags", "Shared dashboard", "Unlimited scans", "Priority support", "Free re-engraving"] },
+  { name: "Basic", price: "Free", tag: "Included with every tag", features: ["1 smart tag profile", "Safe/Lost toggle", "Basic GPS capture", "Email alerts only", "Password reset"] },
+  { name: "Standard", price: "₹249", tag: "Most popular — pets & kids", popular: true, period: "/ year", features: ["1 smart tag profile", "Instant WhatsApp alerts", "Precise GPS scan map", "Scan history log", "Emergency info"] },
+  { name: "Corporate", price: "₹1,499", tag: "For up to 25 tags", period: "/ year", features: ["Up to 25 tags", "Company branding", "Bulk QR generation", "SMS + WhatsApp alerts", "Priority support"] },
 ];
 
 function SmartTagsPage() {
@@ -143,7 +143,7 @@ function SmartTagsPage() {
         <div className="container-tmg">
           <div className="text-center mb-10">
             <p className="label-eyebrow mb-2">PLANS & PRICING</p>
-            <h2>Simple, lifetime plans</h2>
+            <h2>Simple, affordable plans</h2>
           </div>
           <div className="grid md:grid-cols-3 gap-5 max-w-5xl mx-auto">
             {PLANS.map((p) => (
@@ -153,7 +153,7 @@ function SmartTagsPage() {
                 <p className="text-xs text-muted-foreground mb-4">{p.tag}</p>
                 <div className="mb-5">
                   <span className="font-display font-extrabold text-4xl text-brand">{p.price}</span>
-                  <span className="text-muted-foreground text-sm"> / one-time</span>
+                  {p.period && <span className="text-muted-foreground text-sm"> {p.period}</span>}
                 </div>
                 <ul className="space-y-2 mb-6">
                   {p.features.map((f) => (

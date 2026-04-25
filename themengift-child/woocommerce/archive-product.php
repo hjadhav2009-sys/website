@@ -12,38 +12,52 @@ get_header( 'shop' );
 <div class="tmg-shop-container" style="background-color: var(--color-surface); padding-top: var(--spacing-xl);">
     <div class="tmg-container">
         
-        <header class="woocommerce-products-header text-center" style="margin-bottom: var(--spacing-2xl);">
-            <?php if ( apply_filters( 'woocommerce_show_page_title', true ) ) : ?>
-                <h1 class="woocommerce-products-header__title page-title" style="font-size: 2.5rem; color: var(--color-primary);"><?php woocommerce_page_title(); ?></h1>
-            <?php endif; ?>
-            
-            <?php do_action( 'woocommerce_archive_description' ); ?>
+        <header class="woocommerce-products-header" style="background:#0A2463; color:#fff; border-radius:24px; padding:60px 40px; margin-bottom:40px; text-align:center; position:relative; overflow:hidden;">
+            <?php
+            $term = get_queried_object();
+            $count = isset($term->count) ? $term->count : 0;
+            ?>
+            <h1 class="woocommerce-products-header__title page-title" style="font-family:'Playfair Display',serif; font-size:3rem; color:#fff; margin:0 0 10px; position:relative; z-index:2;"><?php woocommerce_page_title(); ?></h1>
+            <p style="font-size:16px; color:rgba(255,255,255,0.8); margin:0; position:relative; z-index:2;"><?php echo $count; ?> Products</p>
         </header>
 
-        <div style="display: flex; gap: var(--spacing-2xl); flex-wrap: wrap;">
-            
-            <!-- Sidebar for Filters (Desktop: 250px, Mobile: 100%) -->
-            <aside class="tmg-shop-sidebar" style="flex: 0 0 250px; background: var(--color-background); padding: var(--spacing-lg); border-radius: var(--radius-md); box-shadow: var(--shadow-sm); align-self: flex-start;">
-                <h3 style="font-size: 1.2rem; border-bottom: 2px solid var(--color-border); padding-bottom: var(--spacing-xs); margin-bottom: var(--spacing-md);">Filter By</h3>
+        <!-- HORIZONTAL FILTER BAR -->
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px; background:#fff; padding:16px 24px; border-radius:16px; border:1px solid #E5E5EA; margin-bottom:40px;">
+            <div style="display:flex; gap:16px; flex-wrap:wrap; align-items:center;">
+                <span style="font-size:13px; font-weight:700; color:#86868B; text-transform:uppercase; letter-spacing:0.1em;">Filter:</span>
                 
-                <?php
-                // WooCommerce widgets will populate here. 
-                // Using standard action so Astra/WooCommerce sidebar widgets load.
-                if ( is_active_sidebar( 'woocommerce-sidebar' ) ) {
-                    dynamic_sidebar( 'woocommerce-sidebar' );
-                } else {
-                    echo '<p style="color:var(--color-text-muted); font-size: 0.9rem;">Price, Material, and Category filters will appear here once configured in WP Admin.</p>';
-                }
-                ?>
-            </aside>
+                <select style="padding:10px 16px; border-radius:8px; border:1px solid #E5E5EA; outline:none; font-size:14px; color:#1D1D1F; background:#FBFBFD;">
+                    <option value="">Material</option>
+                    <option value="gold">Gold Plated</option>
+                    <option value="silver">925 Silver</option>
+                    <option value="steel">Stainless Steel</option>
+                </select>
+                
+                <select style="padding:10px 16px; border-radius:8px; border:1px solid #E5E5EA; outline:none; font-size:14px; color:#1D1D1F; background:#FBFBFD;">
+                    <option value="">Occasion</option>
+                    <option value="wedding">Wedding</option>
+                    <option value="festival">Festival</option>
+                    <option value="daily">Daily Wear</option>
+                </select>
+                
+                <select style="padding:10px 16px; border-radius:8px; border:1px solid #E5E5EA; outline:none; font-size:14px; color:#1D1D1F; background:#FBFBFD;">
+                    <option value="">Price Range</option>
+                    <option value="under500">Under ₹500</option>
+                    <option value="500-1000">₹500 - ₹1000</option>
+                    <option value="over1000">Over ₹1000</option>
+                </select>
+            </div>
+            
+            <div style="display:flex; align-items:center; gap:12px;">
+                <span style="font-size:13px; font-weight:700; color:#86868B; text-transform:uppercase; letter-spacing:0.1em;">Sort:</span>
+                <?php woocommerce_catalog_ordering(); ?>
+            </div>
+        </div>
 
+        <div style="display: block;">
+            
             <!-- Main Product Grid -->
-            <main class="tmg-shop-main" style="flex: 1; min-width: 300px;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-md); flex-wrap: wrap; gap: var(--spacing-sm);">
-                    <div class="tmg-result-count" style="color: var(--color-text-muted);">
-                        <?php do_action( 'woocommerce_before_shop_loop' ); ?>
-                    </div>
-                </div>
+            <main class="tmg-shop-main" style="width: 100%;">
 
                 <?php
                 if ( woocommerce_product_loop() ) {
@@ -82,12 +96,16 @@ get_header( 'shop' );
 
 <style>
     /* Styling WooCommerce default elements to match brand */
-    .woocommerce ul.products { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: var(--spacing-lg); padding: 0; margin: 0; list-style: none; }
+    .woocommerce ul.products { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; padding: 0; margin: 0; list-style: none; }
+    @media (max-width: 1024px) { .woocommerce ul.products { grid-template-columns: repeat(3, 1fr); gap: 20px; } }
+    @media (max-width: 768px) { .woocommerce ul.products { grid-template-columns: repeat(2, 1fr); gap: 16px; } }
+    
     .woocommerce ul.products li.product { width: 100% !important; margin: 0 !important; }
-    .tmg-product-card:hover { box-shadow: var(--shadow-md); border-color: var(--color-secondary); }
-    .woocommerce ul.products li.product .price { color: var(--color-primary); font-weight: bold; }
-    .woocommerce ul.products li.product .button { background: var(--color-primary); color: white; border-radius: var(--radius-sm); width: 100%; text-align: center; display: block; margin-top: var(--spacing-sm); }
-    .woocommerce ul.products li.product .button:hover { background: var(--color-secondary); color: var(--color-primary); }
+    .tmg-product-card:hover { box-shadow: 0 12px 24px rgba(0,0,0,0.06); border-color: #0A2463; transform: translateY(-4px); }
+    .woocommerce ul.products li.product .price { color: #0A2463; font-weight: bold; font-size: 16px; }
+    .woocommerce ul.products li.product .button { background: #0A2463; color: white; border-radius: 8px; width: 100%; text-align: center; display: block; margin-top: 16px; padding: 12px; font-weight: 600; }
+    .woocommerce ul.products li.product .button:hover { background: #1B4F9E; }
+    .woocommerce-ordering select { padding: 10px 16px; border-radius: 8px; border: 1px solid #E5E5EA; outline: none; font-size: 14px; color: #1D1D1F; background: #FBFBFD; }
 </style>
 
 <?php get_footer( 'shop' ); ?>

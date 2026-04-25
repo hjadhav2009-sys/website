@@ -19,23 +19,28 @@ export const Route = createFileRoute("/custom-gifts")({
 });
 
 const CATEGORIES = [
-  { label: "Name Jewellery", img: IMG.nameJewel, count: 42 },
-  { label: "Photo Mugs", img: IMG.mug, count: 28 },
-  { label: "Engraved Frames", img: IMG.frame, count: 35 },
-  { label: "Phone Cases", img: IMG.phoneCase, count: 60 },
-  { label: "Stationery", img: IMG.stationery, count: 18 },
-  { label: "Gift Hampers", img: IMG.hamper, count: 22 },
-  { label: "Home Décor", img: IMG.homeDecor, count: 24 },
-  { label: "Build Your Own", img: IMG.giftBox, count: null },
+  { label: "Name Jewellery", img: IMG.nameJewel },
+  { label: "Photo Mugs", img: IMG.mug },
+  { label: "Engraved Frames", img: IMG.frame },
+  { label: "Phone Cases", img: IMG.phoneCase },
+  { label: "Stationery", img: IMG.stationery },
+  { label: "Gift Hampers", img: IMG.hamper },
+  { label: "Home Décor", img: IMG.homeDecor },
+  { label: "Build Your Own", img: IMG.giftBox },
+  { label: "Custom Keychains", img: IMG.petTag },
+  { label: "Wallets", img: IMG.matSteel },
 ];
 
 const STEPS = [
   { icon: ImagePlus, title: "1. Pick a product", text: "Browse 200+ customisable items across jewellery, lifestyle and tech." },
-  { icon: Pencil, title: "2. Personalise it", text: "Add a name, date, message or upload a photo. Live preview while you design." },
-  { icon: Gift, title: "3. We craft & ship", text: "Hand-finished in our Mumbai workshop. Delivered in 3–5 days, free above ₹499." },
+  { icon: Pencil, title: "2. Personalise it", text: "Add a name, date, message or upload a photo. (Live preview plugin coming soon!)" },
+  { icon: Gift, title: "3. We craft & ship", text: "Hand-finished in our Mumbai workshop. Delivered in 3–5 days, free above ₹699." },
 ];
 
+import { useState } from "react";
+
 function CustomGiftsPage() {
+  const [catIdx, setCatIdx] = useState(0);
   return (
     <SiteLayout>
       <section className="grad-hero text-white">
@@ -67,21 +72,19 @@ function CustomGiftsPage() {
         </div>
       </section>
 
-      {/* Categories */}
       <section id="categories" className="py-16 bg-white">
         <div className="container-tmg">
-          <div className="mb-8">
+          <div className="mb-8 text-center">
             <p className="label-eyebrow mb-2">CATEGORIES</p>
             <h2>What would you like to personalise?</h2>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-5">
             {CATEGORIES.map((c) => (
               <Link key={c.label} to="/custom-gifts" className="group block">
                 <div className="aspect-square rounded-2xl overflow-hidden bg-offwhite mb-3">
                   <img src={c.img} alt={c.label} loading="lazy" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
                 </div>
-                <h3 className="text-base font-semibold group-hover:text-brand transition">{c.label}</h3>
-                {c.count && <p className="text-xs text-muted-foreground">{c.count} products</p>}
+                <h3 className="text-base font-semibold group-hover:text-brand transition text-center">{c.label}</h3>
               </Link>
             ))}
           </div>
@@ -133,8 +136,9 @@ function CustomGiftsPage() {
           <Heart className="w-10 h-10 text-brand mx-auto mb-4" />
           <h2 className="mb-3">Our gifting promise</h2>
           <p className="text-muted-foreground">
-            Every order is hand-checked, gift-wrapped and includes a personalised note for free.
-            Not happy? Return within 30 days. We'll re-make it or refund — no questions.
+            Every order is hand-checked, gift-wrapped and includes a personalised note for free. 
+            Because customised items are engraved forever, they are non-returnable. 
+            However, our standard items are protected by a 21-day return policy.
           </p>
         </div>
       </section>

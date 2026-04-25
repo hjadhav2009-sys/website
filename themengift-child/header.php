@@ -17,11 +17,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="profile" href="https://gmpg.org/xfn/11">
     
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
-
+    <!-- Google Fonts are imported in brand.css -->
     <?php wp_head(); ?>
 </head>
 
@@ -32,7 +28,7 @@
     
     <!-- Top Announcement Bar -->
     <div class="tmg-announcement-bar" style="background-color: var(--color-primary); color: var(--color-background); text-align: center; padding: 8px 0; font-size: 0.85rem; font-weight: 500; letter-spacing: 0.5px;">
-        Free Shipping on all orders above ₹999 | COD Available
+        FREE SHIPPING above ₹699
     </div>
 
     <!-- Main Header -->
@@ -41,8 +37,8 @@
             
             <!-- Logo -->
             <div class="site-branding">
-                <a href="<?php echo esc_url( home_url( '/' ) ); ?>" rel="home" style="font-family: var(--font-heading); font-size: 1.8rem; font-weight: 700; color: var(--color-primary); text-transform: uppercase; letter-spacing: 2px;">
-                    THEMENGIFT
+                <a href="<?php echo esc_url( home_url( '/' ) ); ?>" rel="home" style="display: flex; align-items: center; justify-content: center; width: 140px; height: 70px; overflow: hidden;">
+                    <img src="<?php echo get_stylesheet_directory_uri(); ?>/assets/images/logo.png" alt="THEMENGIFT" style="height: 120px; max-width: none; width: auto; display: block;" />
                 </a>
             </div>
 
@@ -58,6 +54,10 @@
             <div class="header-icons" style="display: flex; gap: var(--spacing-md); align-items: center;">
                 <a href="?s=" title="Search" style="font-size: 1.2rem;">🔍</a>
                 <a href="/my-account" title="My Account" style="font-size: 1.2rem;">👤</a>
+                <a href="/my-tag/login/" class="header-icon-btn" title="Manage My Smart Tag" style="display: flex; align-items: center; gap: 4px; text-decoration: none;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                    <span class="header-icon-label" style="font-size: 0.85rem; font-weight: 600;">My Tag</span>
+                </a>
                 <a href="/cart" title="Cart" style="font-size: 1.2rem; position: relative;">
                     🛒
                     <span style="position: absolute; top: -5px; right: -8px; background: var(--color-secondary); color: var(--color-primary); font-size: 0.7rem; font-weight: bold; width: 16px; height: 16px; display: flex; align-items: center; justify-content: center; border-radius: 50%;">

@@ -4,10 +4,10 @@
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
             <?php
             $items = [
-                ['icon' => '🚚', 'title' => 'Free Shipping',   'sub' => 'On orders ₹499+'],
-                ['icon' => '🔒', 'title' => '100% Secure',     'sub' => 'SSL & UPI/COD'],
+                ['icon' => '🚚', 'title' => 'Free Shipping',   'sub' => 'On orders ₹699+'],
+                ['icon' => '🔒', 'title' => '100% Secure',     'sub' => 'SSL & UPI/Cards'],
                 ['icon' => '✨', 'title' => 'Made in India',   'sub' => 'Hand-crafted'],
-                ['icon' => '🔄', 'title' => '30-Day Returns',  'sub' => 'Easy & free'],
+                ['icon' => '🔄', 'title' => '21-Day Returns',  'sub' => 'Easy & free'],
                 ['icon' => '💛', 'title' => 'Lifetime Care',   'sub' => 'Re-engrave free'],
                 ['icon' => '🎁', 'title' => 'Free Gift Box',   'sub' => 'On every order'],
             ];

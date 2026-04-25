@@ -193,9 +193,9 @@ do_action('woocommerce_before_checkout_form', $checkout);
                         <?php
                         $trust = [
                             ['🔒','SSL 256-bit encryption'],
-                            ['💳','UPI · Cards · NetBanking · COD'],
+                            ['💳','UPI · Cards · NetBanking'],
                             ['📦','Free gift box on every order'],
-                            ['🔄','30-day hassle-free returns'],
+                            ['🔄','21-day returns for non-personalised items. Custom and engraved products are non-returnable.'],
                         ];
                         foreach($trust as $t):
                         ?>

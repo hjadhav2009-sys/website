@@ -174,16 +174,16 @@ function QuickNav() {
   );
 }
 
-function SectionHeading({ eyebrow, title, sub, link }: { eyebrow?: string; title: string; sub?: string; link?: { to: "/jewellery" | "/custom-gifts" | "/smart-tags" | "/corporate" | "/shop" | "/blog" | "/about" | "/contact"; label: string } }) {
+function SectionHeading({ eyebrow, title, sub, link, center = true }: { eyebrow?: string; title: string; sub?: string; link?: { to: string; label: string }; center?: boolean }) {
   return (
-    <div className="flex items-end justify-between flex-wrap gap-4 mb-8">
+    <div className={`flex flex-col gap-4 mb-10 ${center ? "items-center text-center" : ""}`}>
       <div>
         {eyebrow && <p className="label-eyebrow mb-2">{eyebrow}</p>}
         <h2 className="font-display">{title}</h2>
-        {sub && <p className="text-muted-foreground mt-2 max-w-xl">{sub}</p>}
+        {sub && <p className="text-muted-foreground mt-2 max-w-xl mx-auto">{sub}</p>}
       </div>
       {link && (
-        <Link to={link.to} className="text-sm font-semibold text-brand inline-flex items-center gap-1 hover:gap-2 transition-all">
+        <Link to={link.to as any} className="text-sm font-semibold text-brand inline-flex items-center gap-1 hover:gap-2 transition-all">
           {link.label} <ArrowRight className="w-4 h-4" />
         </Link>
       )}
@@ -193,29 +193,31 @@ function SectionHeading({ eyebrow, title, sub, link }: { eyebrow?: string; title
 
 function JewelleryPreview() {
   const [tab, setTab] = useState<"Women" | "Men" | "Couple">("Women");
-  const list = PRODUCTS.slice(0, 8);
+  // Simple mock filter based on tab length just to show they change
+  const list = PRODUCTS.filter(p => tab === "Women" ? true : (tab === "Men" ? p.price > 1000 : p.price < 1500)).slice(0, 4);
   return (
     <section className="py-16 bg-offwhite">
       <div className="container-tmg">
         <SectionHeading
           eyebrow="JEWELLERY"
-          title="Curated for every you"
+          title="Made for the moments that matter most"
           sub="Engravings, finishes & stones — built to be worn every day or saved for the moment."
           link={{ to: "/jewellery", label: "Shop all jewellery" }}
+          center
         />
-        <div className="flex gap-2 mb-8">
+        <div className="flex justify-center gap-2 mb-8">
           {(["Women", "Men", "Couple"] as const).map((t) => (
             <button
               key={t}
               onClick={() => setTab(t)}
-              className={`px-5 py-2 rounded-full text-sm font-semibold transition border ${tab === t ? "bg-brand text-white border-brand" : "bg-white text-ink border-[var(--color-border)] hover:border-brand"}`}
+              className={`px-6 py-2 rounded-full text-sm font-semibold transition border ${tab === t ? "bg-brand text-white border-brand shadow-brand-sm" : "bg-white text-ink border-[var(--color-border)] hover:border-brand"}`}
             >
               {t}
             </button>
           ))}
         </div>
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-5">
-          {list.slice(0, 4).map((p) => <ProductCard key={p.id} p={p} />)}
+          {list.map((p) => <ProductCard key={p.id} p={p} />)}
         </div>
       </div>
     </section>
@@ -233,15 +235,15 @@ function ShopByRecipient() {
   return (
     <section className="py-16 bg-white">
       <div className="container-tmg">
-        <SectionHeading eyebrow="SHOP BY RECIPIENT" title="Made for someone special" />
+        <SectionHeading eyebrow="SHOP BY RECIPIENT" title="Made for someone special" center />
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-5">
           {RECIPIENTS.map((r) => (
-            <Link key={r.label} to="/jewellery" className="relative aspect-[3/4] rounded-2xl overflow-hidden group">
+            <Link key={r.label} to="/jewellery" className="relative aspect-[3/4] rounded-2xl overflow-hidden group shadow-brand-md block">
               <img src={r.img} alt={r.label} loading="lazy" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
-              <div className="absolute bottom-5 left-5 right-5 text-white">
-                <h3 className="text-white text-xl font-display">{r.label}</h3>
-                <span className="text-sm inline-flex items-center gap-1 mt-1 opacity-90 group-hover:gap-2 transition-all">Shop now <ArrowRight className="w-4 h-4" /></span>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+              <div className="absolute inset-0 flex flex-col items-center justify-end pb-8 text-white">
+                <h3 className="text-white text-2xl font-display mb-2">{r.label}</h3>
+                <span className="text-sm font-semibold inline-flex items-center gap-1 opacity-90 group-hover:gap-2 transition-all bg-white/20 px-4 py-2 rounded-full backdrop-blur-sm">Shop now <ArrowRight className="w-4 h-4" /></span>
               </div>
             </Link>
           ))}
@@ -287,29 +289,48 @@ function CustomGiftsPreview() {
 }
 
 function FeaturedSpotlight() {
+  const [i, setI] = useState(0);
+  const items = [
+    { title: "Personalised Name Pendant", img: IMG.necklace, price: "₹1,499", old: "₹2,499", desc: "Engrave any name in 7 fonts. Tarnish-free. Premium gift box included." },
+    { title: "Engraved Couple Bracelets", img: IMG.bracelet, price: "₹1,899", old: "₹2,999", desc: "Matching adjustable bracelets. Add dates, coordinates, or initials." },
+    { title: "Smart Pet Tag", img: IMG.petTag, price: "₹499", old: "₹899", desc: "QR-enabled tag. Lifetime free profile. Instant lost & found alerts." },
+    { title: "Custom Engraved Keychain", img: IMG.matSteel, price: "₹699", old: "₹1,199", desc: "Premium steel keychain. Engrave your car number, name, or a special message." },
+  ];
+
+  useEffect(() => {
+    const t = setInterval(() => {
+      setI((prev) => (prev + 1) % items.length);
+    }, 5000);
+    return () => clearInterval(t);
+  }, [items.length]);
+
+  const item = items[i];
+
   return (
     <section className="py-16 bg-white">
       <div className="container-tmg grid lg:grid-cols-2 gap-12 items-center">
         <div className="relative aspect-square max-w-[520px] mx-auto w-full rounded-3xl overflow-hidden bg-gradient-to-br from-brand-pale to-white">
-          <img src={IMG.necklace} alt="Featured pendant" className="w-full h-full object-cover mix-blend-multiply" />
+          <img src={item.img} alt={item.title} className="w-full h-full object-cover mix-blend-multiply transition-opacity duration-500" />
           <div className="absolute top-5 left-5 grad-hero text-white text-[11px] font-bold tracking-widest px-3 py-1.5 rounded-full">FEATURED</div>
+          <div className="absolute bottom-5 left-1/2 -translate-x-1/2 flex gap-2">
+            {items.map((_, idx) => (
+              <button key={idx} onClick={() => setI(idx)} className={`h-2 rounded-full transition-all ${idx === i ? "w-8 bg-brand" : "w-2 bg-brand/30"}`} />
+            ))}
+          </div>
         </div>
         <div>
           <p className="label-eyebrow mb-3">SPOTLIGHT · BEST SELLER</p>
-          <h2 className="mb-3">Personalised Name Pendant</h2>
+          <h2 className="mb-3">{item.title}</h2>
           <div className="flex items-center gap-2 mb-4">
             <Star className="w-4 h-4 fill-[var(--color-star)] text-[var(--color-star)]" />
             <span className="font-semibold">4.8</span>
             <span className="text-muted-foreground text-sm">· 412 reviews</span>
           </div>
-          <p className="text-muted-foreground mb-6 max-w-md">
-            Hand-crafted in 18K gold-plated 925 silver. Engrave any name in 7 fonts. Tarnish-free.
-            Comes in a premium gift box with a personalised note.
-          </p>
+          <p className="text-muted-foreground mb-6 max-w-md">{item.desc}</p>
           <div className="flex items-baseline gap-3 mb-7">
-            <span className="price-tag text-3xl">₹1,499</span>
-            <span className="text-muted-foreground line-through">₹2,499</span>
-            <span className="text-sm font-bold text-[var(--color-sale)]">40% OFF</span>
+            <span className="price-tag text-3xl">{item.price}</span>
+            <span className="text-muted-foreground line-through">{item.old}</span>
+            <span className="text-sm font-bold text-[var(--color-sale)]">Sale</span>
           </div>
           <div className="flex flex-wrap gap-3">
             <Link to="/shop" className="inline-flex items-center gap-2 bg-brand text-white font-semibold px-7 py-3.5 rounded-lg hover:bg-brand-dark transition">
@@ -400,26 +421,23 @@ function SmartTagsShowcase() {
           </div>
         </div>
         <div>
-          <p className="label-eyebrow mb-3">SMART TAGS</p>
-          <h2 className="mb-4">India's most advanced QR tags</h2>
-          <p className="text-muted-foreground max-w-md mb-6">
-            Engraved aluminium tags with a unique QR code that links to a private profile.
-            Anyone who finds your pet, luggage or vehicle can instantly contact you.
-          </p>
-          <ul className="space-y-3 mb-7">
-            {[
-              "Lifetime profile · update anytime, free",
-              "GPS-precise lost & found alerts",
-              "Pet, travel, vehicle, kids safety, medical & corporate",
-              "Made in India · ships in 24 hours",
-            ].map((x) => (
-              <li key={x} className="flex items-start gap-3 text-sm">
-                <div className="w-5 h-5 rounded-full bg-brand text-white grid place-items-center text-[10px] font-bold mt-0.5">✓</div>
-                {x}
-              </li>
-            ))}
-          </ul>
-          <Link to="/smart-tags" className="inline-flex items-center gap-2 bg-brand text-white font-semibold px-7 py-3.5 rounded-lg hover:bg-brand-dark transition">
+          <p className="label-eyebrow mb-3">HOW IT WORKS</p>
+          <h2 className="mb-4">From order to peace of mind in 3 days</h2>
+          <ol className="space-y-4 mb-7 pl-4 list-decimal marker:font-bold marker:text-brand">
+            <li className="pl-2">
+              <strong className="text-ink block">Order your tag</strong>
+              <span className="text-sm text-muted-foreground">and we engrave the unique QR + your custom design.</span>
+            </li>
+            <li className="pl-2">
+              <strong className="text-ink block">Scan it once</strong>
+              <span className="text-sm text-muted-foreground">with your phone to claim and set up the profile.</span>
+            </li>
+            <li className="pl-2">
+              <strong className="text-ink block">Peace of mind</strong>
+              <span className="text-sm text-muted-foreground">Anyone who finds your pet/luggage scans the tag and you get notified instantly.</span>
+            </li>
+          </ol>
+          <Link to="/smart-tags" className="inline-flex items-center gap-2 bg-brand text-white font-semibold px-7 py-3.5 rounded-lg hover:bg-brand-dark transition shadow-brand-md">
             Explore Smart Tags <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
@@ -466,10 +484,10 @@ function CorporateBanner() {
 }
 
 const MATERIALS = [
-  { label: "Gold Plated", img: IMG.matGold },
-  { label: "925 Silver", img: IMG.matSilver },
-  { label: "Stainless Steel", img: IMG.matSteel },
-  { label: "Rose Gold", img: IMG.matRose },
+  { label: "Acrylic", img: IMG.matGold },
+  { label: "Metal Base", img: IMG.matSilver },
+  { label: "Premium Laminate", img: IMG.matSteel },
+  { label: "Rose Finish", img: IMG.matRose },
 ];
 
 function ByMaterial() {
@@ -500,17 +518,23 @@ const OCCASIONS = [
 ];
 
 function ByOccasion() {
+  const [offset, setOffset] = useState(0);
   return (
-    <section className="py-16 bg-offwhite">
-      <div className="container-tmg">
-        <SectionHeading eyebrow="BY OCCASION" title="Find the perfect piece" />
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+    <section className="py-16 bg-offwhite overflow-hidden">
+      <div className="container-tmg relative">
+        <SectionHeading eyebrow="BY OCCASION" title="Find the perfect piece" center />
+        <div className="flex transition-transform duration-500 gap-4" style={{ transform: `translateX(-${offset * 20}%)` }}>
           {OCCASIONS.map((o) => (
-            <Link key={o.label} to="/jewellery" className="group relative aspect-[3/4] rounded-2xl overflow-hidden">
+            <Link key={o.label} to="/jewellery" className="group relative aspect-[3/4] rounded-2xl overflow-hidden min-w-[200px] flex-1 shrink-0">
               <img src={o.img} alt={o.label} loading="lazy" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
-              <h3 className="absolute bottom-4 left-4 right-4 text-white font-display text-base">{o.label}</h3>
+              <h3 className="absolute bottom-4 left-0 right-0 text-center text-white font-display text-lg">{o.label}</h3>
             </Link>
+          ))}
+        </div>
+        <div className="flex justify-center gap-2 mt-6">
+          {OCCASIONS.map((_, i) => (
+            <button key={i} onClick={() => setOffset(i)} className={`h-2 rounded-full transition-all ${offset === i ? "w-8 bg-brand" : "w-2 bg-brand/20"}`} />
           ))}
         </div>
       </div>
@@ -520,12 +544,12 @@ function ByOccasion() {
 
 function TrustStrip() {
   const items = [
-    { icon: Truck, title: "Free Shipping", sub: "On orders ₹499+" },
-    { icon: ShieldCheck, title: "100% Secure", sub: "SSL & UPI/COD" },
+    { icon: Truck, title: "Free Shipping", sub: "On orders ₹699+" },
+    { icon: ShieldCheck, title: "100% Secure", sub: "SSL & Secure Payments" },
     { icon: Sparkles, title: "Made in India", sub: "Hand-crafted" },
-    { icon: Award, title: "30-Day Returns", sub: "Easy & free" },
+    { icon: Award, title: "21-Day Returns", sub: "For non-custom items" },
     { icon: Heart, title: "Lifetime Care", sub: "Re-engrave free" },
-    { icon: Gift, title: "Free Gift Box", sub: "On every order" },
+    { icon: Gift, title: "Free Gift Box", sub: "Giveaway every week" },
   ];
   return (
     <section className="py-10 bg-white border-y border-[var(--color-border)]">
@@ -583,13 +607,16 @@ function InstagramStrip() {
   return (
     <section className="py-16 bg-offwhite">
       <div className="container-tmg">
-        <SectionHeading eyebrow="@THEMENGIFT" title="Real customers, real moments" />
-        <div className="grid grid-cols-3 md:grid-cols-6 gap-3">
+        <SectionHeading eyebrow="@THEMENGIFT" title="Real customers, real moments" center />
+        <div className="grid grid-cols-2 md:grid-cols-6 gap-4">
           {imgs.map((src, i) => (
-            <a key={i} href="#" className="relative aspect-square rounded-xl overflow-hidden group">
-              <img src={src} alt="" loading="lazy" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
-              <div className="absolute inset-0 bg-brand/0 group-hover:bg-brand/40 transition grid place-items-center text-white opacity-0 group-hover:opacity-100">
-                <Heart className="w-6 h-6" />
+            <a key={i} href="https://instagram.com" target="_blank" rel="noreferrer" className="relative aspect-[9/16] rounded-2xl overflow-hidden group shadow-brand-sm">
+              <img src={src} alt="Instagram Reel" loading="lazy" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+              <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition flex items-center justify-center text-white">
+                <svg className="w-10 h-10 drop-shadow-md" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+              </div>
+              <div className="absolute bottom-3 left-3 text-white flex items-center gap-1.5 text-xs font-semibold">
+                <Heart className="w-3.5 h-3.5 fill-white" /> {(Math.random() * 10).toFixed(1)}k
               </div>
             </a>
           ))}
@@ -601,21 +628,22 @@ function InstagramStrip() {
 
 function Newsletter() {
   return (
-    <section className="py-16 bg-brand-dark text-white">
-      <div className="container-tmg grid lg:grid-cols-2 gap-8 items-center">
-        <div>
-          <p className="label-eyebrow text-brand-light mb-3">JOIN THE LIST</p>
-          <h2 className="text-white mb-3">Get 10% off your first order</h2>
-          <p className="text-white/70 max-w-md">
-            New arrivals, limited drops & subscriber-only offers — straight to your inbox.
-          </p>
-        </div>
-        <form className="flex flex-col sm:flex-row gap-3" onSubmit={(e) => e.preventDefault()}>
-          <div className="flex-1 flex items-center bg-white rounded-lg px-4 h-12">
-            <Mail className="w-4 h-4 text-brand mr-2" />
-            <input type="email" required placeholder="your@email.com" className="flex-1 bg-transparent outline-none text-ink" />
+    <section className="py-20 relative overflow-hidden bg-brand-dark text-white">
+      <div className="absolute inset-0 opacity-10">
+        <img src={IMG.heroJewellery} className="w-full h-full object-cover" alt="" />
+      </div>
+      <div className="container-tmg relative max-w-3xl text-center">
+        <p className="inline-block bg-white/10 px-4 py-1.5 rounded-full text-xs font-bold tracking-widest text-white mb-6">VIP ACCESS</p>
+        <h2 className="text-white text-4xl mb-4">Unlock 10% Off Your First Order</h2>
+        <p className="text-white/80 text-lg mb-8 max-w-xl mx-auto">
+          Join our community to receive exclusive early access to drops, private sales, and gifting inspiration.
+        </p>
+        <form className="flex flex-col sm:flex-row gap-3 max-w-lg mx-auto" onSubmit={(e) => e.preventDefault()}>
+          <div className="flex-1 flex items-center bg-white/10 backdrop-blur border border-white/20 rounded-xl px-5 h-14 transition-all focus-within:border-white focus-within:bg-white/20">
+            <Mail className="w-5 h-5 text-white/70 mr-3" />
+            <input type="email" required placeholder="Enter your email address" className="flex-1 bg-transparent outline-none text-white placeholder:text-white/50" />
           </div>
-          <button className="bg-white text-brand-dark font-semibold px-7 h-12 rounded-lg hover:bg-brand-pale transition">
+          <button className="bg-white text-brand-dark font-bold px-8 h-14 rounded-xl hover:bg-brand-pale transition shadow-lg">
             Subscribe
           </button>
         </form>

@@ -1,0 +1,412 @@
+
+
+THEMENGIFT
+themengift.com
+Premium Jewellery  •  Custom Gifts  •  Smart Tags  •  Made in India
+
+WINDSURF AI AGENT BUILD DOCUMENT
+DOCUMENT 2 OF 15  —  UPDATED & FINAL VERSION
+Complete Site Map  •  181 Pages  •  Full Smart Tag System  •  GPS Location  •  Admin Dashboard
+
+READ DOCUMENT 1 FIRST. DO NOT BEGIN CODING WITHOUT COMPLETING DOCUMENT 1.
+
+1. HOW TO USE THIS DOCUMENT
+
+This is the UPDATED final version of Document 2. It replaces all previous versions. It contains the complete site map for all 181 pages PLUS the fully detailed Smart Tag system specification that Windsurf must implement exactly.
+
+
+⚠️  Every single page in this document must be created. No page may be skipped. Pages marked PHASE 2 are created as clean placeholder pages first and completed later.
+✅  All URLs use lowercase letters and hyphens only. No underscores. No capitals. Example: /smart-tags/dog/ is correct. /SmartTags/Dog/ is wrong.
+
+2. COMPLETE SITE ARCHITECTURE
+
+
+3. HEADER — APPEARS ON EVERY PAGE
+
+Built once in header.php. Included automatically on all pages via get_header(). Never rebuilt per page.
+
+3.1 Announcement Bar
+Height: 38px | Background: #1B4F9E | Font: DM Sans 13px white weight 500
+Rotates every 4 seconds — smooth CSS fade transition between messages:
+FREE SHIPPING on orders above Rs.499  |  Use code WELCOME10 for 10% OFF
+Smart Pet Tags with QR Engraving  |  India's Most Advanced  |  Shop Now
+Custom Engraved Jewellery  |  Made in India  |  Ships in 24-48 Hours
+Festival Sale — Flat 40% OFF  |  Use code FEST40 at Checkout
+
+3.2 Main Header Bar
+Background: white | Height: 70px desktop, 60px mobile | Sticky on scroll
+LEFT: THEMENGIFT logo — 160px wide desktop, 130px mobile — links to /
+CENTRE: Rounded pill search bar — placeholder: Search jewellery, gifts, pet tags...
+RIGHT: Account icon | Wishlist icon with count badge | Cart icon with count badge
+Behaviour: header hides on scroll down, slides back on scroll up — smooth CSS transition
+
+3.3 Desktop Navigation Dropdowns
+
+3.4 Mobile Navigation
+Hamburger icon top-right — 44px tap target — opens full screen slide-in menu from left
+Search bar at very top of mobile menu
+Each main item has right arrow — tap to expand accordion with sub-items
+Back arrow returns to main menu — X button closes entire menu
+Dark semi-transparent overlay covers page content when menu is open
+
+3.5 WhatsApp Float Button — Every Page
+Fixed: bottom-right, 20px from edges | Green circle 56px | shadow: var(--shadow-lg)
+Click desktop: opens wa.me/{number}?text=Hi+I+need+help+with+THEMENGIFT
+Click mobile: opens WhatsApp app directly with same pre-filled message
+Shows on EVERY page including checkout, tag app, and admin pages
+
+4. FOOTER — APPEARS ON EVERY PAGE
+
+Built once in footer.php. Background: #0A0A1A. Included via get_footer().
+
+4.1 Newsletter Strip Above Footer
+Background: linear-gradient(135deg, #0A2463, #1B4F9E) | Padding: 60px
+Heading: Get Exclusive Deals and New Launch Alerts — Plus Jakarta Sans white 28px
+Subtext: Join 10,000+ happy customers. No spam, only good stuff.
+Email input + Subscribe button side by side — stacks on mobile
+
+4.2 Footer 4-Column Grid
+
+4.3 Footer Bottom Bar
+Background: #050510 | Left: Copyright 2024 THEMENGIFT. All Rights Reserved. Trademark Registered India.
+Centre: Payment icons — Razorpay, UPI, Visa, Mastercard, Rupay, COD
+Right: Privacy Policy | Terms | Refund Policy — text links
+
+5. CORE PAGES — Pages 1 to 6
+
+
+PAGE 1 — HOMEPAGE
+
+
+PAGE 2 — ABOUT US
+
+
+PAGE 3 — CONTACT US
+
+
+PAGE 4 — BLOG
+
+
+PAGE 5 — SINGLE BLOG POST
+
+
+PAGE 6 — FAQs
+
+
+6. JEWELLERY PAGES — Pages 7 to 42
+
+ℹ️  All 36 jewellery pages use ONE template: archive-product.php. Agent builds it ONCE. WooCommerce fills each category with products automatically.
+
+6.1 Standard Category Page — archive-product.php
+Header + Navigation
+Breadcrumb: Home > Jewellery > Category Name
+Category Hero Banner: full width image + category H1 + product count
+Filter Bar: Sort (Newest, Price Low-High, High-Low, Best Selling, Top Rated) | Price slider | Material checkboxes | Occasion checkboxes
+Product Grid: 4 col desktop, 3 tablet, 2 mobile
+Each Product Card: image square object-fit cover | Sale badge red pill | New badge blue pill | Wishlist heart top-right | Product name | Price in blue bold | Star rating | Add to Cart on hover desktop always visible mobile
+Pagination OR Load More button
+Recently Viewed strip | You May Also Like — 4 cards | Footer
+
+6.2 All Jewellery Pages
+
+7. CUSTOM GIFTS PAGES — Pages 43 to 85
+
+ℹ️  Custom gift product pages extend single-product.php with personalisation input fields. A custom WooCommerce product attribute marks a product as custom — this triggers the personalisation section automatically.
+
+7.1 Custom Product Extra Sections
+Personalisation Box — light blue #EEF4FF background, 16px border-radius, inside border 1.5px #1B4F9E
+Heading: Personalise Your Product (pencil icon)
+Text input with live character counter: 12 of 20 characters
+Photo upload for photo gifts: JPG PNG max 5MB
+Note: Your text will appear exactly as typed. Use CAPITALS for engraving.
+WhatsApp option: Prefer to discuss? Chat with us (green link)
+Delivery notice: Custom products ship in 3 to 5 working days
+🔴  All custom and personalised products are NON-RETURNABLE unless manufacturing defect. Add red notice below Add to Cart on every custom product page.
+
+
+8. SMART TAGS — COMPLETE ADVANCED SYSTEM SPECIFICATION
+
+🔴  THIS IS THE MOST COMPLEX FEATURE OF THE ENTIRE WEBSITE. Read every word of this section before writing a single line of code. The Smart Tag system is a custom PHP application that runs separately from WordPress but on the same Hostinger server.
+
+8.1 System Overview and Architecture
+The THEMENGIFT Smart Tag system has two completely separate parts:
+
+
+8.2 Three Subscription Plans — Final Confirmed Pricing
+
+8.3 Passive GPS and Location System — Complete Technical Specification
+🔴  This is the most technically critical feature. The finder must NEVER see any location permission popup. Location must be captured silently and automatically the moment the QR page loads.
+
+LAYER 1 — IP Geolocation (Always Works — Zero Permission — Instant)
+This runs on every single QR page load. No exceptions.
+When finder opens QR page — PHP on our server captures their IP address from $_SERVER['REMOTE_ADDR']
+Server makes HTTP call to ip-api.com (FREE — 45 requests per minute — no API key needed)
+ip-api.com returns: city, region, country, latitude, longitude, ISP, timezone
+Accuracy: 500 metres to 2 kilometres — enough to identify the neighbourhood
+All data saved instantly to scan_events database table
+If owner is on Standard or Corporate plan — WhatsApp message sent immediately to owner
+
+LAYER 2 — Browser GPS (Silent Attempt — Gets Precise Location if Browser Allows)
+AFTER the page finishes loading visually — JavaScript runs silently in background
+Code: navigator.geolocation.getCurrentPosition(successCallback, errorCallback, {timeout: 5000})
+Timeout: 5 seconds — if browser does not respond — Layer 1 data is used
+If browser allows automatically (Chrome Android often does) — gets GPS within 10-50 metres
+If browser asks permission popup and finder denies — no problem — Layer 1 already captured
+If GPS succeeds — updates the scan_events record with precise coordinates
+Owner gets updated WhatsApp message: Precise location updated — tap to view
+
+LAYER 3 — Device and Network Fingerprint (Extra Confidence)
+JavaScript captures silently: device type, OS version, browser name, screen resolution
+JavaScript captures: timezone from Intl.DateTimeFormat().resolvedOptions().timeZone
+Timezone confirms city — example: Asia/Kolkata confirms India
+ISP name from ip-api confirms the area — example: Jio Mumbai confirms Mumbai
+All stored in scan_events table as device_fingerprint JSON column
+
+ONE HOUR LOCATION WINDOW — Privacy and No Misuse
+Exact GPS coordinates (latitude and longitude) are visible to owner for exactly 1 hour from scan time
+After 1 hour — coordinates are hidden from dashboard — replaced with city name only
+After 24 hours — PHP cron job permanently deletes coordinates from database
+City name and timestamp are stored permanently in scan history — coordinates are not
+THEMENGIFT admin can also see location for same 1 hour window only — no misuse possible
+Owner dashboard shows: LIVE — 12 minutes ago — Bandra West Mumbai — View on Map (clickable for 48 mins more)
+Expired: Scanned 3 days ago — Andheri Mumbai — Location Expired
+
+MAP TECHNOLOGY — OpenStreetMap with Leaflet.js (100% Free Forever)
+Google Maps embed API costs money and has billing limits — DO NOT USE for map display
+Use OpenStreetMap tiles with Leaflet.js JavaScript library — completely FREE, no API key needed
+Leaflet.js CDN: https://unpkg.com/leaflet@1.9.4/dist/leaflet.js
+OpenStreetMap tiles: https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png
+WhatsApp notification to owner uses Google Maps LINK format — this is FREE: maps.google.com/?q={lat},{lng}
+Owner taps WhatsApp link — opens Google Maps app on their phone — shows pin location
+Owner dashboard map — OpenStreetMap with Leaflet showing scan pin — beautiful and free
+✅  WhatsApp LINK to Google Maps is free. Only EMBEDDING Google Maps on a webpage costs money. We use Leaflet for webpage display and Google Maps link in WhatsApp. Best of both worlds at zero cost.
+
+WHATSAPP NOTIFICATION MESSAGE FORMAT — Standard and Corporate Plans Only:
+🔔 SCAN ALERT — THEMENGIFT Smart Tag
+Tag: Bruno (Golden Retriever)
+📍 Location: Bandra West, Mumbai, Maharashtra
+🎯 Precision: Neighbourhood level (IP based)
+📱 Device: Android, Chrome browser
+🕐 Time: 3:45 PM, 24 April 2026
+
+🗺️ View on Map: maps.google.com/?q=19.0596,72.8295
+
+⏱️ Location link expires in 1 hour.
+Login to manage: themengift.com/my-tag/
+
+8.4 All Tag Types and Their Profile Page Fields
+Every tag type has a different profile page layout. The agent must build a separate PHP template file for each tag type. The tag_type field in the database determines which template is loaded.
+
+8.4.1 Pet Tags — Dog, Cat, Rabbit, Horse, Farm Animal, Bird
+
+8.4.2 Travel and Luggage Tags
+
+8.4.3 Kids Safety Tags — School Bag, ID Band, Shoe Tag
+
+8.4.4 Medical Alert and Emergency Tags
+⚠️  Medical tag profile page must load in under 1 second. No fancy animations. No heavy CSS effects. Pure emergency information displayed immediately. Speed is literally life-saving.
+
+8.4.5 Vehicle Tags — Car Keys, Bike, Bicycle, Helmet, Scooter
+
+8.4.6 Allergy and Blood Group Tags
+
+8.4.7 Employee and Corporate Tags
+
+8.4.8 Electronics and Asset Tags — Laptop, Camera, Instrument, Toolbox
+
+8.5 First Time Scan Experience — Setup Wizard
+When a customer scans their NEW tag for the first time — the profile is blank. The page must show a beautiful onboarding experience NOT a plain login form.
+
+Page detects profile is empty — shows Welcome Setup Screen
+Heading: Welcome to Your THEMENGIFT Smart Tag — Set up in 2 minutes
+Two login options on same screen:
+Large button: [G] Continue with Google — Google OAuth 2.0 login
+Separator line: or
+Username field: TMG-XXXXX format
+Password field: 8 character random password
+Blue Login button
+Link: Forgot password? Reset via WhatsApp OTP or Email
+After login — SETUP WIZARD begins — 4 steps with progress bar:
+Step 1 of 4: Basic Info — Upload photo, enter name, select tag type
+Step 2 of 4: Contact Details — Primary phone, WhatsApp, emergency contact
+Step 3 of 4: Specific Information — Different fields based on tag type selected
+Step 4 of 4: Review Everything — Preview of how profile will look
+Click Go Live — large blue button — profile activates instantly
+Success screen: animated checkmark + Your tag is now LIVE!
+Options shown: View My Profile — Share My Profile Link — Test QR Scan
+
+After Setup — Returning Customer Login:
+Customer visits themengift.com/my-tag/login
+Same login screen — Google OR Username + Password
+After login — goes directly to dashboard showing all their tags
+
+8.6 Customer Dashboard — My Tag Portal
+URL: /my-tag/dashboard/
+Shows all tags registered to this customer account
+Each tag shown as a premium card:
+Tag photo (circular) + Tag name + Tag type badge
+Status toggle: SAFE (green) / LOST (red) — customer can toggle directly from dashboard
+Plan badge: Basic / Standard / Corporate
+If Standard or Corporate: Scan count — Scanned 12 times total
+If Standard or Corporate: Last scan — 2 days ago in Bandra Mumbai
+Plan expiry date — Renew Now button if expiring in 30 days
+Edit Profile button — blue
+View Public Profile button — shows what finder sees
+Share QR Link button
+Add New Tag button — if customer bought multiple tags
+Account Settings link — change password, update email
+Logout button
+
+8.7 Scan History — Standard and Corporate Plans
+Accessible from customer dashboard — View Scan History button
+Table showing all scans in reverse chronological order:
+Scan time and date
+City and state — permanent
+Device type — Android or iPhone, browser name
+View on Map button — only clickable within 1 hour of scan — disabled after
+Precision label — IP Based (city level) or GPS Based (precise)
+Map view: OpenStreetMap with Leaflet.js — shows pin at scan location
+Map visible for 1 hour from scan time — then coordinates deleted — map shows city marker only
+Export scan history as PDF or CSV — Corporate plan
+
+8.8 Your Admin Dashboard — themengift.com/tag-admin/
+🔴  This admin panel is for THEMENGIFT owner ONLY. Protected with strong password. Not accessible to customers.
+
+8.8.1 Dashboard Home
+Live stats cards: Total tags registered | Active scans today | Tags in LOST mode (red) | Plans expiring this month | New registrations today
+Quick action buttons: Create New Customer | Generate QR Code | View All LOST Tags | Send Renewal Reminders
+Revenue summary: This month subscription revenue vs last month
+
+8.8.2 Customer Management
+CREATE NEW CUSTOMER — Full form:
+Customer name, phone number (WhatsApp), email address
+Select plan: Basic, Standard, Corporate
+Select tag type: Dog, Cat, Travel, Medical etc.
+Click GENERATE CREDENTIALS — system auto-creates:
+Username: TMG- followed by 5 random uppercase letters and numbers e.g. TMG-K4X9M
+Password: 8 characters — mix of uppercase, lowercase, numbers e.g. Kx9#mL2p
+Credential card preview appears — ready to download as print-ready PDF
+ALL CUSTOMERS — Searchable and filterable table: name, phone, plan, tag type, registered date, last scan
+EDIT CUSTOMER — Open any customer profile and edit directly — useful when customer calls for help
+RESET PASSWORD — One click — generates new password — sends to customer via WhatsApp automatically
+CHANGE PLAN — Upgrade or downgrade any customer plan instantly
+EXTEND PLAN — Add days manually — useful for goodwill gestures or errors
+VIEW SCAN HISTORY — Full scan log for any customer tag
+
+8.8.3 QR Code Generator and Download Center
+Select customer and tag from dropdown
+QR code preview shown in real time — THEMENGIFT logo watermark in centre of QR
+QR links to: themengift.com/tag/{unique-8-char-id}/
+Size selector: 1cm / 2cm / 3cm / 5cm / custom millimetre input
+Error correction level: HIGH — so QR works even if engraving is slightly worn
+Download formats — all generated on server using PHP QR Code library:
+PNG — transparent background — for inkjet printing
+JPG — white background — for standard printing
+SVG — vector format — infinitely scalable — no quality loss at any size
+PDF — A4 size print ready — with THEMENGIFT branding
+PDF — A6 size — for small product card printing
+DXF — for laser engraving machine and UV printer — THIS IS THE FORMAT FOR YOUR PRINTER
+EPS — for professional printing shops
+WebP — optimised for web use
+ZIP — all formats bundled in one download
+Bulk QR generation — Corporate plan: select count 10 25 50 — generates all as ZIP
+
+8.8.4 Credential Card Generator
+Beautiful printable credential card — A6 postcard size
+Design elements on card:
+THEMENGIFT logo top left
+Heading: Your Smart Tag Credentials
+Username: TMG-K4X9M (bold, large)
+Password: Kx9#mL2p (bold, large)
+Instructions: Scan your tag to set up your profile
+URL: themengift.com/my-tag/login
+Note: Keep these credentials safe. Do not share.
+Download as print-ready PDF — A6 size — print and put inside packaging box
+Bulk print: select multiple customers — downloads all cards as one PDF
+
+8.8.5 Location and Scan Management
+ACTIVE LOCATIONS: Shows all scans from last 1 hour on OpenStreetMap — live updating
+Each pin shows: tag name, scan time, plan type
+LOST TAGS: All tags currently in LOST mode — shown as red urgent list
+SCAN ANALYTICS: Total scans per day chart, most scanned tags, device breakdown
+LOCATION AUTO-EXPIRY: PHP cron job runs every 15 minutes — deletes expired coordinates
+DATA RETENTION: City name kept permanently. Coordinates deleted after 24 hours. No exceptions.
+
+8.8.6 Plan and Revenue Management
+ALL PLANS table: customer name, plan, start date, expiry date, auto-renew status
+EXPIRING SOON: Customers expiring in next 7 days — one-click Send WhatsApp Reminder
+EXPIRED: Automatically marked inactive — profile still shows but scan notifications disabled
+REVENUE: Monthly subscription income breakdown — this month, last month, total
+CORPORATE BULK: Manage all 25 tags under one corporate account from single view
+
+8.9 All Smart Tag Pages — Complete URL Reference
+8.9.1 Smart Tag WooCommerce Shop Pages
+
+8.9.2 Smart Tag Custom PHP App Pages
+⚠️  These 5 pages are NOT WordPress. They are standalone PHP files in public_html/tag/ and public_html/my-tag/ on Hostinger. They use same brand fonts and CSS as main site but run completely independently from WordPress.
+
+
+8.9.3 Admin Panel Pages
+
+8.10 Database Tables — Smart Tag System
+ℹ️  These tables are created separately from WordPress tables. Use prefix tag_ to avoid conflicts. Created in the same MySQL database on Hostinger.
+
+⚠️  profile_data_json stores all tag profile information as a JSON object. Different tag types have different JSON structure. This allows full customisation per tag type without creating separate database tables for each type.
+
+9. CORPORATE GIFTING PAGES — Pages 128 to 137
+
+
+9.1 Bulk Enquiry Form Fields
+
+10. SHOP AND PRODUCT PAGES — Pages 138 to 146
+
+
+PAGE 139 — SINGLE PRODUCT PAGE
+
+
+PAGE 141 — CHECKOUT WITH GIFT WRAPPING
+
+
+10.1 Gift Wrapping Add-On at Checkout
+Section heading: Add Gift Wrapping — Optional (gift box icon)
+Radio options — select ONE:
+No wrapping — standard protective packaging — Rs.0
+Premium Blue Gift Box — rigid box with ribbon — Rs.49
+Luxury Gift Bag — premium paper bag with tissue — Rs.79
+Romantic Red Box — velvet finish with bow — Rs.99
+Festival Box — Diwali and Holi special design — Rs.89
+When any paid option selected — smooth animation reveals:
+Recipient Name for Name Tag — text input max 25 chars — free
+Add Gift Message Card checkbox — Rs.29 — textarea 100 chars when checked
+Order summary updates in real time
+Shows on invoice as separate line item: Gift Wrapping Premium Blue Box Rs.49
+GST applies on gift wrapping at same rate as products
+⚠️  Implement using woocommerce_after_order_notes action hook. Store as order meta. Display on order detail and PDF invoice.
+
+11. MY ACCOUNT PAGES — Pages 147 to 154
+
+
+12. OCCASION AND EMOTION PAGES — Pages 155 to 177
+
+ℹ️  WooCommerce product TAG archive pages. One product can have multiple tags and appear on multiple occasion pages. Template is archive-product.php with unique hero per occasion.
+
+
+13. LEGAL PAGES — Pages 178 to 185
+
+ℹ️  All 8 legal pages use ONE template: page-legal.php. Agent builds template once. Content typed in WordPress editor by owner.
+
+⚠️  Return and Refund Policy must have a clear highlighted box: Custom, personalised and engraved products cannot be returned unless manufacturing defect. Smart Tag subscription fees are non-refundable after tag activation.
+
+14. SPECIAL SHOP PAGES — Pages 186 to 189
+
+
+15. COMPLETE PAGE COUNT AND BUILD ORDER
+
+
+✅  PHASE 1 must be fully built, tested and verified before starting PHASE 2. For PHASE 2 pages — create page with correct URL and Coming Soon placeholder, then fill content later.
+⚠️  Every URL in this document must resolve to a real styled working page. A 404 error on any page costs Google ranking and customer trust.
+🔴  The Smart Tag passive GPS system must be tested thoroughly before launch. Test on multiple devices — Android Chrome, iPhone Safari, older Android browsers. Verify WhatsApp notifications are received within 10 seconds of scan. Verify location deletes after 1 hour.
+
+
+THEMENGIFT  •  themengift.com  •  Document 2 of 15  •  Updated Final Version
+Next: Document 3  —  Complete Database Structure and All MySQL Tables

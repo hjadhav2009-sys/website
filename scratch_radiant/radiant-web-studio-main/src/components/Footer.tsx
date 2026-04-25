@@ -8,11 +8,10 @@ export function Footer() {
         <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-5">
           {/* Brand */}
           <div className="lg:col-span-2">
-            <div className="flex items-center gap-2 mb-4">
-              <div className="w-9 h-9 rounded-lg grad-hero grid place-items-center font-display font-extrabold">
-                T
-              </div>
-              <span className="font-display font-extrabold text-xl">THEMENGIFT</span>
+            <div className="mb-4">
+              <Link to="/">
+                <img src="/logo.png" alt="THEMENGIFT" className="h-10 w-auto invert brightness-0" />
+              </Link>
             </div>
             <p className="text-white/65 text-sm max-w-sm leading-relaxed">
               Premium custom jewellery, personalised gifts and India's most advanced

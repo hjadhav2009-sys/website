@@ -11,20 +11,34 @@ const NAV = [
     to: "/jewellery" as const,
     mega: [
       {
-        title: "By Gender",
-        links: ["Men's", "Women's", "Couple", "Kids"],
+        title: "Categories",
+        links: [
+          { label: "Men's", href: "/jewellery/mens" },
+          { label: "Women's", href: "/jewellery/womens" },
+          { label: "Couple", href: "/jewellery/couple" },
+          { label: "New Arrivals", href: "/new-arrivals" },
+          { label: "Sale", href: "/sale" }
+        ],
       },
       {
         title: "By Material",
-        links: ["Gold Plated", "925 Silver", "Steel", "Rose Gold", "Oxidised"],
+        links: [
+          { label: "Gold Plated", href: "/jewellery/gold-plated" },
+          { label: "925 Silver", href: "/jewellery/silver-plated" },
+          { label: "Stainless Steel", href: "/jewellery/stainless-steel" },
+          { label: "Rose Gold", href: "/jewellery/rose-gold" },
+          { label: "Oxidised", href: "/jewellery/oxidised" }
+        ],
       },
       {
         title: "By Occasion",
-        links: ["Wedding", "Festival", "Daily Wear", "Office", "Party"],
-      },
-      {
-        title: "Special",
-        links: ["New Arrivals", "Best Sellers", "Sale"],
+        links: [
+          { label: "Wedding", href: "/jewellery/wedding" },
+          { label: "Festival", href: "/jewellery/festival" },
+          { label: "Daily Wear", href: "/jewellery/daily-wear" },
+          { label: "Office Wear", href: "/jewellery/office-wear" },
+          { label: "Party Wear", href: "/jewellery/party-wear" }
+        ],
       },
     ],
   },
@@ -33,16 +47,21 @@ const NAV = [
     to: "/custom-gifts" as const,
     mega: [
       {
-        title: "Personalised",
-        links: ["Name Jewellery", "Home & Lifestyle", "Stationery & Office"],
+        title: "Categories",
+        links: [
+          { label: "Name Jewellery", href: "/custom-gifts/name-necklace" },
+          { label: "Photo Gifts", href: "/custom-gifts/photo-frame" },
+          { label: "Home and Lifestyle", href: "/custom-gifts/mug" },
+          { label: "Stationery", href: "/custom-gifts/notebook" }
+        ],
       },
       {
-        title: "Lifestyle",
-        links: ["Kitchen & Home", "Gift Hampers", "Custom Phone Case"],
-      },
-      {
-        title: "Build Your Own",
-        links: ["Build a Gift Box", "Gifting Guide", "Bulk Personalisation"],
+        title: "More Gifts",
+        links: [
+          { label: "Gift Hampers", href: "/custom-gifts/birthday-hamper" },
+          { label: "Custom Phone Case", href: "/custom-gifts/phone-case" },
+          { label: "Build Your Gift Box", href: "/custom-gifts/build-your-box" }
+        ],
       },
     ],
   },
@@ -52,31 +71,71 @@ const NAV = [
     mega: [
       {
         title: "Tag Types",
-        links: ["Pet Tags", "Travel Tags", "Vehicle Tags", "Kids Safety", "Medical", "Asset", "Corporate"],
+        links: [
+          { label: "Pet Tags", href: "/smart-tags/dog" },
+          { label: "Travel Tags", href: "/smart-tags/luggage" },
+          { label: "Vehicle Tags", href: "/smart-tags/car-keys" },
+          { label: "Kids Safety", href: "/smart-tags/kids" }
+        ],
+      },
+      {
+        title: "More Tags",
+        links: [
+          { label: "Medical Tags", href: "/smart-tags/medical" },
+          { label: "Asset Tags", href: "/smart-tags/electronics" },
+          { label: "Corporate Tags", href: "/smart-tags/employee-id" }
+        ],
       },
       {
         title: "Learn",
-        links: ["Plans & Pricing", "How It Works", "FAQ"],
+        links: [
+          { label: "Plans and Pricing", href: "/smart-tags/plans" },
+          { label: "How It Works", href: "/smart-tags/how-it-works" }
+        ],
       },
     ],
   },
   {
-    label: "Corporate",
+    label: "Corporate Gifting",
     to: "/corporate" as const,
     mega: [
       {
-        title: "Occasions",
-        links: ["Diwali Gifts", "New Year Gifts", "Employee Gifts", "Client Gifts"],
+        title: "Gifts",
+        links: [
+          { label: "Diwali Gifts", href: "/corporate-gifting/diwali" },
+          { label: "New Year", href: "/corporate-gifting/new-year" },
+          { label: "Employee", href: "/corporate-gifting/employee" },
+          { label: "Client Gifts", href: "/corporate-gifting/client" }
+        ],
       },
       {
         title: "Resources",
-        links: ["Bulk Enquiry", "Download Catalogue"],
+        links: [
+          { label: "Bulk Enquiry", href: "/corporate-gifting/bulk-enquiry" },
+          { label: "Catalogue", href: "/corporate-gifting/catalogue" }
+        ],
       },
     ],
   },
-  { label: "Shop", to: "/shop" as const },
-  { label: "About", to: "/about" as const },
-  { label: "Contact", to: "/contact" as const },
+  {
+    label: "Shop",
+    to: "/shop" as const,
+    mega: [
+      {
+        title: "Shop All",
+        links: [
+          { label: "All Products", href: "/shop" },
+          { label: "New Arrivals", href: "/new-arrivals" },
+          { label: "Best Sellers", href: "/best-sellers" },
+          { label: "Sale", href: "/sale" },
+          { label: "Flash Deal", href: "/flash-deal" }
+        ],
+      },
+    ],
+  },
+  { label: "About Us", to: "/about" as const },
+  { label: "Contact Us", to: "/contact" as const },
+  { label: "Blog", to: "/blog" as const },
 ];
 
 export function Header() {
@@ -107,15 +166,10 @@ export function Header() {
         scrolled ? "shadow-brand-sm" : ""
       }`}
     >
-      <div className="container-tmg flex items-center gap-6 h-[70px]">
+      <div className="container-tmg flex items-center gap-6 h-[90px]">
         {/* Logo */}
-        <Link to="/" className="flex items-center gap-2 shrink-0">
-          <div className="w-9 h-9 rounded-lg grad-hero grid place-items-center text-white font-display font-extrabold">
-            T
-          </div>
-          <span className="font-display font-extrabold text-[20px] tracking-tight text-ink">
-            THEMENGIFT
-          </span>
+        <Link to="/" className="flex items-center shrink-0 w-32 justify-center">
+          <img src="/logo.png" alt="THEMENGIFT" className="h-[120px] w-auto max-w-none object-contain" />
         </Link>
 
         {/* Search — desktop */}
@@ -200,13 +254,13 @@ export function Header() {
                         <p className="label-eyebrow mb-3">{col.title}</p>
                         <ul className="space-y-2">
                           {col.links.map((l) => (
-                            <li key={l}>
-                              <Link
-                                to={item.to}
+                            <li key={l.label}>
+                              <a
+                                href={l.href}
                                 className="text-sm text-muted-foreground hover:text-brand transition-colors"
                               >
-                                {l}
-                              </Link>
+                                {l.label}
+                              </a>
                             </li>
                           ))}
                         </ul>
@@ -229,7 +283,7 @@ export function Header() {
           />
           <div className="absolute left-0 top-0 bottom-0 w-[88%] max-w-sm bg-white flex flex-col animate-in slide-in-from-left duration-300">
             <div className="flex items-center justify-between px-5 h-[70px] border-b border-[var(--color-border)]">
-              <span className="font-display font-extrabold text-lg">THEMENGIFT</span>
+              <img src="/logo.png" alt="THEMENGIFT" className="h-8 w-auto" />
               <button onClick={() => setMobileOpen(false)} aria-label="Close" className="w-10 h-10 grid place-items-center">
                 <X className="w-5 h-5" />
               </button>

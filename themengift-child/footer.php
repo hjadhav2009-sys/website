@@ -17,7 +17,9 @@
                 
                 <!-- Brand Info -->
                 <div>
-                    <h3 style="color: var(--color-secondary); font-family: var(--font-heading); font-size: 1.5rem; margin-bottom: var(--spacing-md);">THEMENGIFT</h3>
+                    <a href="<?php echo esc_url( home_url( '/' ) ); ?>" rel="home" style="display: flex; align-items: center; justify-content: center; width: 140px; height: 70px; overflow: hidden; margin-bottom: var(--spacing-md);">
+                        <img src="<?php echo get_stylesheet_directory_uri(); ?>/assets/images/logo.png" alt="THEMENGIFT" style="height: 120px; max-width: none; width: auto; display: block; filter: brightness(0) invert(1);" />
+                    </a>
                     <p style="opacity: 0.8; font-size: 0.9rem; line-height: 1.6; margin-bottom: var(--spacing-md);">Premium jewelry, custom personalized gifts, and advanced smart tags. Crafted with precision in India.</p>
                     <div style="display: flex; gap: var(--spacing-sm);">
                         <a href="#" style="color: white; opacity: 0.8;">IG</a>

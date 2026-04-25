@@ -77,7 +77,7 @@ get_header();
             $steps = [
                 ['🛍️','1. Pick a product',  'Browse 200+ customisable items across jewellery, lifestyle and tech accessories.'],
                 ['✍️','2. Personalise it',   'Add a name, date, message or upload your photo. See a live preview while you design.'],
-                ['🎁','3. We craft & ship',  'Hand-finished in our Mumbai workshop. Delivered in 3–5 days, free above ₹499.'],
+                ['🎁','3. We craft & ship',  'Hand-finished in our Mumbai workshop. Delivered in 3–5 days, free above ₹699.'],
             ];
             foreach($steps as $i => $s):
             ?>
@@ -207,13 +207,14 @@ get_header();
     <div class="tmg-container" style="text-align:center; max-width:640px; margin:0 auto;">
         <div style="font-size:40px; margin-bottom:16px;">💛</div>
         <h2 style="font-family:'Playfair Display',serif; font-size:clamp(1.8rem,3vw,2.4rem); color:#0A192F; margin:0 0 12px;">Our gifting promise</h2>
-        <p style="color:#86868B; font-size:16px; line-height:1.8; margin:0 0 28px;">
-            Every order is hand-checked, gift-wrapped and includes a personalised note for free.
-            Not happy? Return within 30 days. We'll re-make it or refund — no questions asked.
+        <p style="color:#4A5568; line-height:1.6; max-width:600px; margin:0 auto;">
+            Every order is hand-checked, gift-wrapped and includes a personalised note for free. 
+            Because customised items are engraved forever, they are non-returnable. 
+            However, our standard items are protected by a 21-day return policy.
         </p>
         <div style="display:flex; flex-wrap:wrap; gap:12px; justify-content:center;">
             <?php
-            $badges = ['🎀 Free Gift Wrap','📝 Personal Note','🔄 30-Day Returns','✅ Made in India'];
+            $badges = ['🎀 Free Gift Wrap','📝 Personal Note','🔄 21-Day Returns','✅ Made in India'];
             foreach($badges as $b):
             ?>
             <span style="background:#fff; border:1.5px solid #E5E5EA; border-radius:999px; padding:8px 18px; font-size:13px; font-weight:600; color:#1D1D1F;">
